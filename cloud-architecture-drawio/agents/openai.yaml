@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cloud Architecture · draw.io"
+  short_description: "Editable cloud diagrams with icons and network boundaries"
+  default_prompt: "Use $cloud-architecture-drawio to create an editable cloud architecture diagram with CSP icons, network boundaries, and a verified PNG preview."

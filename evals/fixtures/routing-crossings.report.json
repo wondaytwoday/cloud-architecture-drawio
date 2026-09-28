@@ -1,0 +1,50 @@
+{
+  "version": 2,
+  "errors": [],
+  "warnings": [
+    "1 connector crossings: inspect jump markers or revise ports/lanes"
+  ],
+  "routes": {
+    "horizontal": [
+      [
+        236,
+        490.0
+      ],
+      [
+        764,
+        490.0
+      ]
+    ],
+    "vertical": [
+      [
+        500.0,
+        234
+      ],
+      [
+        500.0,
+        756
+      ]
+    ]
+  },
+  "labels": {},
+  "quality": {
+    "crossingCount": 1,
+    "overlapLength": 0,
+    "bendCount": 0,
+    "totalLength": 1050.0,
+    "crossings": [
+      {
+        "edges": [
+          "horizontal",
+          "vertical"
+        ],
+        "point": [
+          500.0,
+          490.0
+        ]
+      }
+    ],
+    "overlaps": []
+  },
+  "model_sha256": "c41867a07a12764b1da913651c341b70d7c8c2ae144a48bce6d360e8317e9199"
+}

@@ -1,0 +1,449 @@
+{
+  "azure-regional": {
+    "crossingCount": 2,
+    "overlapLength": 14,
+    "bendCount": 15,
+    "totalLength": 3734.0,
+    "crossings": [
+      {
+        "edges": [
+          "gateway-a",
+          "gateway-b"
+        ],
+        "point": [
+          230,
+          512.0
+        ]
+      },
+      {
+        "edges": [
+          "sql-a",
+          "sql-b"
+        ],
+        "point": [
+          628.0,
+          790
+        ]
+      }
+    ],
+    "overlaps": [
+      {
+        "edges": [
+          "gateway-a",
+          "gateway-b"
+        ],
+        "length": 4
+      },
+      {
+        "edges": [
+          "sql-a",
+          "sql-b"
+        ],
+        "length": 10
+      }
+    ]
+  },
+  "aws-three-az": {
+    "crossingCount": 14,
+    "overlapLength": 158,
+    "bendCount": 29,
+    "totalLength": 10190.0,
+    "crossings": [
+      {
+        "edges": [
+          "app-in-a",
+          "app-out-a"
+        ],
+        "point": [
+          760,
+          1052.0
+        ]
+      },
+      {
+        "edges": [
+          "db-access-a",
+          "db-access-b"
+        ],
+        "point": [
+          518.0,
+          1520
+        ]
+      },
+      {
+        "edges": [
+          "db-access-a",
+          "db-access-c"
+        ],
+        "point": [
+          518.0,
+          1470
+        ]
+      },
+      {
+        "edges": [
+          "web-in-b",
+          "web-in-c"
+        ],
+        "point": [
+          930,
+          616.0
+        ]
+      },
+      {
+        "edges": [
+          "web-in-b",
+          "web-in-c"
+        ],
+        "point": [
+          1158.0,
+          820
+        ]
+      },
+      {
+        "edges": [
+          "app-in-b",
+          "app-out-b"
+        ],
+        "point": [
+          930,
+          1052.0
+        ]
+      },
+      {
+        "edges": [
+          "app-in-b",
+          "app-in-c"
+        ],
+        "point": [
+          930,
+          1052.0
+        ]
+      },
+      {
+        "edges": [
+          "app-in-b",
+          "app-in-c"
+        ],
+        "point": [
+          1158.0,
+          1050
+        ]
+      },
+      {
+        "edges": [
+          "app-in-b",
+          "app-out-c"
+        ],
+        "point": [
+          940,
+          1052.0
+        ]
+      },
+      {
+        "edges": [
+          "app-out-b",
+          "app-in-c"
+        ],
+        "point": [
+          930,
+          1052.0
+        ]
+      },
+      {
+        "edges": [
+          "app-out-b",
+          "app-out-c"
+        ],
+        "point": [
+          930,
+          1052.0
+        ]
+      },
+      {
+        "edges": [
+          "db-access-b",
+          "db-access-c"
+        ],
+        "point": [
+          518.0,
+          1520
+        ]
+      },
+      {
+        "edges": [
+          "db-access-b",
+          "db-access-c"
+        ],
+        "point": [
+          1158.0,
+          1470
+        ]
+      },
+      {
+        "edges": [
+          "app-in-c",
+          "app-out-c"
+        ],
+        "point": [
+          930,
+          1052.0
+        ]
+      }
+    ],
+    "overlaps": [
+      {
+        "edges": [
+          "app-in-a",
+          "app-out-a"
+        ],
+        "length": 5
+      },
+      {
+        "edges": [
+          "db-access-a",
+          "db-access-b"
+        ],
+        "length": 10
+      },
+      {
+        "edges": [
+          "db-access-a",
+          "db-access-c"
+        ],
+        "length": 60
+      },
+      {
+        "edges": [
+          "web-in-b",
+          "web-in-c"
+        ],
+        "length": 9
+      },
+      {
+        "edges": [
+          "app-in-b",
+          "app-out-b"
+        ],
+        "length": 9
+      },
+      {
+        "edges": [
+          "app-in-b",
+          "app-in-c"
+        ],
+        "length": 9
+      },
+      {
+        "edges": [
+          "app-in-b",
+          "app-out-c"
+        ],
+        "length": 19
+      },
+      {
+        "edges": [
+          "app-out-b",
+          "app-in-c"
+        ],
+        "length": 9
+      },
+      {
+        "edges": [
+          "app-out-b",
+          "app-out-c"
+        ],
+        "length": 9
+      },
+      {
+        "edges": [
+          "db-access-b",
+          "db-access-c"
+        ],
+        "length": 10
+      },
+      {
+        "edges": [
+          "app-in-c",
+          "app-out-c"
+        ],
+        "length": 9
+      }
+    ]
+  },
+  "gcp-regional": {
+    "crossingCount": 3,
+    "overlapLength": 16,
+    "bendCount": 12,
+    "totalLength": 3112.0,
+    "crossings": [
+      {
+        "edges": [
+          "lb-a",
+          "lb-b"
+        ],
+        "point": [
+          868.0,
+          480
+        ]
+      },
+      {
+        "edges": [
+          "lb-a",
+          "lb-b"
+        ],
+        "point": [
+          1198.0,
+          400
+        ]
+      },
+      {
+        "edges": [
+          "sql-a",
+          "sql-b"
+        ],
+        "point": [
+          628.0,
+          790
+        ]
+      }
+    ],
+    "overlaps": [
+      {
+        "edges": [
+          "lb-a",
+          "lb-b"
+        ],
+        "length": 6
+      },
+      {
+        "edges": [
+          "sql-a",
+          "sql-b"
+        ],
+        "length": 10
+      }
+    ]
+  },
+  "aws-three-tier-ko": {
+    "crossingCount": 3,
+    "overlapLength": 24,
+    "bendCount": 18,
+    "totalLength": 5613.0,
+    "crossings": [
+      {
+        "edges": [
+          "app-in-a",
+          "app-out-a"
+        ],
+        "point": [
+          760,
+          1052.0
+        ]
+      },
+      {
+        "edges": [
+          "db-access-a",
+          "db-access-b"
+        ],
+        "point": [
+          518.0,
+          1520
+        ]
+      },
+      {
+        "edges": [
+          "app-in-b",
+          "app-out-b"
+        ],
+        "point": [
+          930,
+          1052.0
+        ]
+      }
+    ],
+    "overlaps": [
+      {
+        "edges": [
+          "app-in-a",
+          "app-out-a"
+        ],
+        "length": 5
+      },
+      {
+        "edges": [
+          "db-access-a",
+          "db-access-b"
+        ],
+        "length": 10
+      },
+      {
+        "edges": [
+          "app-in-b",
+          "app-out-b"
+        ],
+        "length": 9
+      }
+    ]
+  },
+  "aws-three-tier": {
+    "crossingCount": 3,
+    "overlapLength": 24,
+    "bendCount": 18,
+    "totalLength": 5613.0,
+    "crossings": [
+      {
+        "edges": [
+          "app-in-a",
+          "app-out-a"
+        ],
+        "point": [
+          760,
+          1052.0
+        ]
+      },
+      {
+        "edges": [
+          "db-access-a",
+          "db-access-b"
+        ],
+        "point": [
+          518.0,
+          1520
+        ]
+      },
+      {
+        "edges": [
+          "app-in-b",
+          "app-out-b"
+        ],
+        "point": [
+          930,
+          1052.0
+        ]
+      }
+    ],
+    "overlaps": [
+      {
+        "edges": [
+          "app-in-a",
+          "app-out-a"
+        ],
+        "length": 5
+      },
+      {
+        "edges": [
+          "db-access-a",
+          "db-access-b"
+        ],
+        "length": 10
+      },
+      {
+        "edges": [
+          "app-in-b",
+          "app-out-b"
+        ],
+        "length": 9
+      }
+    ]
+  }
+}

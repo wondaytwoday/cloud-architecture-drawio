@@ -1,0 +1,23 @@
+{
+  "width": 1000,
+  "height": 1000,
+  "cells": 25,
+  "unknownIcons": [],
+  "brokenImages": [],
+  "geometry": {
+    "checkedRoutes": 2,
+    "checkedLabels": 0,
+    "jumpMarkers": 1,
+    "mismatches": []
+  },
+  "editability": {
+    "movedResource": "left",
+    "restored": true,
+    "roundTripEdges": 2,
+    "allEdgesConnected": true,
+    "roundTripLabels": 0,
+    "allLabelsAttached": true,
+    "labelFollow": null
+  },
+  "pageErrors": []
+}

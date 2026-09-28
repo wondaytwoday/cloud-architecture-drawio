@@ -1,0 +1,23 @@
+{
+  "width": 2080,
+  "height": 1840,
+  "cells": 139,
+  "unknownIcons": [],
+  "brokenImages": [],
+  "geometry": {
+    "checkedRoutes": 18,
+    "checkedLabels": 18,
+    "jumpMarkers": 2,
+    "mismatches": []
+  },
+  "editability": {
+    "movedResource": "res-web-a",
+    "restored": true,
+    "roundTripEdges": 18,
+    "allEdgesConnected": true,
+    "roundTripLabels": 18,
+    "allLabelsAttached": true,
+    "labelFollow": true
+  },
+  "pageErrors": []
+}

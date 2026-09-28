@@ -1,0 +1,19 @@
+{
+  "provider": "multi",
+  "title": "Connector crossing verification",
+  "subtitle": "Two independent flows cross; a crossing is not a junction",
+  "width": 1000,
+  "height": 1000,
+  "containers": [],
+  "nodes": [
+    {"id": "left", "label": "Left source", "icon": "generic", "x": 80, "y": 428, "w": 156, "h": 124},
+    {"id": "right", "label": "Right target", "icon": "generic", "x": 764, "y": 428, "w": 156, "h": 124},
+    {"id": "top", "label": "Top source", "icon": "generic", "x": 422, "y": 110, "w": 156, "h": 124},
+    {"id": "bottom", "label": "Bottom target", "icon": "generic", "x": 422, "y": 756, "w": 156, "h": 124}
+  ],
+  "edges": [
+    {"id": "horizontal", "source": "left", "target": "right", "sourcePort": "right", "targetPort": "left", "priority": 0},
+    {"id": "vertical", "source": "top", "target": "bottom", "sourcePort": "bottom", "targetPort": "top", "priority": 1}
+  ],
+  "notes": ["Renderer check: the intersection should show a line jump, not a dot or joined path."]
+}

@@ -1,0 +1,462 @@
+{
+  "provider": "aws",
+  "title": "AWS · 다중 가용 영역 웹 서비스 아키텍처",
+  "subtitle": "2개 AZ · 웹 / 애플리케이션 / 데이터 계층 · 예시 구성",
+  "width": 1440,
+  "height": 1840,
+  "containers": [
+    {
+      "id": "cloud",
+      "label": "AWS Cloud · example account",
+      "kind": "cloud",
+      "x": 20,
+      "y": 245,
+      "w": 1400,
+      "h": 1505
+    },
+    {
+      "id": "vpc",
+      "label": "VPC · 10.20.0.0/16",
+      "kind": "vpc",
+      "x": 280,
+      "y": 410,
+      "w": 1120,
+      "h": 1330,
+      "parent": "cloud"
+    },
+    {
+      "id": "az-a",
+      "label": "가용 영역 A",
+      "kind": "az",
+      "x": 300,
+      "y": 450,
+      "w": 440,
+      "h": 1270,
+      "parent": "vpc"
+    },
+    {
+      "id": "public-a",
+      "label": "퍼블릭 서브넷 · public",
+      "kind": "subnet",
+      "x": 320,
+      "y": 510,
+      "w": 400,
+      "h": 190,
+      "parent": "az-a",
+      "public": true,
+      "zone": "a"
+    },
+    {
+      "id": "web-a",
+      "label": "프라이빗 서브넷 · web",
+      "kind": "subnet",
+      "x": 320,
+      "y": 750,
+      "w": 400,
+      "h": 220,
+      "parent": "az-a",
+      "public": false,
+      "zone": "a"
+    },
+    {
+      "id": "app-a",
+      "label": "프라이빗 서브넷 · app",
+      "kind": "subnet",
+      "x": 320,
+      "y": 1160,
+      "w": 400,
+      "h": 230,
+      "parent": "az-a",
+      "public": false,
+      "zone": "a"
+    },
+    {
+      "id": "db-a",
+      "label": "프라이빗 서브넷 · db",
+      "kind": "subnet",
+      "x": 320,
+      "y": 1470,
+      "w": 400,
+      "h": 240,
+      "parent": "az-a",
+      "public": false,
+      "zone": "a"
+    },
+    {
+      "id": "az-b",
+      "label": "가용 영역 B",
+      "kind": "az",
+      "x": 940,
+      "y": 450,
+      "w": 440,
+      "h": 1270,
+      "parent": "vpc"
+    },
+    {
+      "id": "public-b",
+      "label": "퍼블릭 서브넷 · public",
+      "kind": "subnet",
+      "x": 960,
+      "y": 510,
+      "w": 400,
+      "h": 190,
+      "parent": "az-b",
+      "public": true,
+      "zone": "b"
+    },
+    {
+      "id": "web-b",
+      "label": "프라이빗 서브넷 · web",
+      "kind": "subnet",
+      "x": 960,
+      "y": 750,
+      "w": 400,
+      "h": 220,
+      "parent": "az-b",
+      "public": false,
+      "zone": "b"
+    },
+    {
+      "id": "app-b",
+      "label": "프라이빗 서브넷 · app",
+      "kind": "subnet",
+      "x": 960,
+      "y": 1160,
+      "w": 400,
+      "h": 230,
+      "parent": "az-b",
+      "public": false,
+      "zone": "b"
+    },
+    {
+      "id": "db-b",
+      "label": "프라이빗 서브넷 · db",
+      "kind": "subnet",
+      "x": 960,
+      "y": 1470,
+      "w": 400,
+      "h": 240,
+      "parent": "az-b",
+      "public": false,
+      "zone": "b"
+    },
+    {
+      "id": "web-asg",
+      "label": "Web Auto Scaling",
+      "kind": "group",
+      "x": 425,
+      "y": 788,
+      "w": 860,
+      "h": 172,
+      "parent": "vpc",
+      "overlay": true,
+      "labelAlign": "center"
+    },
+    {
+      "id": "app-asg",
+      "label": "App Auto Scaling",
+      "kind": "group",
+      "x": 425,
+      "y": 1198,
+      "w": 860,
+      "h": 172,
+      "parent": "vpc",
+      "overlay": true,
+      "labelAlign": "center"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "res-nat-a",
+      "icon": "aws.nat",
+      "label": "NAT Gateway",
+      "detail": "Outbound only · A",
+      "x": 520,
+      "y": 554,
+      "w": 156,
+      "h": 124,
+      "parent": "public-a"
+    },
+    {
+      "id": "res-web-a",
+      "icon": "aws.ec2",
+      "label": "EC2 웹 서버",
+      "detail": "자동 확장 · AZ A",
+      "x": 440,
+      "y": 824,
+      "w": 156,
+      "h": 124,
+      "parent": "web-a"
+    },
+    {
+      "id": "res-app-a",
+      "icon": "aws.ec2",
+      "label": "EC2 앱 서버",
+      "detail": "자동 확장 · AZ A",
+      "x": 440,
+      "y": 1234,
+      "w": 156,
+      "h": 124,
+      "parent": "app-a"
+    },
+    {
+      "id": "res-db-a",
+      "icon": "aws.rds",
+      "label": "Amazon RDS",
+      "detail": "PostgreSQL · 주 인스턴스",
+      "x": 440,
+      "y": 1530,
+      "w": 156,
+      "h": 124,
+      "parent": "db-a"
+    },
+    {
+      "id": "res-nat-b",
+      "icon": "aws.nat",
+      "label": "NAT Gateway",
+      "detail": "Outbound only · B",
+      "x": 1160,
+      "y": 554,
+      "w": 156,
+      "h": 124,
+      "parent": "public-b"
+    },
+    {
+      "id": "res-web-b",
+      "icon": "aws.ec2",
+      "label": "EC2 웹 서버",
+      "detail": "자동 확장 · AZ B",
+      "x": 1080,
+      "y": 824,
+      "w": 156,
+      "h": 124,
+      "parent": "web-b"
+    },
+    {
+      "id": "res-app-b",
+      "icon": "aws.ec2",
+      "label": "EC2 앱 서버",
+      "detail": "자동 확장 · AZ B",
+      "x": 1080,
+      "y": 1234,
+      "w": 156,
+      "h": 124,
+      "parent": "app-b"
+    },
+    {
+      "id": "res-db-b",
+      "icon": "aws.rds",
+      "label": "Amazon RDS",
+      "detail": "PostgreSQL · 대기 인스턴스",
+      "x": 1080,
+      "y": 1530,
+      "w": 156,
+      "h": 124,
+      "parent": "db-b"
+    },
+    {
+      "id": "users",
+      "icon": "generic.user",
+      "label": "외부 사용자",
+      "detail": "www.example.com",
+      "x": 765,
+      "y": 110,
+      "w": 156,
+      "h": 124
+    },
+    {
+      "id": "dns",
+      "icon": "aws.route53",
+      "label": "Amazon Route 53",
+      "detail": "DNS resolution",
+      "x": 315,
+      "y": 280,
+      "w": 156,
+      "h": 124,
+      "parent": "cloud"
+    },
+    {
+      "id": "cdn",
+      "icon": "aws.cloudfront",
+      "label": "Amazon CloudFront",
+      "detail": "HTTPS edge delivery",
+      "x": 765,
+      "y": 280,
+      "w": 156,
+      "h": 124,
+      "parent": "cloud"
+    },
+    {
+      "id": "waf",
+      "icon": "aws.waf",
+      "label": "AWS WAF",
+      "detail": "CloudFront Web ACL",
+      "x": 1135,
+      "y": 280,
+      "w": 156,
+      "h": 124,
+      "parent": "cloud"
+    },
+    {
+      "id": "s3",
+      "icon": "aws.s3",
+      "label": "Amazon S3",
+      "detail": "Static assets · OAC",
+      "x": 65,
+      "y": 535,
+      "w": 156,
+      "h": 124,
+      "parent": "cloud"
+    },
+    {
+      "id": "alb",
+      "icon": "aws.alb",
+      "label": "퍼블릭 ALB",
+      "detail": "2개 AZ에 연결",
+      "x": 765,
+      "y": 554,
+      "w": 156,
+      "h": 124,
+      "parent": "vpc"
+    },
+    {
+      "id": "internal-lb",
+      "icon": "aws.alb",
+      "label": "내부 ALB",
+      "detail": "애플리케이션 계층",
+      "x": 765,
+      "y": 990,
+      "w": 156,
+      "h": 124,
+      "parent": "vpc"
+    }
+  ],
+  "edges": [
+    {
+      "id": "dns-query",
+      "source": "users",
+      "target": "dns",
+      "label": "DNS",
+      "kind": "dns",
+      "sourcePort": "left",
+      "targetPort": "top"
+    },
+    {
+      "id": "https",
+      "source": "users",
+      "target": "cdn",
+      "label": "HTTPS 443",
+      "kind": "traffic"
+    },
+    {
+      "id": "waf-binding",
+      "source": "waf",
+      "target": "cdn",
+      "label": "Web ACL",
+      "kind": "association",
+      "sourcePort": "left",
+      "targetPort": "right"
+    },
+    {
+      "id": "origin",
+      "source": "cdn",
+      "target": "alb",
+      "label": "HTTPS 443",
+      "kind": "traffic"
+    },
+    {
+      "id": "assets",
+      "source": "cdn",
+      "target": "s3",
+      "label": "Static origin",
+      "kind": "traffic",
+      "sourcePort": "left",
+      "targetPort": "top"
+    },
+    {
+      "id": "web-in-a",
+      "source": "alb",
+      "target": "res-web-a",
+      "label": "HTTPS 443",
+      "kind": "traffic",
+      "sourcePort": "left",
+      "targetPort": "top"
+    },
+    {
+      "id": "app-in-a",
+      "source": "res-web-a",
+      "target": "internal-lb",
+      "label": "HTTPS 443",
+      "kind": "traffic",
+      "sourcePort": "bottom",
+      "targetPort": "left"
+    },
+    {
+      "id": "app-out-a",
+      "source": "internal-lb",
+      "target": "res-app-a",
+      "label": "HTTPS 443",
+      "kind": "traffic",
+      "sourcePort": "left",
+      "targetPort": "top"
+    },
+    {
+      "id": "db-access-a",
+      "source": "res-app-a",
+      "target": "res-db-a",
+      "label": "TCP 5432",
+      "kind": "traffic",
+      "sourcePort": "bottom",
+      "targetPort": "top"
+    },
+    {
+      "id": "web-in-b",
+      "source": "alb",
+      "target": "res-web-b",
+      "label": "HTTPS 443",
+      "kind": "traffic",
+      "sourcePort": "right",
+      "targetPort": "top"
+    },
+    {
+      "id": "app-in-b",
+      "source": "res-web-b",
+      "target": "internal-lb",
+      "label": "HTTPS 443",
+      "kind": "traffic",
+      "sourcePort": "bottom",
+      "targetPort": "right"
+    },
+    {
+      "id": "app-out-b",
+      "source": "internal-lb",
+      "target": "res-app-b",
+      "label": "HTTPS 443",
+      "kind": "traffic",
+      "sourcePort": "right",
+      "targetPort": "top"
+    },
+    {
+      "id": "db-access-b",
+      "source": "res-app-b",
+      "target": "res-db-a",
+      "label": "TCP 5432",
+      "kind": "traffic",
+      "sourcePort": "bottom",
+      "targetPort": "top"
+    },
+    {
+      "id": "replication",
+      "source": "res-db-a",
+      "target": "res-db-b",
+      "label": "Synchronous replication",
+      "kind": "replication",
+      "sourcePort": "right",
+      "targetPort": "left"
+    }
+  ],
+  "notes": [
+    "포트는 예시값입니다.",
+    "상세 서브넷 연결·백업·아웃바운드 경로는 이 개요도에서 생략했습니다."
+  ]
+}

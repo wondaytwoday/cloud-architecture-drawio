@@ -1,0 +1,706 @@
+{
+  "date": "2026-09-28",
+  "version": 2,
+  "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
+  "icons": 36,
+  "tests": {
+    "passed": 43,
+    "failed": 0,
+    "command": "python3 -m unittest discover -s evals -v"
+  },
+  "skill_validation": "Skill is valid!",
+  "cases": [
+    {
+      "case": "aws-three-az",
+      "before": {
+        "crossingCount": 14,
+        "overlapLength": 158,
+        "bendCount": 29,
+        "totalLength": 10190.0,
+        "crossings": [
+          {
+            "edges": [
+              "app-in-a",
+              "app-out-a"
+            ],
+            "point": [
+              760,
+              1052.0
+            ]
+          },
+          {
+            "edges": [
+              "db-access-a",
+              "db-access-b"
+            ],
+            "point": [
+              518.0,
+              1520
+            ]
+          },
+          {
+            "edges": [
+              "db-access-a",
+              "db-access-c"
+            ],
+            "point": [
+              518.0,
+              1470
+            ]
+          },
+          {
+            "edges": [
+              "web-in-b",
+              "web-in-c"
+            ],
+            "point": [
+              930,
+              616.0
+            ]
+          },
+          {
+            "edges": [
+              "web-in-b",
+              "web-in-c"
+            ],
+            "point": [
+              1158.0,
+              820
+            ]
+          },
+          {
+            "edges": [
+              "app-in-b",
+              "app-out-b"
+            ],
+            "point": [
+              930,
+              1052.0
+            ]
+          },
+          {
+            "edges": [
+              "app-in-b",
+              "app-in-c"
+            ],
+            "point": [
+              930,
+              1052.0
+            ]
+          },
+          {
+            "edges": [
+              "app-in-b",
+              "app-in-c"
+            ],
+            "point": [
+              1158.0,
+              1050
+            ]
+          },
+          {
+            "edges": [
+              "app-in-b",
+              "app-out-c"
+            ],
+            "point": [
+              940,
+              1052.0
+            ]
+          },
+          {
+            "edges": [
+              "app-out-b",
+              "app-in-c"
+            ],
+            "point": [
+              930,
+              1052.0
+            ]
+          },
+          {
+            "edges": [
+              "app-out-b",
+              "app-out-c"
+            ],
+            "point": [
+              930,
+              1052.0
+            ]
+          },
+          {
+            "edges": [
+              "db-access-b",
+              "db-access-c"
+            ],
+            "point": [
+              518.0,
+              1520
+            ]
+          },
+          {
+            "edges": [
+              "db-access-b",
+              "db-access-c"
+            ],
+            "point": [
+              1158.0,
+              1470
+            ]
+          },
+          {
+            "edges": [
+              "app-in-c",
+              "app-out-c"
+            ],
+            "point": [
+              930,
+              1052.0
+            ]
+          }
+        ],
+        "overlaps": [
+          {
+            "edges": [
+              "app-in-a",
+              "app-out-a"
+            ],
+            "length": 5
+          },
+          {
+            "edges": [
+              "db-access-a",
+              "db-access-b"
+            ],
+            "length": 10
+          },
+          {
+            "edges": [
+              "db-access-a",
+              "db-access-c"
+            ],
+            "length": 60
+          },
+          {
+            "edges": [
+              "web-in-b",
+              "web-in-c"
+            ],
+            "length": 9
+          },
+          {
+            "edges": [
+              "app-in-b",
+              "app-out-b"
+            ],
+            "length": 9
+          },
+          {
+            "edges": [
+              "app-in-b",
+              "app-in-c"
+            ],
+            "length": 9
+          },
+          {
+            "edges": [
+              "app-in-b",
+              "app-out-c"
+            ],
+            "length": 19
+          },
+          {
+            "edges": [
+              "app-out-b",
+              "app-in-c"
+            ],
+            "length": 9
+          },
+          {
+            "edges": [
+              "app-out-b",
+              "app-out-c"
+            ],
+            "length": 9
+          },
+          {
+            "edges": [
+              "db-access-b",
+              "db-access-c"
+            ],
+            "length": 10
+          },
+          {
+            "edges": [
+              "app-in-c",
+              "app-out-c"
+            ],
+            "length": 9
+          }
+        ]
+      },
+      "after": {
+        "crossingCount": 2,
+        "overlapLength": 0,
+        "bendCount": 31,
+        "totalLength": 10019.8,
+        "crossings": [
+          {
+            "edges": [
+              "db-access-b",
+              "db-access-c"
+            ],
+            "point": [
+              564.8,
+              1514
+            ]
+          },
+          {
+            "edges": [
+              "db-access-b",
+              "db-access-c"
+            ],
+            "point": [
+              1158.0,
+              1468
+            ]
+          }
+        ],
+        "overlaps": []
+      },
+      "model_sha256": "bf84609bcca650e159a8f65419423d683053fbc178a9567c607a45336cce661c",
+      "render": {
+        "width": 2080,
+        "height": 1840,
+        "cells": 139,
+        "unknownIcons": [],
+        "brokenImages": [],
+        "geometry": {
+          "checkedRoutes": 18,
+          "checkedLabels": 18,
+          "jumpMarkers": 2,
+          "mismatches": []
+        },
+        "editability": {
+          "movedResource": "res-web-a",
+          "restored": true,
+          "roundTripEdges": 18,
+          "allEdgesConnected": true,
+          "roundTripLabels": 18,
+          "allLabelsAttached": true,
+          "labelFollow": true
+        },
+        "pageErrors": []
+      },
+      "warnings": [
+        "2 connector crossings: inspect jump markers or revise ports/lanes"
+      ]
+    },
+    {
+      "case": "aws-three-tier-ko",
+      "before": {
+        "crossingCount": 3,
+        "overlapLength": 24,
+        "bendCount": 18,
+        "totalLength": 5613.0,
+        "crossings": [
+          {
+            "edges": [
+              "app-in-a",
+              "app-out-a"
+            ],
+            "point": [
+              760,
+              1052.0
+            ]
+          },
+          {
+            "edges": [
+              "db-access-a",
+              "db-access-b"
+            ],
+            "point": [
+              518.0,
+              1520
+            ]
+          },
+          {
+            "edges": [
+              "app-in-b",
+              "app-out-b"
+            ],
+            "point": [
+              930,
+              1052.0
+            ]
+          }
+        ],
+        "overlaps": [
+          {
+            "edges": [
+              "app-in-a",
+              "app-out-a"
+            ],
+            "length": 5
+          },
+          {
+            "edges": [
+              "db-access-a",
+              "db-access-b"
+            ],
+            "length": 10
+          },
+          {
+            "edges": [
+              "app-in-b",
+              "app-out-b"
+            ],
+            "length": 9
+          }
+        ]
+      },
+      "after": {
+        "crossingCount": 0,
+        "overlapLength": 0,
+        "bendCount": 18,
+        "totalLength": 5573.0,
+        "crossings": [],
+        "overlaps": []
+      },
+      "model_sha256": "608609a2d454728d06041eb3d911e9ca63648e3e086f078d6515ddad45fd2e47",
+      "render": {
+        "width": 1440,
+        "height": 1840,
+        "cells": 115,
+        "unknownIcons": [],
+        "brokenImages": [],
+        "geometry": {
+          "checkedRoutes": 14,
+          "checkedLabels": 14,
+          "jumpMarkers": 0,
+          "mismatches": []
+        },
+        "editability": {
+          "movedResource": "res-web-a",
+          "restored": true,
+          "roundTripEdges": 14,
+          "allEdgesConnected": true,
+          "roundTripLabels": 14,
+          "allLabelsAttached": true,
+          "labelFollow": true
+        },
+        "pageErrors": []
+      },
+      "warnings": []
+    },
+    {
+      "case": "aws-three-tier",
+      "before": {
+        "crossingCount": 3,
+        "overlapLength": 24,
+        "bendCount": 18,
+        "totalLength": 5613.0,
+        "crossings": [
+          {
+            "edges": [
+              "app-in-a",
+              "app-out-a"
+            ],
+            "point": [
+              760,
+              1052.0
+            ]
+          },
+          {
+            "edges": [
+              "db-access-a",
+              "db-access-b"
+            ],
+            "point": [
+              518.0,
+              1520
+            ]
+          },
+          {
+            "edges": [
+              "app-in-b",
+              "app-out-b"
+            ],
+            "point": [
+              930,
+              1052.0
+            ]
+          }
+        ],
+        "overlaps": [
+          {
+            "edges": [
+              "app-in-a",
+              "app-out-a"
+            ],
+            "length": 5
+          },
+          {
+            "edges": [
+              "db-access-a",
+              "db-access-b"
+            ],
+            "length": 10
+          },
+          {
+            "edges": [
+              "app-in-b",
+              "app-out-b"
+            ],
+            "length": 9
+          }
+        ]
+      },
+      "after": {
+        "crossingCount": 0,
+        "overlapLength": 0,
+        "bendCount": 22,
+        "totalLength": 5573.0,
+        "crossings": [],
+        "overlaps": []
+      },
+      "model_sha256": "cf7f50b6523385c4f53bae20eefd3c671c5ed03bff67985e11fa2b0cf349806e",
+      "render": {
+        "width": 1440,
+        "height": 1840,
+        "cells": 115,
+        "unknownIcons": [],
+        "brokenImages": [],
+        "geometry": {
+          "checkedRoutes": 14,
+          "checkedLabels": 14,
+          "jumpMarkers": 0,
+          "mismatches": []
+        },
+        "editability": {
+          "movedResource": "res-web-a",
+          "restored": true,
+          "roundTripEdges": 14,
+          "allEdgesConnected": true,
+          "roundTripLabels": 14,
+          "allLabelsAttached": true,
+          "labelFollow": true
+        },
+        "pageErrors": []
+      },
+      "warnings": []
+    },
+    {
+      "case": "azure-regional",
+      "before": {
+        "crossingCount": 2,
+        "overlapLength": 14,
+        "bendCount": 15,
+        "totalLength": 3734.0,
+        "crossings": [
+          {
+            "edges": [
+              "gateway-a",
+              "gateway-b"
+            ],
+            "point": [
+              230,
+              512.0
+            ]
+          },
+          {
+            "edges": [
+              "sql-a",
+              "sql-b"
+            ],
+            "point": [
+              628.0,
+              790
+            ]
+          }
+        ],
+        "overlaps": [
+          {
+            "edges": [
+              "gateway-a",
+              "gateway-b"
+            ],
+            "length": 4
+          },
+          {
+            "edges": [
+              "sql-a",
+              "sql-b"
+            ],
+            "length": 10
+          }
+        ]
+      },
+      "after": {
+        "crossingCount": 0,
+        "overlapLength": 0,
+        "bendCount": 14,
+        "totalLength": 3654.0,
+        "crossings": [],
+        "overlaps": []
+      },
+      "model_sha256": "47d2b193b436fdd9cfaf7f3855ed189b8cde929a635522e2312facf13dc45f11",
+      "render": {
+        "width": 1320,
+        "height": 1140,
+        "cells": 54,
+        "unknownIcons": [],
+        "brokenImages": [],
+        "geometry": {
+          "checkedRoutes": 7,
+          "checkedLabels": 7,
+          "jumpMarkers": 0,
+          "mismatches": []
+        },
+        "editability": {
+          "movedResource": "app-a",
+          "restored": true,
+          "roundTripEdges": 7,
+          "allEdgesConnected": true,
+          "roundTripLabels": 7,
+          "allLabelsAttached": true,
+          "labelFollow": true
+        },
+        "pageErrors": []
+      },
+      "warnings": []
+    },
+    {
+      "case": "gcp-regional",
+      "before": {
+        "crossingCount": 3,
+        "overlapLength": 16,
+        "bendCount": 12,
+        "totalLength": 3112.0,
+        "crossings": [
+          {
+            "edges": [
+              "lb-a",
+              "lb-b"
+            ],
+            "point": [
+              868.0,
+              480
+            ]
+          },
+          {
+            "edges": [
+              "lb-a",
+              "lb-b"
+            ],
+            "point": [
+              1198.0,
+              400
+            ]
+          },
+          {
+            "edges": [
+              "sql-a",
+              "sql-b"
+            ],
+            "point": [
+              628.0,
+              790
+            ]
+          }
+        ],
+        "overlaps": [
+          {
+            "edges": [
+              "lb-a",
+              "lb-b"
+            ],
+            "length": 6
+          },
+          {
+            "edges": [
+              "sql-a",
+              "sql-b"
+            ],
+            "length": 10
+          }
+        ]
+      },
+      "after": {
+        "crossingCount": 0,
+        "overlapLength": 0,
+        "bendCount": 12,
+        "totalLength": 3092.0,
+        "crossings": [],
+        "overlaps": []
+      },
+      "model_sha256": "9934d5685844409018a4b37dff4984c32364c8b9e76f468b188a5e95eb39452e",
+      "render": {
+        "width": 1320,
+        "height": 1140,
+        "cells": 48,
+        "unknownIcons": [],
+        "brokenImages": [],
+        "geometry": {
+          "checkedRoutes": 6,
+          "checkedLabels": 6,
+          "jumpMarkers": 0,
+          "mismatches": []
+        },
+        "editability": {
+          "movedResource": "app-a",
+          "restored": true,
+          "roundTripEdges": 6,
+          "allEdgesConnected": true,
+          "roundTripLabels": 6,
+          "allLabelsAttached": true,
+          "labelFollow": true
+        },
+        "pageErrors": []
+      },
+      "warnings": []
+    }
+  ],
+  "crossing_fixture": {
+    "width": 1000,
+    "height": 1000,
+    "cells": 25,
+    "unknownIcons": [],
+    "brokenImages": [],
+    "geometry": {
+      "checkedRoutes": 2,
+      "checkedLabels": 0,
+      "jumpMarkers": 1,
+      "mismatches": []
+    },
+    "editability": {
+      "movedResource": "left",
+      "restored": true,
+      "roundTripEdges": 2,
+      "allEdgesConnected": true,
+      "roundTripLabels": 0,
+      "allLabelsAttached": true,
+      "labelFollow": null
+    },
+    "pageErrors": []
+  },
+  "totals": {
+    "before": {
+      "crossingCount": 25,
+      "overlapLength": 236,
+      "bendCount": 92
+    },
+    "after": {
+      "crossingCount": 2,
+      "overlapLength": 0,
+      "bendCount": 97
+    }
+  },
+  "installation": {
+    "date": "2026-09-29",
+    "path": "~/.codex/skills/cloud-architecture-drawio",
+    "matching_files": 55,
+    "installed_template_build": "azure-regional: passed, no warnings",
+    "skill_validation": "Skill is valid!"
+  }
+}
