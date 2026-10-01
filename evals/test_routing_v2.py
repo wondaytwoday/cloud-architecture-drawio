@@ -237,7 +237,7 @@ class RoutingTests(unittest.TestCase):
              r'top: Connector target lead-in enters the title band or legend footer'),
             ([('a', 200, 250), ('b', 396, 250)], [{'id': 'caption', 'source': 'a', 'target': 'b',
                                                    'label': 'HTTPS 443 · mutual TLS'}],
-             r"caption: no clear label position for 'HTTPS 443 · mutual TLS'; a \d+x22px caption fits beside none of its segments \(longest 40px; a straight horizontal run needs about 180px\)"),
+             r"caption: no clear label position for 'HTTPS 443 · mutual TLS'; a \d+x22px caption fits beside none of its segments \(longest 40px; a straight horizontal run needs about 164px\)"),
         ]
         for nodes, edges, message in cases:
             with self.subTest(edge=edges[0]['id']), self.assertRaisesRegex(ValueError, message):
@@ -255,6 +255,76 @@ class RoutingTests(unittest.TestCase):
             c.build(model, Path(tmp)/'captions.drawio')
         self.assertEqual([line.split(':')[0] for line in str(caught.exception).splitlines()], ['top', 'bottom'])
         self.assertIn("blocked by card 'a', card 'b'", str(caught.exception))
+
+    def two_cards(self, label, gap, stacked):
+        a = {'id': 'a', 'label': 'a', 'x': 200, 'y': 150, 'w': 156, 'h': 124}
+        b = dict(a, id='b', label='b', **({'y': 274+gap} if stacked else {'x': 356+gap}))
+        return {'provider': 'aws', 'title': 'Two cards', 'width': 1000, 'height': 800, 'containers': [],
+                'nodes': [a, b], 'edges': [{'id': 'e', 'source': 'a', 'target': 'b', 'label': label}]}
+
+    def test_tight_captions_fit_exactly_where_the_rule_says(self):
+        # Stacked cards need only 2 x stub; side-by-side cards need the caption box plus 8px.
+        routing.route_and_label(self.two_cards('HTTPS', 32, True), c.header_rect)
+        for label in ('HTTPS', 'SQL 5432', 'HTTPS 443 · mutual TLS'):
+            box = sum(.58*11 for _ in label)+16
+            with self.subTest(label=label):
+                for gap in range(int(box+8)+1, int(box+8)+12):
+                    routing.route_and_label(self.two_cards(label, gap, False), c.header_rect)
+                with self.assertRaisesRegex(routing.LabelError, f'needs about {box+8:.0f}px'):
+                    routing.route_and_label(self.two_cards(label, int(box+8)-2, False), c.header_rect)
+
+    def test_caption_hint_only_asks_for_length_that_is_missing(self):
+        sys.path.insert(0, str(BASE/'evals'))
+        import bench_routing
+        model = bench_routing.grid(1005, 6, 6, 110, True)
+        routes, _ = routing.plan(model, c.header_rect, reserve=False, clear_borders=False, spread=False, stub_lanes=False)
+        with self.assertRaises(routing.LabelError) as caught:
+            routing.place_labels(model, routes, c.header_rect)
+        for line in str(caught.exception).splitlines():
+            longest = float(line.split('(longest ')[1].split('px')[0])
+            if 'needs about' in line:
+                self.assertLess(longest, float(line.split('needs about ')[1].split('px')[0]))
+
+    def test_captions_prefer_their_own_segment_and_open_space(self):
+        sys.path.insert(0, str(BASE/'evals'))
+        import bench_routing
+        for seed in (1025, 1098, 2021):
+            model = bench_routing.grid(seed, 6, 6, 100, True) if seed < 2000 else bench_routing.grid(seed, 8, 8, 110, True)
+            with self.subTest(seed=seed):
+                routes, _, labels, _ = routing.route_and_label(model, c.header_rect)
+                self.assertEqual(bench_routing.label_quality(routes, labels), (0, 0))
+
+    def test_parallel_spreading_rescues_a_fan_out_through_the_fallback(self):
+        sys.path.insert(0, str(BASE/'evals'))
+        import bench_routing
+        model = bench_routing.fanout(3000, 3, 60)
+        routes, _ = routing.plan(model, c.header_rect, True, True, False, False)
+        with self.assertRaises(routing.LabelError):
+            routing.place_labels(model, routes, c.header_rect)
+        with tempfile.TemporaryDirectory() as tmp:
+            report = c.build(model, Path(tmp)/'fanout.drawio')
+        self.assertTrue(report['routing']['spreadParallels'])
+
+    def test_failure_report_comes_from_the_attempt_that_got_furthest(self):
+        attempts = iter([routing.RouteError('route failed'), routing.LabelError(['a', 'b', 'c']), routing.LabelError(['only one'])]
+                         + [routing.RouteError('late route failure')]*(len(routing.ROUTING_MODES)-3))
+        def fake_plan(*args):
+            raise next(attempts)
+        original = routing.plan
+        routing.plan = fake_plan
+        try:
+            with self.assertRaisesRegex(routing.LabelError, '^only one$'):
+                routing.route_and_label({'edges': []}, c.header_rect)
+        finally:
+            routing.plan = original
+
+    def test_lead_in_advice_is_the_exact_move_that_fixes_it(self):
+        for y, move in ((244, 24), (248, 20), (252, 16), (260, 8)):
+            with self.subTest(y=y), self.assertRaisesRegex(ValueError, f'move them {move}px further apart'):
+                self.build_failure([('a', 200, 120), ('blocker', 200, y), ('b', 600, 450)],
+                                   [{'id': 'e', 'source': 'a', 'target': 'b', 'sourcePort': 'bottom'}])
+        self.build_failure([('a', 200, 120), ('blocker', 200, 268), ('b', 600, 450)],
+                           [{'id': 'e', 'source': 'a', 'target': 'b', 'sourcePort': 'bottom'}])
 
     def test_routes_never_touch_their_own_lead_ins(self):
         # Three auto-port edges between diagonal neighbours 40px apart used to

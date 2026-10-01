@@ -391,6 +391,17 @@ class GeometryAndPlacementTests(unittest.TestCase):
                 target[path[-1]] = value
                 self.rejects(m, 'which a .drawio file cannot store')
 
+    def test_containment_errors_say_how_far_a_shape_sticks_out(self):
+        m = self.model()
+        web = self.node(m, 'res-web-a')
+        subnet = self.box(m, 'web-a')
+        web['x'] = subnet['x']+subnet['w']-web['w']+20
+        self.rejects(m, 'res-web-a: outside parent web-a (right edge 20px beyond)')
+        m = self.model()
+        web = self.node(m, 'res-web-a')
+        web['y'] = self.box(m, 'web-a')['y']+30
+        self.rejects(m, "res-web-a: overlaps parent header (starts 30px below web-a's top; needs 34px)")
+
     def test_overlay_is_only_for_membership_groups(self):
         m = self.model()
         self.box(m, 'az-a')['overlay'] = True

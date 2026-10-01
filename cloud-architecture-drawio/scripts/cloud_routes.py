@@ -127,16 +127,17 @@ def select_ports(m):
     return ports
 
 
-PENDING_GRID=True
 BORDER_GAP=8
 BORDER_LANE=10
 BORDER_FACTOR=3
 PARALLEL_H=40
 PARALLEL_V=60
 PARALLEL_FACTOR=.3
+# Captions prefer this much space from connectors other than their own.
+CAPTION_GAP=8
 
 
-def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,pending=(),borders=(),spread=True,names=None,owners=None):
+def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,pending=(),borders=(),spread=True,names=None,owners=None,stub_lanes=True):
     """Directed lead-ins, obstacle padding, exact overlap rejection and crossing cost."""
     vx,vy=SIDES[sa];wx,wy=SIDES[sb]
     begin=(start[0]+vx*stub,start[1]+vy*stub);end=(goal[0]+wx*stub,goal[1]+wy*stub)
@@ -149,13 +150,15 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,p
         raise ValueError('the source and target lead-ins cross each other; move the cards apart or choose other ports')
     # Lead-ins of connectors that are not routed yet block like finished lines.
     blocking=list(segments)+list(pending)
-    names=names or ['a card or title']*len(obstacles);owners=owners or [None]*len(blocking)
+    names=names or [('a card or title',0)]*len(obstacles);owners=owners or [None]*len(blocking)
     for end_name,port,(dx,dy),(a,b) in (('source',start,(vx,vy),(start,begin)),('target',goal,(wx,wy),(end,goal))):
-        for r,name in zip(obstacles,names):
+        for r,(name,margin) in zip(obstacles,names):
             if hits(a,b,r):
                 x,y,w,h=r
-                clear=max(0,(x-port[0]) if dx>0 else (port[0]-x-w) if dx<0 else (y-port[1]) if dy>0 else (port[1]-y-h))
-                raise ValueError(f'Connector {end_name} lead-in intersects {name}: only {clear:g}px of its {stub:g}px is clear (cards keep {clearance:g}px apart from lines), so move them {stub-clear:g}px further apart or choose another port')
+                # Signed: negative when the shape already sits inside its margin.
+                room=(x-port[0]) if dx>0 else (port[0]-x-w) if dx<0 else (y-port[1]) if dy>0 else (port[1]-y-h)
+                keep=f' (lines keep {margin:g}px from it)' if margin else ''
+                raise ValueError(f'Connector {end_name} lead-in intersects {name}: only {max(0,room):g}px of its {stub:g}px is clear{keep}, so move them {stub-room:g}px further apart or choose another port')
         for (c,d),owner in zip(blocking,owners):
             amount,point=relation(a,b,c,d)
             other=f'connector {owner!r}' if owner else 'another connector'
@@ -175,7 +178,7 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,p
     # Lanes 10px either side of a boundary let routes keep clear of it.
     for a,b in borders:
         xs.update((a[0]-BORDER_LANE,a[0]+BORDER_LANE,b[0]-BORDER_LANE,b[0]+BORDER_LANE));ys.update((a[1]-BORDER_LANE,a[1]+BORDER_LANE,b[1]-BORDER_LANE,b[1]+BORDER_LANE))
-    for a,b in (blocking if PENDING_GRID else segments):
+    for a,b in (blocking if stub_lanes else segments):
         xs.update((a[0]-10,a[0],a[0]+10,b[0]-10,b[0],b[0]+10))
         ys.update((a[1]-10,a[1],a[1]+10,b[1]-10,b[1],b[1]+10))
     xs=sorted(x for x in xs if MARGIN_SIDE<=x<=width-MARGIN_SIDE and (x in (begin[0],end[0]) or all(abs(x-v)>=10 for v in (begin[0],end[0]))))
@@ -275,9 +278,10 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,p
     return simplify([start]+points+[goal])
 
 
-def plan(m,header_rect,reserve=True,clear_borders=True,spread=True):
+def plan(m,header_rect,reserve=True,clear_borders=True,spread=True,stub_lanes=True):
     nodes={n['id']:n for n in m['nodes']};ports=select_ports(m);routes={};segments=[];seg_owners=[]
     clearance=m.get('routing',{}).get('clearance',8);stub=m.get('routing',{}).get('stub',16)
+    title_pad=4
     names=[f"card {n['id']!r}" for n in m['nodes']]+[f"the title of {c['id']!r}" for c in m['containers']]
     # Main traffic first, then secondary semantics; stable IDs make input order irrelevant.
     rank={kind:index for index,kind in enumerate(EDGE_KINDS)}
@@ -299,12 +303,13 @@ def plan(m,header_rect,reserve=True,clear_borders=True,spread=True):
     for e in ordered:
         a,b=nodes[e['source']],nodes[e['target']]
         sa,fa=ports[(e['id'],'source')];sb,fb=ports[(e['id'],'target')]
-        obstacles=[pad(rect(n),0 if n['id'] in (a['id'],b['id']) else clearance) for n in m['nodes']]
-        obstacles += [pad(header_rect(c),4) for c in m['containers']]
+        margins=[0 if n['id'] in (a['id'],b['id']) else clearance for n in m['nodes']]+[title_pad]*len(m['containers'])
+        obstacles=[pad(rect(n),margin) for n,margin in zip(m['nodes'],margins)]
+        obstacles += [pad(header_rect(c),title_pad) for c in m['containers']]
         start,goal=anchor(a,sa,fa),anchor(b,sb,fb)
         waiting=[(eid,seg) for (eid,_),seg in stubs.items() if eid!=e['id'] and eid not in routes]
         try:pts=solve(start,goal,sa,sb,obstacles,m['width'],m['height'],segments,clearance,stub,[seg for _,seg in waiting],borders,spread,
-                      names,seg_owners+[eid for eid,_ in waiting])
+                      list(zip(names,margins)),seg_owners+[eid for eid,_ in waiting],stub_lanes)
         except ValueError as exc:raise RouteError(f"{e['id']}: {exc}") from exc
         if any(self_contact(pts)):
             raise RouteError(f"{e['id']}: route doubles back on itself; choose other ports, widen the lane or lower routing.stub")
@@ -316,8 +321,8 @@ def plan(m,header_rect,reserve=True,clear_borders=True,spread=True):
 # crossing later ones, and boundary clearance keeps lines off container edges.
 # Both add constraints that occasionally leave no clear caption lane, so the
 # plainer modes remain as fallbacks.
-ROUTING_MODES=tuple({'reservedLeadIns':r,'borderClearance':b,'spreadParallels':p}
-                    for r in (True,False) for p in (False,True) for b in (True,False))
+ROUTING_MODES=tuple({'reservedLeadIns':r,'borderClearance':b,'spreadParallels':p,'stubLanes':l}
+                    for r in (True,False) for p in (False,True) for b in (True,False) for l in ((False,True) if r else (False,)))
 
 
 class RouteError(ValueError):
@@ -339,7 +344,7 @@ def route_and_label(m,header_rect):
     best=None
     for mode in ROUTING_MODES:
         try:
-            routes,ports=plan(m,header_rect,mode['reservedLeadIns'],mode['borderClearance'],mode['spreadParallels'])
+            routes,ports=plan(m,header_rect,mode['reservedLeadIns'],mode['borderClearance'],mode['spreadParallels'],mode['stubLanes'])
             return routes,ports,place_labels(m,routes,header_rect),dict(mode)
         except LabelError as exc:
             if not isinstance(best,LabelError) or len(exc.failures)<len(best.failures):best=exc
@@ -353,12 +358,12 @@ def place_labels(m,routes,header_rect):
     labels={};segments=[(eid,a,b) for eid,pts in routes.items() for a,b in zip(pts,pts[1:])]
     borders=[(seg,c['id']) for c in m['containers'] for seg in (((c['x'],c['y']),(c['x']+c['w'],c['y'])),((c['x'],c['y']+c['h']),(c['x']+c['w'],c['y']+c['h'])),((c['x'],c['y']),(c['x'],c['y']+c['h'])),((c['x']+c['w'],c['y']),(c['x']+c['w'],c['y']+c['h'])))]
     by={e['id']:e for e in m['edges']};failures=[]
-    def blockers(eid,r):
+    def blockers(eid,r,others=3):
         """Names of whatever keeps a caption rectangle from being clear."""
         found=[]
         if r[0]<12 or r[1]<80 or r[0]+r[2]>m['width']-12 or r[1]+r[3]>m['height']-88:found.append('the page margin')
         found+=[name for o,name in obstacles if overlap(r,o)]
-        found+=['its own connector' if other==eid else f'connector {other!r}' for other,u,v in segments if hits(u,v,pad(r,3))]
+        found+=['its own connector' if other==eid else f'connector {other!r}' for other,u,v in segments if hits(u,v,pad(r,3 if other==eid else others))]
         # Avoid captions covering container boundary lines.
         found+=[f'the border of {cid!r}' for (u,v),cid in borders if hits(u,v,pad(r,2))]
         return found
@@ -370,32 +375,42 @@ def place_labels(m,routes,header_rect):
         for a,b in zip(pts,pts[1:]):
             seglen=length(a,b)
             if seglen<24:before+=seglen;continue
-            # Try anchors every ~6px, keeping clear of the bends at each end.
+            # Anchors every ~6px plus the midpoint and the classic fractions, kept
+            # clear of the bends at each end.
             margin=min(12,seglen*.2);steps=max(1,int((seglen-2*margin)//6))
-            for k in range(steps+1):
-                f=(margin+(seglen-2*margin)*k/steps)/seglen
+            fractions={(margin+(seglen-2*margin)*k/steps)/seglen for k in range(steps+1)}|{.5,.4,.6,.3,.7,.2,.8}
+            horizontal=a[1]==b[1];extent=lw if horizontal else lh
+            for f in sorted(fractions):
                 cx=a[0]+(b[0]-a[0])*f;cy=a[1]+(b[1]-a[1])*f
-                offsets=[(-lw/2,-lh-5),(-lw/2,5)] if a[1]==b[1] else [(6,-lh/2),(-lw-6,-lh/2)]
-                score=abs((before+seglen*f)/total-.5)*30+(0 if a[1]==b[1] else 5)
+                offsets=[(-lw/2,-lh-5),(-lw/2,5)] if horizontal else [(6,-lh/2),(-lw-6,-lh/2)]
+                score=abs((before+seglen*f)/total-.5)*30+(0 if horizontal else 5)
+                # How far the caption reaches past either end of its segment.
+                reach=max(0,extent/2-seglen*min(f,1-f))
                 for dx,dy in offsets:
-                    candidates.append((score,(cx+dx,cy+dy,lw,lh),(before+seglen*f)/total*2-1,(cx,cy)))
+                    candidates.append((score,(cx+dx,cy+dy,lw,lh),(before+seglen*f)/total*2-1,(cx,cy),reach))
             before+=seglen
-        # The best-scoring clear candidate wins; checking in score order stops early.
+        # Prefer a caption that stays within its segment and keeps clear of other
+        # connectors, so it cannot read as their label; relax each wish in turn.
+        # Within a tier the best-scoring clear candidate wins.
         ranked=sorted(candidates,key=lambda v:(v[0],v[1]))
-        for _,r,along,point in ranked:
-            if blockers(eid,r):continue
+        chosen=None
+        for inside,others in ((True,CAPTION_GAP),(True,3),(False,CAPTION_GAP),(False,3)):
+            chosen=next((c for c in ranked if (not inside or c[4]<=0) and not blockers(eid,c[1],others)),None)
+            if chosen:break
+        if chosen:
+            _,r,along,point,_=chosen
             labels[eid]={'rect':r,'relativeX':along,'offset':(r[0]-point[0],r[1]-point[1])};obstacles.append((pad(r,4),f'the caption of {eid!r}'))
-            break
         else:
             longest,run=max((length(a,b),a[1]==b[1]) for a,b in zip(pts,pts[1:]))
             if not ranked:
                 failures.append(f'{eid}: no clear label position for {label!r}; every segment of its route is shorter than 24px (longest {longest:g}px), so give it a straight run or shorten the label')
                 continue
             seen={}
-            for _,r,_,_ in ranked[:12]:
+            for _,r,_,_,_ in ranked[:12]:
                 for name in blockers(eid,r):seen[name]=seen.get(name,0)+1
             worst=', '.join(sorted(seen,key=lambda n:(-seen[n],n))[:3])
-            hint=f'; a straight horizontal run needs about {lw+24:.0f}px' if run else ''
+            # A horizontal caption box needs its width plus 8px of straight run.
+            hint=(f'; a straight horizontal run needs about {lw+8:.0f}px' if longest<lw+8 else '; that run is long enough, so the shapes beside it must move apart') if run else ''
             failures.append(f'{eid}: no clear label position for {label!r}; a {lw:.0f}x{lh}px caption fits beside none of its segments (longest {longest:g}px{hint}), and the best spots are blocked by {worst}. Widen the lane beside that segment, move those shapes, or shorten the label')
     if failures:raise LabelError(failures)
     return labels

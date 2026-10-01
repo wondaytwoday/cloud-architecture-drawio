@@ -248,17 +248,26 @@ def emit(value, **options):
     print(text)
 
 
+# Resolves modules from the scripts folder, as render.cjs does, and checks that
+# Playwright's browser is actually installed.
+RENDERER_PROBE = """
+let p; try { p = require('playwright'); } catch (e) { console.error('playwright is not installed for node'); process.exit(1); }
+const exe = process.env.CHROME_PATH || p.chromium.executablePath();
+if (!require('fs').existsSync(exe)) { console.error('the Playwright browser is not installed (' + exe + ')'); process.exit(1); }
+"""
+
+
 def find_renderer(viewer=None):
-    """Return (command, environment) for render.cjs, or (None, reason)."""
+    """Return (node, viewer, environment) for render.cjs, or (None, reason)."""
     node=shutil.which('node')
     if not node: return None,'node is not installed'
     viewer=viewer or os.environ.get('DRAWIO_VIEWER') or str(CACHE/'viewer-static.min.js')
     if not Path(viewer).is_file(): return None,f'draw.io viewer bundle not found at {viewer}'
     env=dict(os.environ)
     env['NODE_PATH']=os.pathsep.join(p for p in (env.get('NODE_PATH'),str(CACHE/'node_modules')) if p)
-    if subprocess.run([node,'-e','require("playwright")'],env=env,capture_output=True).returncode:
-        return None,'playwright is not installed for node'
-    return ([node,str(ROOT/'scripts/render.cjs'),'{input}','{output}',viewer],env),None
+    probe=subprocess.run([node,'-e',RENDERER_PROBE],cwd=ROOT/'scripts',env=env,capture_output=True,text=True)
+    if probe.returncode: return None,(probe.stderr.strip().splitlines() or ['the renderer could not start'])[0]
+    return (node,viewer,env),None
 
 
 def check(m, output, force=False, viewer=None):
@@ -267,23 +276,27 @@ def check(m, output, force=False, viewer=None):
     Exit 0 means every automated check passed (visual review still applies), 1 a
     failure, 2 a successful build that could not be render-verified here.
     """
+    if Path(output).suffix.lower() in ('.png','.svg','.json'):
+        return {'ok':False,'stage':'build','errors':[f'{output}: name the .drawio source here; the PNG, SVG and reports are written beside it']},1
     errors,warnings=validate(m)
     if errors: return {'ok':False,'stage':'validate','errors':errors,'warnings':warnings},1
     try: report=build(m,output,force)
     except ValueError as e: return {'ok':False,'stage':'build','errors':str(e).splitlines(),'warnings':warnings},1
     verdict={'output':str(output),'routing':report['routing'],'warnings':report['warnings'],
              'quality':{k:report['quality'][k] for k in ('crossingCount','overlapLength','bendCount','totalLength')}}
+    unavailable=lambda reason:({**verdict,'ok':False,'stage':'render','rendered':False,
+        'reason':f'{reason}; install the renderer as in references/rendering.md, or report visual verification as not completed'},2)
     found,reason=find_renderer(viewer)
-    if not found:
-        return {**verdict,'ok':False,'stage':'render','rendered':False,
-                'reason':f'{reason}; install the renderer as in references/rendering.md, or report visual verification as not completed'},2
-    command,env=found;png=Path(output).with_suffix('.png')
-    done=subprocess.run([part.format(input=output,output=png) for part in command],env=env,capture_output=True,text=True)
+    if not found: return unavailable(reason)
+    node,viewer,env=found;png=Path(output).with_suffix('.png')
+    done=subprocess.run([node,str(ROOT/'scripts/render.cjs'),str(output),str(png),viewer],env=env,capture_output=True,text=True)
+    lines=[line for line in done.stderr.splitlines() if line.strip()]
+    if done.returncode==3: return unavailable(lines[0] if lines else 'the browser could not be launched')
     try: rendered=json.loads(done.stdout)
     except ValueError: rendered=None
     verdict.update(stage='render',rendered=rendered is not None,png=str(png))
     if rendered is None:
-        return {**verdict,'ok':False,'errors':(done.stderr.strip() or 'renderer failed').splitlines()[-3:]},1
+        return {**verdict,'ok':False,'errors':lines[:3] or ['renderer failed']},1
     problems={k:rendered[k] for k in ('unknownIcons','offPage','brokenImages','textOverflow','pageErrors') if rendered.get(k)}
     if rendered['geometry']['mismatches']: problems['mismatches']=rendered['geometry']['mismatches']
     if rendered['editability'].get('error'): problems['editability']=rendered['editability']['error']

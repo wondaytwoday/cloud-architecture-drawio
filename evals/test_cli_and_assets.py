@@ -119,6 +119,15 @@ class CliTests(unittest.TestCase):
             self.assertEqual(result.returncode, 1)
             self.assertEqual(json.loads(result.stdout)['stage'], 'validate')
 
+    def test_check_refuses_to_write_the_source_over_a_preview_name(self):
+        with tempfile.TemporaryDirectory() as d:
+            for name in ('arch.png', 'arch.svg', 'arch.json'):
+                with self.subTest(name=name):
+                    result = cli('check', SKILL/'assets/templates/gcp-regional.json', Path(d)/name)
+                    self.assertEqual(result.returncode, 1)
+                    self.assertIn('name the .drawio source here', json.loads(result.stdout)['errors'][0])
+                    self.assertFalse((Path(d)/name).exists())
+
     def test_korean_model_builds_under_a_legacy_korean_locale(self):
         env = dict(os.environ, PYTHONUTF8='0', LC_ALL='ko_KR.eucKR', LANG='ko_KR.eucKR')
         probe = subprocess.run([sys.executable, '-c', 'import locale;print(locale.getpreferredencoding(False))'],
@@ -300,6 +309,14 @@ class RenderTests(unittest.TestCase):
         result = cli('check', self.dir/'caps.json', self.dir/'caps.drawio', env=env)
         self.assertEqual(result.returncode, 1)
         self.assertEqual([item['id'] for item in json.loads(result.stdout)['problems']['textOverflow']], ['__name_res-app-a'])
+
+    def test_check_reports_a_missing_browser_as_unverified_not_failed(self):
+        node, viewer = RENDERER
+        env = dict(os.environ, DRAWIO_VIEWER=viewer, PLAYWRIGHT_BROWSERS_PATH=str(self.dir/'no-browsers'))
+        env.pop('CHROME_PATH', None)
+        result = cli('check', SKILL/'assets/templates/gcp-regional.json', self.dir/'gcp.drawio', env=env)
+        self.assertEqual(result.returncode, 2, result.stdout)
+        self.assertIn('Playwright browser is not installed', json.loads(result.stdout)['reason'])
 
     def test_option_without_value_is_rejected(self):
         result, _ = self.render(self.build(self.fixture(), 'cross'), '--report')

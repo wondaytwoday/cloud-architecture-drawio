@@ -143,6 +143,28 @@ def jogs(routes, limit=12):
                if abs(a[0]-b[0])+abs(a[1]-b[1]) <= limit)
 
 
+def label_quality(routes, labels, overhang_limit=4, near=6):
+    """Captions hanging past the end of their segment, and captions closer than
+    `near` px to another connector, where they may read as that line's label."""
+    overhang = crowded = 0
+    for eid, label in labels.items():
+        x, y, w, h = label['rect']
+        ax, ay = x-label['offset'][0], y-label['offset'][1]
+        pts = routes[eid]
+        for a, b in zip(pts, pts[1:]):
+            if min(a[0], b[0])-.01 <= ax <= max(a[0], b[0])+.01 and min(a[1], b[1])-.01 <= ay <= max(a[1], b[1])+.01:
+                lo, hi, start, end = (x, x+w, min(a[0], b[0]), max(a[0], b[0])) if a[1] == b[1] else (y, y+h, min(a[1], b[1]), max(a[1], b[1]))
+                overhang += start-lo > overhang_limit or hi-end > overhang_limit
+                break
+
+        def gap(a, b):
+            dx = max(x-max(a[0], b[0]), min(a[0], b[0])-x-w, 0)
+            dy = max(y-max(a[1], b[1]), min(a[1], b[1])-y-h, 0)
+            return (dx*dx+dy*dy)**.5
+        crowded += min((gap(a, b) for other, line in routes.items() if other != eid for a, b in zip(line, line[1:])), default=1e9) <= near
+    return overhang, crowded
+
+
 def run(scripts):
     compiler, routing = load(scripts)
     results = []
@@ -155,7 +177,7 @@ def run(scripts):
         mode = None
         if hasattr(routing, 'route_and_label'):
             try:
-                routes, _, _, mode = routing.route_and_label(m, compiler.header_rect)
+                routes, _, labels, mode = routing.route_and_label(m, compiler.header_rect)
                 status = 'ok'
             except ValueError as exc:
                 # Classify by the stage that fails without the label stage.
@@ -174,14 +196,15 @@ def run(scripts):
                                 'seconds': time.perf_counter()-started})
                 continue
             try:
-                routing.place_labels(m, routes, compiler.header_rect)
+                labels = routing.place_labels(m, routes, compiler.header_rect)
                 status = 'ok'
             except ValueError:
                 status = 'label-fail'
         q = routing.metrics(routes)
+        overhang, crowded = label_quality(routes, labels) if status == 'ok' else (0, 0)
         results.append({'group': group, 'name': name, 'status': status, 'mode': mode, 'seconds': time.perf_counter()-started,
                         'crossings': q['crossingCount'], 'bends': q['bendCount'], 'length': q['totalLength'],
-                        'hug': hug_length(m, routes), 'jogs': jogs(routes)})
+                        'hug': hug_length(m, routes), 'jogs': jogs(routes), 'overhang': overhang, 'crowded': crowded})
     return results
 
 
@@ -203,12 +226,12 @@ def summarize(results):
 def compare(old_path, new_path):
     old, new = (json.loads(Path(p).read_text(encoding='utf-8')) for p in (old_path, new_path))
     index = {(r['group'], str(r['name'])): r for r in old['results']}
-    print(f"{'group':28} {'ok old→new':>12} {'route-fail':>12} {'label-fail':>12}  common-ok: crossings, bends, length, hug, jogs (old→new)")
+    print(f"{'group':28} {'ok old→new':>12} {'route-fail':>12} {'label-fail':>12}  common-ok: crossings, bends, length, hug, jogs, overhang, crowded (old→new)")
     for group in sorted(new['summary']):
         o, n = old['summary'].get(group, {}), new['summary'][group]
         common = [(index[(r['group'], str(r['name']))], r) for r in new['results']
                   if r['group'] == group and r['status'] == 'ok' and index.get((r['group'], str(r['name'])), {}).get('status') == 'ok']
-        sums = {k: (sum(a[k] for a, _ in common), sum(b[k] for _, b in common)) for k in ('crossings', 'bends', 'length', 'hug', 'jogs')}
+        sums = {k: (sum(a.get(k, 0) for a, _ in common), sum(b.get(k, 0) for _, b in common)) for k in ('crossings', 'bends', 'length', 'hug', 'jogs', 'overhang', 'crowded')}
         regressed = sum(1 for r in new['results'] if r['group'] == group and r['status'] != 'ok'
                         and index.get((r['group'], str(r['name'])), {}).get('status') == 'ok')
         print(f"{group:28} {o.get('ok','-'):>5}→{n['ok']:<5} {o.get('route_fail','-'):>5}→{n['route_fail']:<5} {o.get('label_fail','-'):>5}→{n['label_fail']:<5}"

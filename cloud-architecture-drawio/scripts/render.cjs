@@ -39,7 +39,13 @@ if (reportPath !== null) {
 
 (async () => {
   const xml = source.toString('utf8');
-  const browser = await chromium.launch({headless:true, ...(process.env.CHROME_PATH ? {executablePath:process.env.CHROME_PATH}: {})});
+  let browser;
+  try { browser = await chromium.launch({headless:true, ...(process.env.CHROME_PATH ? {executablePath:process.env.CHROME_PATH}: {})}); }
+  catch (e) {
+    // Exit 3 tells callers the renderer is unavailable here, not that the diagram failed.
+    console.error(`browser could not be launched: ${String(e.message||e).split('\n')[0]}; run "playwright install chromium" or set CHROME_PATH`);
+    process.exit(3);
+  }
   try {
     const page = await browser.newPage({viewport:{width:1600,height:1600},deviceScaleFactor:1});
     const errors = [];
@@ -231,4 +237,4 @@ if (reportPath !== null) {
     console.log(JSON.stringify(result));
     if(errors.length||result.unknownIcons.length||result.offPage.length||result.brokenImages.length||result.textOverflow.length||result.geometry.mismatches.length||result.editability.error) process.exitCode=1;
   } finally {await browser.close();}
-})().catch(e=>{console.error(e);process.exitCode=1;});
+})().catch(e=>{console.error(e?.stack||String(e));process.exitCode=1;});

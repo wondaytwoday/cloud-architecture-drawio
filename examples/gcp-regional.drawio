@@ -61,7 +61,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_lb-b" value="HTTPS" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="lb-b" connectable="0">
-          <mxGeometry as="geometry" x="-0.18772053634438957" y="0" width="47.9" height="22" relative="1">
+          <mxGeometry as="geometry" x="-0.1651376146788991" y="0" width="47.9" height="22" relative="1">
             <mxPoint as="offset" x="-23.950000000000045" y="5.0" />
           </mxGeometry>
         </mxCell>

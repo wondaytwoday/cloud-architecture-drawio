@@ -4,9 +4,9 @@
   "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
   "icons": 36,
   "tests": {
-    "passed": 95,
+    "passed": 104,
     "failed": 0,
-    "skipped_without_renderer": 9,
+    "skipped_without_renderer": 10,
     "command": "NODE_PATH=<playwright>/node_modules python3 -m unittest discover -s evals -v"
   },
   "skill_validation": "Skill is valid!",
@@ -301,20 +301,19 @@
         "pageErrors": [],
         "warnings": [],
         "provenance": {
-          "input_sha256": "06d11257cf2539ef1e3c5dde77f9107b0da4d52e1801bf183b2e91b45a90f112",
+          "input_sha256": "5d95514f69cb686b1cd0605d85877f52ff9221a40cccd3bac3d6b15e53c60ac2",
           "report": "examples/aws-three-az.report.json",
           "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
           "playwright": "1.61.1"
         }
       },
-      "warnings": [
-        "2 connector crossings: inspect jump markers or revise ports/lanes"
-      ],
-      "drawio_sha256": "06d11257cf2539ef1e3c5dde77f9107b0da4d52e1801bf183b2e91b45a90f112",
+      "warnings": [],
+      "drawio_sha256": "5d95514f69cb686b1cd0605d85877f52ff9221a40cccd3bac3d6b15e53c60ac2",
       "routing": {
         "reservedLeadIns": true,
         "borderClearance": true,
-        "spreadParallels": false
+        "spreadParallels": false,
+        "stubLanes": false
       },
       "quality_v3": {
         "crossingCount": 0,
@@ -426,18 +425,19 @@
         "pageErrors": [],
         "warnings": [],
         "provenance": {
-          "input_sha256": "5a8e9495fd13d2c8d1b320f68eac4905955e07e658e133dd8330eecc81c9ef71",
+          "input_sha256": "53bd4c9710b01b187305f57b0ab2f0f363b677930177dfd1afb670c8eb4f0604",
           "report": "examples/aws-three-tier-ko.report.json",
           "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
           "playwright": "1.61.1"
         }
       },
       "warnings": [],
-      "drawio_sha256": "5a8e9495fd13d2c8d1b320f68eac4905955e07e658e133dd8330eecc81c9ef71",
+      "drawio_sha256": "53bd4c9710b01b187305f57b0ab2f0f363b677930177dfd1afb670c8eb4f0604",
       "routing": {
         "reservedLeadIns": true,
         "borderClearance": true,
-        "spreadParallels": false
+        "spreadParallels": false,
+        "stubLanes": false
       },
       "quality_v3": {
         "crossingCount": 0,
@@ -549,18 +549,19 @@
         "pageErrors": [],
         "warnings": [],
         "provenance": {
-          "input_sha256": "f7b3bf55a448c187fcdb75f9a64cf1d43c35c0e0b5730382ebb62cd98182cf6a",
+          "input_sha256": "46e9f5ba189796623d0331f34454a2466e207e80f4cac51cb0bd507c5a7f6548",
           "report": "examples/aws-three-tier.report.json",
           "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
           "playwright": "1.61.1"
         }
       },
       "warnings": [],
-      "drawio_sha256": "f7b3bf55a448c187fcdb75f9a64cf1d43c35c0e0b5730382ebb62cd98182cf6a",
+      "drawio_sha256": "46e9f5ba189796623d0331f34454a2466e207e80f4cac51cb0bd507c5a7f6548",
       "routing": {
         "reservedLeadIns": true,
         "borderClearance": true,
-        "spreadParallels": false
+        "spreadParallels": false,
+        "stubLanes": false
       },
       "quality_v3": {
         "crossingCount": 0,
@@ -655,18 +656,19 @@
         "pageErrors": [],
         "warnings": [],
         "provenance": {
-          "input_sha256": "05e16c0844f8cf01277295d1d11205490aa52c68008c923d1ca1bfc6f8d6c339",
+          "input_sha256": "299a61740c29c7fceaff6749251bc50df7a7f2bce039a26cbbd96908028fb450",
           "report": "examples/azure-regional.report.json",
           "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
           "playwright": "1.61.1"
         }
       },
       "warnings": [],
-      "drawio_sha256": "05e16c0844f8cf01277295d1d11205490aa52c68008c923d1ca1bfc6f8d6c339",
+      "drawio_sha256": "299a61740c29c7fceaff6749251bc50df7a7f2bce039a26cbbd96908028fb450",
       "routing": {
         "reservedLeadIns": true,
         "borderClearance": true,
-        "spreadParallels": false
+        "spreadParallels": false,
+        "stubLanes": false
       },
       "quality_v3": {
         "crossingCount": 0,
@@ -771,18 +773,19 @@
         "pageErrors": [],
         "warnings": [],
         "provenance": {
-          "input_sha256": "8fc5613d6e5def4e9985c79ac8d92f15bd1268fb4d275f21448b1bce2fe1d122",
+          "input_sha256": "e20bc109736f602a7b887e1372abf7cdd54ba7d61c791eb79951dfd424419713",
           "report": "examples/gcp-regional.report.json",
           "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
           "playwright": "1.61.1"
         }
       },
       "warnings": [],
-      "drawio_sha256": "8fc5613d6e5def4e9985c79ac8d92f15bd1268fb4d275f21448b1bce2fe1d122",
+      "drawio_sha256": "e20bc109736f602a7b887e1372abf7cdd54ba7d61c791eb79951dfd424419713",
       "routing": {
         "reservedLeadIns": true,
         "borderClearance": true,
-        "spreadParallels": false
+        "spreadParallels": false,
+        "stubLanes": false
       },
       "quality_v3": {
         "crossingCount": 0,
@@ -860,7 +863,7 @@
         "ok": 5,
         "route_fail": 0,
         "label_fail": 0,
-        "seconds_median": 0.07
+        "seconds_median": 0.068
       },
       "examples-auto-ports": {
         "cases": 5,
@@ -868,7 +871,7 @@
         "ok": 2,
         "route_fail": 0,
         "label_fail": 3,
-        "seconds_median": 0.099
+        "seconds_median": 0.097
       },
       "small-unlabeled-gap74": {
         "cases": 139,
@@ -876,7 +879,7 @@
         "ok": 127,
         "route_fail": 12,
         "label_fail": 0,
-        "seconds_median": 0.004
+        "seconds_median": 0.003
       },
       "small-unlabeled-gap144": {
         "cases": 150,
@@ -900,7 +903,7 @@
         "ok": 62,
         "route_fail": 30,
         "label_fail": 8,
-        "seconds_median": 0.011
+        "seconds_median": 0.01
       },
       "labeled-gap144": {
         "cases": 100,
@@ -916,7 +919,7 @@
         "ok": 41,
         "route_fail": 13,
         "label_fail": 6,
-        "seconds_median": 0.038
+        "seconds_median": 0.037
       },
       "dense-10x12": {
         "cases": 60,
@@ -924,7 +927,7 @@
         "ok": 31,
         "route_fail": 21,
         "label_fail": 8,
-        "seconds_median": 0.118
+        "seconds_median": 0.116
       },
       "dense-12x16": {
         "cases": 60,
@@ -932,7 +935,7 @@
         "ok": 7,
         "route_fail": 39,
         "label_fail": 14,
-        "seconds_median": 0.216
+        "seconds_median": 0.215
       },
       "fanout-2": {
         "cases": 4,
@@ -972,7 +975,7 @@
         "ok": 16,
         "route_fail": 23,
         "label_fail": 21,
-        "seconds_median": 0.085
+        "seconds_median": 0.086
       }
     },
     "v3": {
@@ -982,7 +985,7 @@
         "ok": 5,
         "route_fail": 0,
         "label_fail": 0,
-        "seconds_median": 0.046
+        "seconds_median": 0.031
       },
       "examples-auto-ports": {
         "cases": 5,
@@ -990,7 +993,7 @@
         "ok": 5,
         "route_fail": 0,
         "label_fail": 0,
-        "seconds_median": 0.058
+        "seconds_median": 0.044
       },
       "small-unlabeled-gap74": {
         "cases": 139,
@@ -998,7 +1001,7 @@
         "ok": 139,
         "route_fail": 0,
         "label_fail": 0,
-        "seconds_median": 0.003
+        "seconds_median": 0.002
       },
       "small-unlabeled-gap144": {
         "cases": 150,
@@ -1006,23 +1009,23 @@
         "ok": 150,
         "route_fail": 0,
         "label_fail": 0,
-        "seconds_median": 0.003
+        "seconds_median": 0.002
       },
       "labeled-gap74": {
         "cases": 86,
         "invalid": 14,
-        "ok": 62,
+        "ok": 64,
         "route_fail": 0,
-        "label_fail": 24,
-        "seconds_median": 0.014
+        "label_fail": 22,
+        "seconds_median": 0.01
       },
       "labeled-gap100": {
         "cases": 100,
         "invalid": 0,
-        "ok": 97,
+        "ok": 98,
         "route_fail": 0,
-        "label_fail": 3,
-        "seconds_median": 0.011
+        "label_fail": 2,
+        "seconds_median": 0.008
       },
       "labeled-gap144": {
         "cases": 100,
@@ -1030,7 +1033,7 @@
         "ok": 100,
         "route_fail": 0,
         "label_fail": 0,
-        "seconds_median": 0.01
+        "seconds_median": 0.007
       },
       "dense-8x8": {
         "cases": 60,
@@ -1038,23 +1041,23 @@
         "ok": 59,
         "route_fail": 0,
         "label_fail": 1,
-        "seconds_median": 0.026
+        "seconds_median": 0.019
       },
       "dense-10x12": {
         "cases": 60,
         "invalid": 0,
-        "ok": 56,
+        "ok": 58,
         "route_fail": 0,
-        "label_fail": 4,
-        "seconds_median": 0.076
+        "label_fail": 2,
+        "seconds_median": 0.056
       },
       "dense-12x16": {
         "cases": 60,
         "invalid": 0,
-        "ok": 45,
+        "ok": 50,
         "route_fail": 0,
-        "label_fail": 15,
-        "seconds_median": 0.229
+        "label_fail": 10,
+        "seconds_median": 0.26
       },
       "fanout-2": {
         "cases": 4,
@@ -1070,7 +1073,7 @@
         "ok": 4,
         "route_fail": 0,
         "label_fail": 0,
-        "seconds_median": 0.003
+        "seconds_median": 0.005
       },
       "fanout-4": {
         "cases": 4,
@@ -1078,7 +1081,7 @@
         "ok": 4,
         "route_fail": 0,
         "label_fail": 0,
-        "seconds_median": 0.005
+        "seconds_median": 0.004
       },
       "fanout-5": {
         "cases": 4,
@@ -1086,21 +1089,21 @@
         "ok": 4,
         "route_fail": 0,
         "label_fail": 0,
-        "seconds_median": 0.005
+        "seconds_median": 0.004
       },
       "subnets": {
         "cases": 60,
         "invalid": 0,
-        "ok": 40,
+        "ok": 41,
         "route_fail": 0,
-        "label_fail": 20,
-        "seconds_median": 0.188
+        "label_fail": 19,
+        "seconds_median": 0.217
       }
     },
     "totals": {
       "ok": [
         547,
-        774
+        785
       ],
       "route_fail": [
         210,
@@ -1108,9 +1111,40 @@
       ],
       "label_fail": [
         84,
-        67
+        56
       ]
     },
-    "newly_failing": 0
+    "newly_failing": 0,
+    "common_ok": {
+      "models": 547,
+      "crossings": [
+        876,
+        732
+      ],
+      "bends": [
+        6797,
+        6857
+      ],
+      "length": [
+        1472732.2,
+        1474857.4
+      ],
+      "hug": [
+        20166.8,
+        1554.0
+      ],
+      "jogs": [
+        603,
+        613
+      ],
+      "overhang": [
+        78,
+        12
+      ],
+      "crowded": [
+        43,
+        5
+      ]
+    }
   }
 }

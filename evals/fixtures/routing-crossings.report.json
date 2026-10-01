@@ -7,7 +7,8 @@
   "routing": {
     "reservedLeadIns": true,
     "borderClearance": true,
-    "spreadParallels": false
+    "spreadParallels": false,
+    "stubLanes": false
   },
   "routes": {
     "horizontal": [

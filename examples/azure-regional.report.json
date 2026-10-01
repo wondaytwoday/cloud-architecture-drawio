@@ -5,7 +5,8 @@
   "routing": {
     "reservedLeadIns": true,
     "borderClearance": true,
-    "spreadParallels": false
+    "spreadParallels": false,
+    "stubLanes": false
   },
   "routes": {
     "gateway-a": [
@@ -46,11 +47,11 @@
         632.0
       ],
       [
-        732,
+        744,
         632.0
       ],
       [
-        732,
+        744,
         852.0
       ],
       [
@@ -177,14 +178,14 @@
     },
     "sql-b": {
       "rect": [
-        658.96,
-        694.25,
+        750.0,
+        743.25,
         67.03999999999999,
         22
       ],
-      "relativeX": -0.13651315789473684,
+      "relativeX": 0.10690789473684204,
       "offset": [
-        -73.03999999999996,
+        6.0,
         -11.0
       ]
     },
@@ -237,5 +238,5 @@
     "overlaps": []
   },
   "model_sha256": "47d2b193b436fdd9cfaf7f3855ed189b8cde929a635522e2312facf13dc45f11",
-  "drawio_sha256": "05e16c0844f8cf01277295d1d11205490aa52c68008c923d1ca1bfc6f8d6c339"
+  "drawio_sha256": "299a61740c29c7fceaff6749251bc50df7a7f2bce039a26cbbd96908028fb450"
 }

@@ -83,7 +83,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_https" value="HTTPS 443" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="https" connectable="0">
-          <mxGeometry as="geometry" x="0.30000000000000004" y="0" width="73.41999999999999" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.19999999999999996" y="0" width="73.41999999999999" height="22" relative="1">
             <mxPoint as="offset" x="-79.41999999999996" y="-11.0" />
           </mxGeometry>
         </mxCell>
@@ -93,7 +93,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_waf-binding" value="Web ACL" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="waf-binding" connectable="0">
-          <mxGeometry as="geometry" x="0.02864033765450702" y="0" width="60.66" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.0" y="0" width="60.66" height="22" relative="1">
             <mxPoint as="offset" x="-30.33000000000004" y="-27.0" />
           </mxGeometry>
         </mxCell>
@@ -103,7 +103,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_origin" value="HTTPS 443" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="origin" connectable="0">
-          <mxGeometry as="geometry" x="-0.040000000000000036" y="0" width="73.41999999999999" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.0" y="0" width="73.41999999999999" height="22" relative="1">
             <mxPoint as="offset" x="-79.41999999999996" y="-11.0" />
           </mxGeometry>
         </mxCell>
@@ -131,8 +131,8 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_web-in-a" value="HTTPS 443" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="web-in-a" connectable="0">
-          <mxGeometry as="geometry" x="0.25274725274725274" y="0" width="73.41999999999999" height="22" relative="1">
-            <mxPoint as="offset" x="-36.710000000000036" y="5.0" />
+          <mxGeometry as="geometry" x="0.01538461538461533" y="0" width="73.41999999999999" height="22" relative="1">
+            <mxPoint as="offset" x="-79.41999999999996" y="-11.0" />
           </mxGeometry>
         </mxCell>
         <mxCell id="app-in-a" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#4B6074;strokeWidth=1.6;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0;entryY=0.41935483870967744;entryPerimeter=0;jumpStyle=arc;jumpSize=8;" edge="1" parent="1" source="res-web-a" target="internal-lb">
