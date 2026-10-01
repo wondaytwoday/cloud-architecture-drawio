@@ -10,8 +10,8 @@ Official icon terms and downloads:
 - https://cloud.google.com/icons
 
 For an unsupported service:
-1. Prefer the exact official SVG or a verified matching draw.io stencil. Search official draw.io MCP `search_shapes` if available; never invent a stencil ID.
-2. Save the vector in `assets/icons/`. Add a provider-prefixed key to `assets/icon-catalog.json` with `file`, `kind` (`svg` or `stencil`), `name`, `source`, `sha256`, and optional stencil `color`.
+1. Take the vector from the pinned `jgraph/drawio` commit above: a stencil from `src/main/webapp/stencils/` or an SVG from `src/main/webapp/img/lib/`. Use the official CSP icon pages to confirm you picked the right product. Search official draw.io MCP `search_shapes` if available; never invent a stencil ID.
+2. Save the vector in `assets/icons/`. Add a provider-prefixed key to `assets/icon-catalog.json` with `file`, `kind` (`svg` or `stencil`), `name`, `source`, and `sha256`; stencils also need `color` (`#RRGGBB`). `source` must be an immutable URL pinned to a 40-character commit (`https://github.com/jgraph/drawio/blob/<commit>/...` or `https://raw.githubusercontent.com/jgraph/drawio/<commit>/...`); `evals/test_cli_and_assets.py` rejects anything else. In the source repository, run the tests and rebuild the release with `python3 tools/build_dist.py`.
 3. Do not introduce remote image URLs, external SVG fonts/images, scripts, or an arbitrary PNG masquerading as a vector. Inspect and render new assets before use.
 4. If an exact icon cannot be obtained, use a clearly labeled `generic` system box and disclose the fallback. Use `generic.user` only for people/clients, not network endpoints.
 

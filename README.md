@@ -7,13 +7,29 @@ AWS·Azure·GCP 아키텍처를 CSP 아이콘, 네트워크 박스, 통신선으
 - 검증 결과: [evals/RESULTS.md](evals/RESULTS.md)
 - 선 배치 규칙과 조사 근거: [routing.md](cloud-architecture-drawio/references/routing.md)
 
-v2는 연결 지점 분산, 선 중첩 방지, 장애물 여백, 교차 점프 표시, 연결선에 붙는 라벨, CSP 경계 검사를 보강했습니다. 다섯 예제의 선 교차는 25 → 2, 중첩 길이는 236 → 0 px로 줄었고 회귀 테스트 43개를 통과했습니다. 라우터와 예제 배치 개선을 함께 반영한 수치입니다.
+v3는 "검사를 통과하면 올바른 그림"이라는 약속을 지키도록 검증을 강화했습니다.
+
+- **검증기**
+  - 그려진 위치와 선언한 `parent`가 다르면 거부합니다.
+  - 컨테이너끼리 테두리가 교차하거나 노드가 경계에 걸치면 거부합니다.
+  - 제목·범례 여백 침범, 오타 키(`parnet` 등), XML이 저장할 수 없는 문자를 거부합니다.
+  - CSP 배치 규칙을 늘렸습니다. WAF·Shield·Cloud Armor, IGW·Cloud Router/NAT, App Gateway 전용 서브넷 규칙을 검사하고, multi 모드에서도 provider 규칙이 적용됩니다.
+- **렌더러**
+  - 잘린 텍스트, 점프 아크가 없는 교차, 편집 후 낡은 리포트, 리포트 누락을 실패로 처리합니다.
+- **생성기**
+  - draw.io에서 수동 편집한 파일을 재빌드가 덮어쓰지 못하게 막습니다.
+  - 범례를 현지화합니다(`locale: "ko"`).
+  - 한국어 Windows 같은 비 UTF-8 로캘에서도 동작합니다.
+
+회귀 테스트는 92개입니다(렌더 환경이 없으면 8개는 건너뜁니다). 예제의 경로와 라우팅 지표는 v2와 같습니다.
+
+v2는 연결 지점 분산, 선 중첩 방지, 장애물 여백, 교차 점프 표시, 연결선에 붙는 라벨, CSP 경계 검사를 보강했습니다. 다섯 예제의 선 교차는 25 → 2, 중첩 길이는 236 → 0 px로 줄었습니다. 라우터와 예제 배치 개선을 함께 반영한 수치입니다.
 
 미리보기: [AWS 한글](examples/aws-three-tier-ko.png) · [AWS 3 AZ](examples/aws-three-az.png) · [Azure](examples/azure-regional.png) · [GCP](examples/gcp-regional.png)
 
 ## 설치
 
-저장소를 복제하거나 [스킬 배포 ZIP](dist/cloud-architecture-drawio-v2.zip)을 받아 압축을 푸세요. **`cloud-architecture-drawio/` 폴더 전체를 복사해야 합니다.** `SKILL.md`에서 `scripts/`, `references/`, `assets/`를 사용하므로 파일 하나만 옮기면 동작하지 않습니다.
+저장소를 복제하거나 [스킬 배포 ZIP](dist/cloud-architecture-drawio.zip)을 받아 압축을 푸세요. **`cloud-architecture-drawio/` 폴더 전체를 복사해야 합니다.** `SKILL.md`에서 `scripts/`, `references/`, `assets/`를 사용하므로 파일 하나만 옮기면 동작하지 않습니다.
 
 | 에이전트 | 개인용 설치 위치 | 특정 프로젝트에만 설치 |
 |---|---|---|
@@ -52,6 +68,8 @@ python3 cloud-architecture-drawio/scripts/cloud_drawio.py build \
   examples/aws-three-tier.drawio
 python3 -m unittest discover -s evals -v
 ```
+
+`build`는 draw.io에서 수정된 출력 파일을 덮어쓰지 않고 멈춥니다. 수정 내용을 버리려면 `--force`를 붙입니다. v3 이전에 만든 출력은 리포트에 파일 해시가 없어 이 보호를 받지 못합니다. 스킬 폴더를 바꾼 뒤에는 `python3 tools/build_dist.py`로 배포 ZIP을 다시 만드세요. ZIP과 폴더가 다르면 테스트가 실패합니다.
 
 ## 범위
 

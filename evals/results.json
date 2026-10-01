@@ -1,12 +1,13 @@
 {
-  "date": "2026-09-28",
-  "version": 2,
+  "date": "2026-10-01",
+  "version": 3,
   "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
   "icons": 36,
   "tests": {
-    "passed": 43,
+    "passed": 92,
     "failed": 0,
-    "command": "python3 -m unittest discover -s evals -v"
+    "skipped_without_renderer": 8,
+    "command": "NODE_PATH=<playwright>/node_modules python3 -m unittest discover -s evals -v"
   },
   "skill_validation": "Skill is valid!",
   "cases": [
@@ -270,15 +271,22 @@
       },
       "model_sha256": "bf84609bcca650e159a8f65419423d683053fbc178a9567c607a45336cce661c",
       "render": {
+        "page": 1,
+        "pages": 1,
         "width": 2080,
         "height": 1840,
+        "background": "#FFFFFF",
         "cells": 139,
+        "edges": 18,
         "unknownIcons": [],
+        "offPage": [],
         "brokenImages": [],
+        "textOverflow": [],
         "geometry": {
           "checkedRoutes": 18,
           "checkedLabels": 18,
           "jumpMarkers": 2,
+          "missingJumps": 0,
           "mismatches": []
         },
         "editability": {
@@ -290,11 +298,19 @@
           "allLabelsAttached": true,
           "labelFollow": true
         },
-        "pageErrors": []
+        "pageErrors": [],
+        "warnings": [],
+        "provenance": {
+          "input_sha256": "a6b8e64c8961b4efbae62f5d8089e57451e9ba15c6047c2c3ee5d04cd21e3d23",
+          "report": "examples/aws-three-az.report.json",
+          "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
+          "playwright": "1.61.1"
+        }
       },
       "warnings": [
         "2 connector crossings: inspect jump markers or revise ports/lanes"
-      ]
+      ],
+      "drawio_sha256": "a6b8e64c8961b4efbae62f5d8089e57451e9ba15c6047c2c3ee5d04cd21e3d23"
     },
     {
       "case": "aws-three-tier-ko",
@@ -367,17 +383,24 @@
         "crossings": [],
         "overlaps": []
       },
-      "model_sha256": "608609a2d454728d06041eb3d911e9ca63648e3e086f078d6515ddad45fd2e47",
+      "model_sha256": "a021611895d5e760f091dad190ef071e6d6b1cdbebb34d5d8b3cf9330861fe99",
       "render": {
+        "page": 1,
+        "pages": 1,
         "width": 1440,
         "height": 1840,
+        "background": "#FFFFFF",
         "cells": 115,
+        "edges": 14,
         "unknownIcons": [],
+        "offPage": [],
         "brokenImages": [],
+        "textOverflow": [],
         "geometry": {
           "checkedRoutes": 14,
           "checkedLabels": 14,
           "jumpMarkers": 0,
+          "missingJumps": 0,
           "mismatches": []
         },
         "editability": {
@@ -389,9 +412,17 @@
           "allLabelsAttached": true,
           "labelFollow": true
         },
-        "pageErrors": []
+        "pageErrors": [],
+        "warnings": [],
+        "provenance": {
+          "input_sha256": "8bf987b3f6b6ec15985eefbd7e84ad72bf883ac3d93f3a6d9f5e7ec0d94abd10",
+          "report": "examples/aws-three-tier-ko.report.json",
+          "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
+          "playwright": "1.61.1"
+        }
       },
-      "warnings": []
+      "warnings": [],
+      "drawio_sha256": "8bf987b3f6b6ec15985eefbd7e84ad72bf883ac3d93f3a6d9f5e7ec0d94abd10"
     },
     {
       "case": "aws-three-tier",
@@ -466,15 +497,22 @@
       },
       "model_sha256": "cf7f50b6523385c4f53bae20eefd3c671c5ed03bff67985e11fa2b0cf349806e",
       "render": {
+        "page": 1,
+        "pages": 1,
         "width": 1440,
         "height": 1840,
+        "background": "#FFFFFF",
         "cells": 115,
+        "edges": 14,
         "unknownIcons": [],
+        "offPage": [],
         "brokenImages": [],
+        "textOverflow": [],
         "geometry": {
           "checkedRoutes": 14,
           "checkedLabels": 14,
           "jumpMarkers": 0,
+          "missingJumps": 0,
           "mismatches": []
         },
         "editability": {
@@ -486,9 +524,17 @@
           "allLabelsAttached": true,
           "labelFollow": true
         },
-        "pageErrors": []
+        "pageErrors": [],
+        "warnings": [],
+        "provenance": {
+          "input_sha256": "ded5c9f234bda50bd852467a38a2248c4f1e7b2607d074f4b9ebc0b351073554",
+          "report": "examples/aws-three-tier.report.json",
+          "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
+          "playwright": "1.61.1"
+        }
       },
-      "warnings": []
+      "warnings": [],
+      "drawio_sha256": "ded5c9f234bda50bd852467a38a2248c4f1e7b2607d074f4b9ebc0b351073554"
     },
     {
       "case": "azure-regional",
@@ -546,15 +592,22 @@
       },
       "model_sha256": "47d2b193b436fdd9cfaf7f3855ed189b8cde929a635522e2312facf13dc45f11",
       "render": {
+        "page": 1,
+        "pages": 1,
         "width": 1320,
         "height": 1140,
+        "background": "#FFFFFF",
         "cells": 54,
+        "edges": 7,
         "unknownIcons": [],
+        "offPage": [],
         "brokenImages": [],
+        "textOverflow": [],
         "geometry": {
           "checkedRoutes": 7,
           "checkedLabels": 7,
           "jumpMarkers": 0,
+          "missingJumps": 0,
           "mismatches": []
         },
         "editability": {
@@ -566,9 +619,17 @@
           "allLabelsAttached": true,
           "labelFollow": true
         },
-        "pageErrors": []
+        "pageErrors": [],
+        "warnings": [],
+        "provenance": {
+          "input_sha256": "92f61095f796c1e2c62d912f56e0b049076f827d1e46cc45232dce30fe713173",
+          "report": "examples/azure-regional.report.json",
+          "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
+          "playwright": "1.61.1"
+        }
       },
-      "warnings": []
+      "warnings": [],
+      "drawio_sha256": "92f61095f796c1e2c62d912f56e0b049076f827d1e46cc45232dce30fe713173"
     },
     {
       "case": "gcp-regional",
@@ -636,15 +697,22 @@
       },
       "model_sha256": "9934d5685844409018a4b37dff4984c32364c8b9e76f468b188a5e95eb39452e",
       "render": {
+        "page": 1,
+        "pages": 1,
         "width": 1320,
         "height": 1140,
+        "background": "#FFFFFF",
         "cells": 48,
+        "edges": 6,
         "unknownIcons": [],
+        "offPage": [],
         "brokenImages": [],
+        "textOverflow": [],
         "geometry": {
           "checkedRoutes": 6,
           "checkedLabels": 6,
           "jumpMarkers": 0,
+          "missingJumps": 0,
           "mismatches": []
         },
         "editability": {
@@ -656,21 +724,36 @@
           "allLabelsAttached": true,
           "labelFollow": true
         },
-        "pageErrors": []
+        "pageErrors": [],
+        "warnings": [],
+        "provenance": {
+          "input_sha256": "5d3c63f8cfd82b11dc9e546351eee34b1ca45f44e93e42b8818b8600a7f3b837",
+          "report": "examples/gcp-regional.report.json",
+          "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
+          "playwright": "1.61.1"
+        }
       },
-      "warnings": []
+      "warnings": [],
+      "drawio_sha256": "5d3c63f8cfd82b11dc9e546351eee34b1ca45f44e93e42b8818b8600a7f3b837"
     }
   ],
   "crossing_fixture": {
+    "page": 1,
+    "pages": 1,
     "width": 1000,
     "height": 1000,
+    "background": "#FFFFFF",
     "cells": 25,
+    "edges": 2,
     "unknownIcons": [],
+    "offPage": [],
     "brokenImages": [],
+    "textOverflow": [],
     "geometry": {
       "checkedRoutes": 2,
       "checkedLabels": 0,
       "jumpMarkers": 1,
+      "missingJumps": 0,
       "mismatches": []
     },
     "editability": {
@@ -682,7 +765,14 @@
       "allLabelsAttached": true,
       "labelFollow": null
     },
-    "pageErrors": []
+    "pageErrors": [],
+    "warnings": [],
+    "provenance": {
+      "input_sha256": "f44b2eed80e67fd36f385a188627c911942f621c9e64f4dcda9d2a05f8d33115",
+      "report": "evals/fixtures/routing-crossings.report.json",
+      "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
+      "playwright": "1.61.1"
+    }
   },
   "totals": {
     "before": {
@@ -697,10 +787,12 @@
     }
   },
   "installation": {
+    "version": 2,
     "date": "2026-09-29",
     "path": "~/.codex/skills/cloud-architecture-drawio",
     "matching_files": 55,
     "installed_template_build": "azure-regional: passed, no warnings",
-    "skill_validation": "Skill is valid!"
+    "skill_validation": "Skill is valid!",
+    "note": "v3 is not installed yet; the installed copy still holds v2"
   }
 }

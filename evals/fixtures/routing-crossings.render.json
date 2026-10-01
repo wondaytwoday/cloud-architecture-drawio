@@ -1,13 +1,20 @@
 {
+  "page": 1,
+  "pages": 1,
   "width": 1000,
   "height": 1000,
+  "background": "#FFFFFF",
   "cells": 25,
+  "edges": 2,
   "unknownIcons": [],
+  "offPage": [],
   "brokenImages": [],
+  "textOverflow": [],
   "geometry": {
     "checkedRoutes": 2,
     "checkedLabels": 0,
     "jumpMarkers": 1,
+    "missingJumps": 0,
     "mismatches": []
   },
   "editability": {
@@ -19,5 +26,12 @@
     "allLabelsAttached": true,
     "labelFollow": null
   },
-  "pageErrors": []
+  "pageErrors": [],
+  "warnings": [],
+  "provenance": {
+    "input_sha256": "f44b2eed80e67fd36f385a188627c911942f621c9e64f4dcda9d2a05f8d33115",
+    "report": "evals/fixtures/routing-crossings.report.json",
+    "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
+    "playwright": "1.61.1"
+  }
 }

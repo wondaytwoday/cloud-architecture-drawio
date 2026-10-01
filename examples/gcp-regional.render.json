@@ -1,13 +1,20 @@
 {
+  "page": 1,
+  "pages": 1,
   "width": 1320,
   "height": 1140,
+  "background": "#FFFFFF",
   "cells": 48,
+  "edges": 6,
   "unknownIcons": [],
+  "offPage": [],
   "brokenImages": [],
+  "textOverflow": [],
   "geometry": {
     "checkedRoutes": 6,
     "checkedLabels": 6,
     "jumpMarkers": 0,
+    "missingJumps": 0,
     "mismatches": []
   },
   "editability": {
@@ -19,5 +26,12 @@
     "allLabelsAttached": true,
     "labelFollow": true
   },
-  "pageErrors": []
+  "pageErrors": [],
+  "warnings": [],
+  "provenance": {
+    "input_sha256": "5d3c63f8cfd82b11dc9e546351eee34b1ca45f44e93e42b8818b8600a7f3b837",
+    "report": "examples/gcp-regional.report.json",
+    "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
+    "playwright": "1.61.1"
+  }
 }

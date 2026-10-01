@@ -2,7 +2,7 @@
 
 These are project presentation conventions, not CSP-mandated dimensions.
 
-- White canvas; muted container backgrounds; saturated provider icons. Minimum icon box 48×48; preserve SVG/stencil aspect ratio. Text defaults to 13 px titles, 11 px detail, 14 px boundary titles.
+- White canvas; muted container backgrounds; saturated provider icons. The compiler draws every icon in a fixed 48×48 box and preserves SVG/stencil aspect ratio. Text defaults to 13 px titles, 11 px detail, 14 px boundary titles.
 - Match tier rows across AZ columns. Keep at least 40 px clear lanes between cards; more for several labeled connections. Reserve 34 px for container headers. Subnet labels should say purpose and public/private access model, not only a CIDR.
 - Main request path top-to-bottom or left-to-right. Shared services outside the main columns. DNS is resolution, not an inline HTTP hop. Draw protection/policy as associations. Draw replication separately from client reads/writes.
 - Keep connectors orthogonal with clear space between parallel paths. Distribute incoming and outgoing ports on the same card side; use fixed offsets when a fan-out needs deliberate ordering. See [routing](routing.md) for controls and failure remedies.

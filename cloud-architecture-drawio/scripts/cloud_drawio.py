@@ -5,7 +5,10 @@ import base64
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
+import re
+import shutil
 import sys
 import unicodedata
 import urllib.parse
@@ -14,10 +17,10 @@ import zlib
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import cloud_routes
-from model_validation import validate_structure
+from model_validation import EDGE_KINDS, legend_captions, validate_structure
 
 ROOT = Path(__file__).resolve().parents[1]
-CAT = json.loads((ROOT / 'assets/icon-catalog.json').read_text())
+CAT = json.loads((ROOT / 'assets/icon-catalog.json').read_text(encoding='utf-8'))
 KINDS = {'cloud', 'account', 'project', 'region', 'vpc', 'vnet', 'az', 'subnet', 'group'}
 PALETTE = {
     'cloud': ('#FFFFFF', '#536477'), 'account': ('#FFFFFF', '#536477'),
@@ -26,9 +29,10 @@ PALETTE = {
     'az': ('none', '#70A3C4'), 'subnet': ('#EFF6FB', '#C6DAE8'),
     'group': ('none', '#C87B28'),
 }
-EDGE = {'traffic': ('#4B6074', False), 'dns': ('#77728E', True),
-        'association': ('#B85B72', True), 'replication': ('#875EAC', True),
-        'egress': ('#537D80', True), 'management': ('#79828B', True)}
+# Color and dash pattern per relationship; each dashed kind has its own rhythm.
+EDGE = {'traffic': ('#4B6074', None), 'dns': ('#8C6A2F', '2 3'),
+        'association': ('#B85B72', '4 3'), 'replication': ('#875EAC', '10 4'),
+        'egress': ('#1F7F8C', '6 3 2 3'), 'management': ('#A06050', '8 3 2 3 2 3')}
 
 
 def rect(item):
@@ -92,16 +96,72 @@ def icon_style(key):
         return 'shape=actor;fillColor=#EDF2F7;strokeColor=#536477;'
     if key == 'generic':
         return 'rounded=1;arcSize=15;fillColor=#EDF2F7;strokeColor=#536477;'
-    i = CAT[key]; data = (ROOT/'assets'/i['file']).read_text()
+    i = CAT[key]; data = (ROOT/'assets'/i['file']).read_text(encoding='utf-8')
     if i['kind'] == 'svg':
         return 'shape=image;imageAspect=1;aspect=fixed;image=data:image/svg+xml,'+base64.b64encode(data.encode()).decode()+';'
+    # Variable-aspect stencils (gcp2) would stretch to the square icon box.
+    data=re.sub(r'(<shape\b[^>]*\baspect=")variable"',r'\1fixed"',data,count=1)
     # Inline original draw.io vector stencil so the file doesn't need an external library.
     return 'shape=stencil('+compress(data)+');fillColor='+i.get('color','#4285F4')+';strokeColor=none;'
 
 
-def build(m, target):
+def report_path(target):
+    return Path(target).with_suffix('.report.json')
+
+
+def sha256(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def check_overwrite(target):
+    """Refuse to replace a .drawio that changed since this compiler wrote it."""
+    target=Path(target)
+    if not target.exists(): return
+    report=report_path(target)
+    if not report.exists():
+        raise ValueError(f'{target}: exists without {report.name}, so it may be a manual draw.io file; patch it directly, or pass --force to replace it')
+    try: saved=json.loads(report.read_text(encoding='utf-8'))
+    except (ValueError,OSError): saved=None
+    if not isinstance(saved,dict):
+        raise ValueError(f'{target}: {report.name} is unreadable, so manual edits cannot be ruled out; patch the .drawio directly, or pass --force to replace it')
+    recorded=saved.get('drawio_sha256')
+    # Reports from version 2 carry no file hash; they predate this check.
+    if recorded and recorded!=sha256(target.read_bytes()):
+        raise ValueError(f'{target}: changed after it was built (its hash differs from {report.name}), probably by a manual draw.io edit; patch it directly, or pass --force to discard those edits')
+
+
+def write_outputs(files):
+    """Stage every file beside its target, then move all of them into place.
+
+    Symlinks are written through and file modes kept. A read-only directory
+    holding writable files falls back to writing those files in place.
+    """
+    staged=[]
+    try:
+        for path,data in files:
+            path=Path(os.path.realpath(path)); tmp=path.with_name(path.name+'.tmp')
+            try: tmp.write_bytes(data)
+            except OSError as e:
+                tmp.unlink(missing_ok=True)
+                if isinstance(e,PermissionError) and path.is_file() and os.access(path,os.W_OK):
+                    staged.append((path,None,data)); continue
+                raise OSError(e.errno,e.strerror,str(path)) from e
+            if path.is_file(): shutil.copymode(path,tmp)
+            staged.append((path,tmp,data))
+        for path,tmp,data in staged:
+            try:
+                if tmp: os.replace(tmp,path)
+                else: path.write_bytes(data)
+            except OSError as e: raise OSError(e.errno,e.strerror,str(path)) from e
+    finally:
+        for _,tmp,_ in staged:
+            if tmp: tmp.unlink(missing_ok=True)
+
+
+def build(m, target, force=False):
     errors,warnings=validate(m)
     if errors: raise ValueError('\n'.join(errors))
+    if not force: check_overwrite(target)
     width,height=m['width'],m['height']; by={i['id']:i for i in m['containers']+m['nodes']}
     rootfile=ET.Element('mxfile',host='cloud-architecture-drawio',version='1.0')
     dia=ET.SubElement(rootfile,'diagram',id='architecture',name=m.get('title','Architecture'))
@@ -112,7 +172,8 @@ def build(m, target):
         ET.SubElement(c,'mxGeometry',x=str(x),y=str(y),width=str(w),height=str(h),attrib={'as':'geometry'})
         return c
     def text(id,value,x,y,w,h,size=13,align='center',parent='1',bold=False):
-        return cell(id,value,f'text;html=0;whiteSpace=wrap;overflow=hidden;align={align};verticalAlign=middle;fontSize={size};fontStyle={1 if bold else 0};',x,y,w,h,parent)
+        # spacing=0 gives the label its whole cell, so two wrapped lines are not clipped.
+        return cell(id,value,f'text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align={align};verticalAlign=middle;fontSize={size};fontStyle={1 if bold else 0};',x,y,w,h,parent)
     text('__title',m.get('title','Cloud architecture'),30,12,width-60,34,24,'left',bold=True)
     text('__subtitle',m.get('subtitle',''),30,48,width-60,24,12,'left')
     remaining=list(m['containers']); emitted=set()
@@ -131,17 +192,17 @@ def build(m, target):
     routes,ports=cloud_routes.plan(m,header_rect)
     labels=cloud_routes.place_labels(m,routes,header_rect)
     quality=cloud_routes.metrics(routes)
-    report={'version':2,'errors':[], 'warnings':warnings,'routes':routes,'labels':labels,'quality':quality,'model_sha256':hashlib.sha256(json.dumps(m,sort_keys=True).encode()).hexdigest()}
+    report={'version':3,'errors':[], 'warnings':warnings,'routes':routes,'labels':labels,'quality':quality,'model_sha256':sha256(json.dumps(m,sort_keys=True).encode())}
     if quality['crossingCount']:
         report['warnings'].append(f"{quality['crossingCount']} connector crossings: inspect jump markers or revise ports/lanes")
     for e in m['edges']:
         pts=routes[e['id']]
-        color,dashed=EDGE[e.get('kind','traffic')]
+        color,dashes=EDGE[e.get('kind','traffic')]
         sa,fa=ports[(e['id'],'source')];sb,fb=ports[(e['id'],'target')]
         def fraction(side,f): return {'top':(f,0),'bottom':(f,1),'left':(0,f),'right':(1,f)}[side]
         ex,ey=fraction(sa,fa);ix,iy=fraction(sb,fb)
         style=f'edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor={color};strokeWidth=1.6;exitX={ex};exitY={ey};exitPerimeter=0;entryX={ix};entryY={iy};entryPerimeter=0;jumpStyle=arc;jumpSize=8;'
-        if dashed: style+='dashed=1;dashPattern=5 4;'
+        if dashes: style+=f'dashed=1;dashPattern={dashes};'
         if e.get('kind')=='association': style+='endArrow=none;'
         c=ET.SubElement(root,'mxCell',id=e['id'],style=style,edge='1',parent='1',source=e['source'],target=e['target'])
         geo=ET.SubElement(c,'mxGeometry',relative='1',attrib={'as':'geometry'})
@@ -161,33 +222,48 @@ def build(m, target):
         text('__detail_'+n['id'],'\n'.join(wrapped(n.get('detail',''),n['w']-8,11)),4,95,n['w']-8,28,11,parent=n['id'])
     # Legend and assumptions are deliberately outside network boundaries.
     y=height-72
-    kinds=list(dict.fromkeys(e.get('kind','traffic') for e in m['edges']))
-    legend_names={'traffic':'Request / data','dns':'DNS resolution','association':'Policy association','replication':'Replication','egress':'Outbound','management':'Management'}
+    used={e.get('kind','traffic') for e in m['edges']}; kinds=[k for k in EDGE_KINDS if k in used]
+    captions=legend_captions(m)
     for j,k in enumerate(kinds):
-        color,dashed=EDGE[k]; lx=30+j*205
-        cell('__legend_line_'+k,'',f'shape=line;strokeColor={color};strokeWidth=1.6;dashed={int(dashed)};',lx,y+12,30,1)
-        cell('__legend_text_'+k,legend_names[k],f'text;html=0;fontSize=11;align=left;verticalAlign=middle;fontColor={color};',lx+40,y,160,24)
+        color,dashes=EDGE[k]; lx=30+j*205
+        dash=f'dashed=1;dashPattern={dashes};' if dashes else 'dashed=0;'
+        cell('__legend_line_'+k,'',f'shape=line;strokeColor={color};strokeWidth=1.6;{dash}',lx,y+12,30,1)
+        cell('__legend_text_'+k,captions[k],f'text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;fontSize=11;align=left;verticalAlign=middle;fontColor={color};',lx+40,y,160,24)
     text('__notes',' · '.join(m.get('notes',[])),30,y+25,width-60,36,11,'left')
     target=Path(target); target.parent.mkdir(parents=True,exist_ok=True)
     ET.indent(rootfile)
-    ET.ElementTree(rootfile).write(target,encoding='utf-8',xml_declaration=True)
-    target.with_suffix('.report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+    xml=ET.tostring(rootfile,encoding='utf-8',xml_declaration=True)+b'\n'
+    report['drawio_sha256']=sha256(xml)
+    write_outputs([(target,xml),(report_path(target),(json.dumps(report,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))])
     return report
+
+
+def emit(value, **options):
+    """Print JSON readably when stdout can encode it, otherwise ASCII-escaped."""
+    text=json.dumps(value,ensure_ascii=False,**options)
+    try: text.encode(sys.stdout.encoding or 'utf-8')
+    except (UnicodeEncodeError,LookupError): text=json.dumps(value,ensure_ascii=True,**options)
+    print(text)
 
 
 def main():
     p=argparse.ArgumentParser(description=__doc__); sub=p.add_subparsers(dest='cmd',required=True)
     for command in ('build','validate'):
         s=sub.add_parser(command); s.add_argument('model');
-        if command=='build': s.add_argument('output')
+        if command=='build':
+            s.add_argument('output')
+            s.add_argument('--force',action='store_true',help='replace an output that changed after it was built')
     sub.add_parser('icons')
     a=p.parse_args()
     try:
         if a.cmd=='icons': print('\n'.join(sorted(CAT))); return
-        m=json.loads(Path(a.model).read_text())
+        m=json.loads(Path(a.model).read_text(encoding='utf-8-sig'))
         if a.cmd=='validate':
-            errors,warnings=validate(m); print(json.dumps({'errors':errors,'warnings':warnings},ensure_ascii=False,indent=2)); sys.exit(bool(errors))
-        report=build(m,a.output); print(json.dumps({'output':a.output,'warnings':report['warnings']},ensure_ascii=False))
+            errors,warnings=validate(m); emit({'errors':errors,'warnings':warnings},indent=2); sys.exit(bool(errors))
+        report=build(m,a.output,a.force); emit({'output':a.output,'warnings':report['warnings']})
+    except OSError as e:
+        where=e.filename or (a.output if a.cmd=='build' else getattr(a,'model',''))
+        p.exit(1,f'{where}: {e.strerror or e}\n')
     except (ValueError,KeyError,TypeError) as e: p.exit(1,str(e)+'\n')
 
 

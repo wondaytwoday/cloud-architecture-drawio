@@ -1,13 +1,20 @@
 {
+  "page": 1,
+  "pages": 1,
   "width": 1320,
   "height": 1140,
+  "background": "#FFFFFF",
   "cells": 54,
+  "edges": 7,
   "unknownIcons": [],
+  "offPage": [],
   "brokenImages": [],
+  "textOverflow": [],
   "geometry": {
     "checkedRoutes": 7,
     "checkedLabels": 7,
     "jumpMarkers": 0,
+    "missingJumps": 0,
     "mismatches": []
   },
   "editability": {
@@ -19,5 +26,12 @@
     "allLabelsAttached": true,
     "labelFollow": true
   },
-  "pageErrors": []
+  "pageErrors": [],
+  "warnings": [],
+  "provenance": {
+    "input_sha256": "92f61095f796c1e2c62d912f56e0b049076f827d1e46cc45232dce30fe713173",
+    "report": "examples/azure-regional.report.json",
+    "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
+    "playwright": "1.61.1"
+  }
 }

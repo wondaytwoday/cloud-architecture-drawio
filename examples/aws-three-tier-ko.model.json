@@ -1,5 +1,6 @@
 {
   "provider": "aws",
+  "locale": "ko",
   "title": "AWS · 다중 가용 영역 웹 서비스 아키텍처",
   "subtitle": "2개 AZ · 웹 / 애플리케이션 / 데이터 계층 · 예시 구성",
   "width": 1440,

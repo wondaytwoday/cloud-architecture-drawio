@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "errors": [],
   "warnings": [],
   "routes": {
@@ -231,5 +231,6 @@
     "crossings": [],
     "overlaps": []
   },
-  "model_sha256": "47d2b193b436fdd9cfaf7f3855ed189b8cde929a635522e2312facf13dc45f11"
+  "model_sha256": "47d2b193b436fdd9cfaf7f3855ed189b8cde929a635522e2312facf13dc45f11",
+  "drawio_sha256": "92f61095f796c1e2c62d912f56e0b049076f827d1e46cc45232dce30fe713173"
 }

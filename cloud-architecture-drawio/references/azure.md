@@ -1,7 +1,7 @@
 # Azure placement and connections
 
 - Subscription/resource group are management scopes, not network boundaries. A resource group's location does not force every resource into that location.
-- VNet and subnets are regional and span availability zones. Do not copy the AWS subnet-per-AZ hierarchy. Keep VM zone labels on resources or use an availability overlay.
+- VNet and subnets are regional and span availability zones. Do not copy the AWS subnet-per-AZ hierarchy. Keep VM zone labels on resources or use an overlay `group` labeled with the zone; an `az` container would assert AWS-style zonal subnets.
 - Private Endpoint has an IP in a subnet; the target SQL/Storage service does not thereby move into that subnet. Draw endpoint and target separately.
 - Distinguish inbound Private Endpoint from outbound VNet integration. App Service integration is not evidence of a whole App Service instance living in that subnet.
 - Front Door is an edge service outside VNet. Application Gateway uses its subnet. Show WAF policy association at the actual enforcement service.

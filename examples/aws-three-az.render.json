@@ -1,13 +1,20 @@
 {
+  "page": 1,
+  "pages": 1,
   "width": 2080,
   "height": 1840,
+  "background": "#FFFFFF",
   "cells": 139,
+  "edges": 18,
   "unknownIcons": [],
+  "offPage": [],
   "brokenImages": [],
+  "textOverflow": [],
   "geometry": {
     "checkedRoutes": 18,
     "checkedLabels": 18,
     "jumpMarkers": 2,
+    "missingJumps": 0,
     "mismatches": []
   },
   "editability": {
@@ -19,5 +26,12 @@
     "allLabelsAttached": true,
     "labelFollow": true
   },
-  "pageErrors": []
+  "pageErrors": [],
+  "warnings": [],
+  "provenance": {
+    "input_sha256": "a6b8e64c8961b4efbae62f5d8089e57451e9ba15c6047c2c3ee5d04cd21e3d23",
+    "report": "examples/aws-three-az.report.json",
+    "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
+    "playwright": "1.61.1"
+  }
 }

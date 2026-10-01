@@ -71,7 +71,7 @@ class RoutingTests(unittest.TestCase):
         cls.cases = {}
         cls.tmp = tempfile.TemporaryDirectory()
         for name in ('aws-three-tier', 'aws-three-tier-ko', 'aws-three-az', 'azure-regional', 'gcp-regional'):
-            model = json.loads((BASE/'examples'/f'{name}.model.json').read_text())
+            model = json.loads((BASE/'examples'/f'{name}.model.json').read_text(encoding='utf-8'))
             target = Path(cls.tmp.name)/f'{name}.drawio'
             report = c.build(model, target)
             cls.cases[name] = model, report, ET.parse(target)
@@ -196,8 +196,82 @@ class RoutingTests(unittest.TestCase):
                 self.assertEqual(result['crossingCount'], crossings)
                 self.assertEqual(result['overlapLength'], shared)
 
+    def test_metrics_report_a_route_that_meets_itself(self):
+        hairpin = [(356, 312), (372, 312), (372, 250), (364, 250), (364, 312), (380, 312)]
+        result = routing.metrics({'e': hairpin})
+        self.assertEqual(result['overlapLength'], 8)
+        self.assertEqual(result['overlaps'], [{'edges': ['e', 'e'], 'length': 8}])
+
+    def test_near_coincident_explicit_offsets_are_rejected(self):
+        model = {'nodes': [{'id': 'hub', 'x': 100, 'y': 300, 'w': 156, 'h': 124},
+                           {'id': 'a', 'x': 500, 'y': 100, 'w': 156, 'h': 124},
+                           {'id': 'b', 'x': 500, 'y': 500, 'w': 156, 'h': 124}],
+                 'edges': [{'id': 'a-edge', 'source': 'hub', 'target': 'a', 'sourcePort': 'right', 'sourceOffset': .5},
+                           {'id': 'b-edge', 'source': 'hub', 'target': 'b', 'sourcePort': 'right', 'sourceOffset': .51}]}
+        with self.assertRaisesRegex(ValueError, r'hub right: explicit port offsets 0.5 and 0.51 are 1.2px apart'):
+            routing.select_ports(model)
+        model['edges'][1]['sourceOffset'] = .6
+        routing.select_ports(model)
+
+    def build_failure(self, nodes, edges, width=900, height=700):
+        model = {'provider': 'aws', 'title': 'Failure path', 'width': width, 'height': height,
+                 'containers': [], 'nodes': [dict(id=i, label=i, x=x, y=y, w=156, h=124) for i, x, y in nodes],
+                 'edges': edges}
+        self.assertEqual(c.validate(model)[0], [])
+        with tempfile.TemporaryDirectory() as tmp:
+            c.build(model, Path(tmp)/'failure.drawio')
+
+    def test_build_failures_name_the_edge_and_a_remedy(self):
+        cases = [
+            # Facing cards closer than 2 x stub would need a route that doubles back.
+            ([('a', 200, 250), ('b', 380, 250)], [{'id': 'close', 'source': 'a', 'target': 'b'}],
+             r'close: facing card sides are 24px apart; connected sides need at least 2 x stub \(32px\)'),
+            # A card 8px below the source blocks its 16px lead-in.
+            ([('a', 200, 120), ('blocker', 200, 252), ('b', 600, 450)],
+             [{'id': 'blocked', 'source': 'a', 'target': 'b', 'sourcePort': 'bottom'}],
+             r'blocked: Connector lead-in intersects a card or title'),
+            ([('a', 10, 300), ('b', 400, 300)], [{'id': 'side', 'source': 'b', 'target': 'a', 'targetPort': 'left'}],
+             r'side: Connector target lead-in enters the 10px side margin'),
+            ([('a', 300, 80), ('b', 300, 400)], [{'id': 'top', 'source': 'b', 'target': 'a', 'targetPort': 'top'}],
+             r'top: Connector target lead-in enters the title band or legend footer'),
+            ([('a', 200, 250), ('b', 396, 250)], [{'id': 'caption', 'source': 'a', 'target': 'b',
+                                                   'label': 'HTTPS 443 · mutual TLS'}],
+             r'caption: no clear label position'),
+        ]
+        for nodes, edges, message in cases:
+            with self.subTest(edge=edges[0]['id']), self.assertRaisesRegex(ValueError, message):
+                self.build_failure(nodes, edges)
+        # 2 x stub is enough for a straight connector.
+        self.build_failure([('a', 200, 250), ('b', 388, 250)], [{'id': 'close', 'source': 'a', 'target': 'b'}])
+
+    def test_routes_never_touch_their_own_lead_ins(self):
+        # Three auto-port edges between diagonal neighbours 40px apart used to
+        # loop back into their own arrowhead; the search now avoids that.
+        model = {'provider': 'aws', 'title': 'Grid', 'width': 900, 'height': 558, 'containers': [],
+                 'nodes': [{'id': 'app', 'label': 'App', 'x': 30, 'y': 264, 'w': 156, 'h': 124},
+                           {'id': 'db', 'label': 'DB', 'x': 226, 'y': 100, 'w': 156, 'h': 124}],
+                 'edges': [{'id': 'e0', 'source': 'app', 'target': 'db', 'label': 'TCP 5432'},
+                           {'id': 'e1', 'source': 'app', 'target': 'db', 'kind': 'egress'},
+                           {'id': 'e2', 'source': 'app', 'target': 'db', 'kind': 'replication'}]}
+        with tempfile.TemporaryDirectory() as tmp:
+            report = c.build(model, Path(tmp)/'grid.drawio')
+        for eid, points in report['routes'].items():
+            with self.subTest(edge=eid):
+                self.assertEqual(routing.self_contact(points), (0, []))
+
+    def test_connector_cannot_end_on_another_connector(self):
+        model = {'provider': 'aws', 'title': 'T contact', 'width': 1300, 'height': 700, 'containers': [],
+                 'nodes': [{'id': 'n2', 'label': 'Node 2', 'x': 822, 'y': 104, 'w': 200, 'h': 124},
+                           {'id': 'n3', 'label': 'Node 3', 'x': 380, 'y': 132, 'w': 140, 'h': 140},
+                           {'id': 'n4', 'label': 'Node 4', 'x': 430, 'y': 334, 'w': 156, 'h': 140}],
+                 'edges': [{'id': 'e4', 'source': 'n3', 'target': 'n2', 'kind': 'egress', 'targetPort': 'top'},
+                           {'id': 'e6', 'source': 'n4', 'target': 'n2', 'kind': 'egress'}]}
+        with tempfile.TemporaryDirectory() as tmp, \
+                self.assertRaisesRegex(ValueError, r'e6: Connector target port at \(822, 166\) lies on another connector'):
+            c.build(model, Path(tmp)/'tcontact.drawio')
+
     def test_crossing_fixture_has_one_proper_crossing_and_jump_styles(self):
-        model = json.loads((BASE/'evals/fixtures/routing-crossings.model.json').read_text())
+        model = json.loads((BASE/'evals/fixtures/routing-crossings.model.json').read_text(encoding='utf-8'))
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp)/'crossing.drawio'
             report = c.build(model, path)

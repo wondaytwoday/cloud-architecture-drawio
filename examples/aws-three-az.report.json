@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "errors": [],
   "warnings": [
     "2 connector crossings: inspect jump markers or revise ports/lanes"
@@ -575,5 +575,6 @@
     ],
     "overlaps": []
   },
-  "model_sha256": "bf84609bcca650e159a8f65419423d683053fbc178a9567c607a45336cce661c"
+  "model_sha256": "bf84609bcca650e159a8f65419423d683053fbc178a9567c607a45336cce661c",
+  "drawio_sha256": "a6b8e64c8961b4efbae62f5d8089e57451e9ba15c6047c2c3ee5d04cd21e3d23"
 }

@@ -1,0 +1,7 @@
+# Reports pin the exact bytes of their .drawio, so line endings must never be rewritten.
+*.drawio -text
+*.report.json -text
+*.render.json -text
+*.model.json -text
+*.png binary
+*.zip binary

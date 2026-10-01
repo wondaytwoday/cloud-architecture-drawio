@@ -5,6 +5,8 @@ import heapq
 import math
 import unicodedata
 
+from model_validation import EDGE_KINDS, MARGIN_BOTTOM, MARGIN_SIDE, MARGIN_TOP
+
 SIDES={'right':(1,0),'left':(-1,0),'bottom':(0,1),'top':(0,-1)}
 
 
@@ -44,11 +46,24 @@ def relation(a,b,c,d):
     return 0,None
 
 
+def self_contact(points):
+    """Collinear length and contact points where one route meets itself again."""
+    segs=list(zip(points,points[1:]));shared=0;contacts=set()
+    for i,(a,b) in enumerate(segs):
+        for c,d in segs[i+2:]:
+            amount,point=relation(a,b,c,d);shared+=amount
+            if point:contacts.add(point)
+    return shared,sorted(contacts)
+
+
 def metrics(routes):
     crossings=[]; overlaps=[]; bends=0; total=0
     items=list(routes.items())
     for i,(aid,ap) in enumerate(items):
         bends+=max(0,len(ap)-2);total+=sum(length(a,b) for a,b in zip(ap,ap[1:]))
+        shared,contacts=self_contact(ap)
+        if shared:overlaps.append({'edges':[aid,aid],'length':round(shared,2)})
+        for p in contacts:crossings.append({'edges':[aid,aid],'point':p})
         for bid,bp in items[i+1:]:
             points=set(); shared=0
             for a,b in zip(ap,ap[1:]):
@@ -90,6 +105,11 @@ def select_ports(m):
         if len(set(reserved))!=len(reserved):
             raise ValueError(f'{nid} {side}: explicit port offsets coincide; choose distinct offsets')
         gap=min(10/size,.8/(count+1))
+        # Explicit offsets follow the spacing that automatic ports keep.
+        ordered=sorted(reserved)
+        for low,high in zip(ordered,ordered[1:]):
+            if high-low<gap-1e-9:
+                raise ValueError(f'{nid} {side}: explicit port offsets {low} and {high} are {(high-low)*size:.1f}px apart, which reads as one line; keep them at least {gap*size:.0f}px apart')
         for j,(_,_,eid,end,explicit) in enumerate(entries):
             fraction=explicit
             if fraction is None:
@@ -110,26 +130,48 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16):
     """Directed lead-ins, obstacle padding, exact overlap rejection and crossing cost."""
     vx,vy=SIDES[sa];wx,wy=SIDES[sb]
     begin=(start[0]+vx*stub,start[1]+vy*stub);end=(goal[0]+wx*stub,goal[1]+wy*stub)
+    # Lead-ins that overlap or cross each other force a route back over itself.
+    shared,touch=relation(start,begin,end,goal)
+    if shared>0:
+        axis=0 if vx else 1;gap=abs(goal[axis]-start[axis])
+        raise ValueError(f'facing card sides are {gap:g}px apart; connected sides need at least 2 x stub ({2*stub:g}px), so move the cards apart, choose other ports or lower routing.stub')
+    if touch and begin!=end:
+        raise ValueError('the source and target lead-ins cross each other; move the cards apart or choose other ports')
     for a,b in [(start,begin),(end,goal)]:
         if any(hits(a,b,r) for r in obstacles):raise ValueError('Connector lead-in intersects a card or title; increase gap or choose another port')
-        if any(relation(a,b,c,d)[0]>0 for c,d in segments):raise ValueError('Connector lead-ins overlap; use distinct port offsets')
+        for c,d in segments:
+            amount,point=relation(a,b,c,d)
+            if amount>0:raise ValueError('Connector lead-ins overlap; use distinct port offsets')
+            # An arrow ending on another line reads as a junction, not a crossing.
+            if point in (start,goal):
+                raise ValueError(f"Connector {'source' if point==start else 'target'} port at ({point[0]:g}, {point[1]:g}) lies on another connector, which reads as a junction; choose another side or offset, or widen the lane beside the card")
     # Event-based grid includes obstacle boundaries, not every pixel of a huge canvas.
-    xs={10,width-10,begin[0],end[0]};ys={80,height-90,begin[1],end[1]}
+    for end_name,(px,py) in (('source',begin),('target',end)):
+        if not MARGIN_SIDE<=px<=width-MARGIN_SIDE:
+            raise ValueError(f'Connector {end_name} lead-in enters the {MARGIN_SIDE}px side margin; move the card inward or use another port')
+        if not MARGIN_TOP<=py<=height-MARGIN_BOTTOM:
+            raise ValueError(f'Connector {end_name} lead-in enters the title band or legend footer; keep the card {stub}px clear of it or use another port')
+    xs={MARGIN_SIDE,width-MARGIN_SIDE,begin[0],end[0]};ys={MARGIN_TOP,height-MARGIN_BOTTOM,begin[1],end[1]}
     for x,y,w,h in obstacles:
         xs.update((x-10,x,x+w,x+w+10));ys.update((y-10,y,y+h,y+h+10))
     for a,b in segments:
         xs.update((a[0]-10,a[0],a[0]+10,b[0]-10,b[0],b[0]+10))
         ys.update((a[1]-10,a[1],a[1]+10,b[1]-10,b[1],b[1]+10))
-    xs=sorted(x for x in xs if 10<=x<=width-10 and (x in (begin[0],end[0]) or all(abs(x-v)>=10 for v in (begin[0],end[0]))))
-    ys=sorted(y for y in ys if 80<=y<=height-90 and (y in (begin[1],end[1]) or all(abs(y-v)>=10 for v in (begin[1],end[1]))))
+    xs=sorted(x for x in xs if MARGIN_SIDE<=x<=width-MARGIN_SIDE and (x in (begin[0],end[0]) or all(abs(x-v)>=10 for v in (begin[0],end[0]))))
+    ys=sorted(y for y in ys if MARGIN_TOP<=y<=height-MARGIN_BOTTOM and (y in (begin[1],end[1]) or all(abs(y-v)>=10 for v in (begin[1],end[1]))))
     if begin[0] not in xs or end[0] not in xs or begin[1] not in ys or end[1] not in ys:raise ValueError('Connector enters title/footer margin')
     sx,sy=xs.index(begin[0]),ys.index(begin[1]);gx,gy=xs.index(end[0]),ys.index(end[1])
     dirs=list(SIDES.values());first=dirs.index((vx,vy));last=dirs.index((-wx,-wy))
     initial=(sx,sy,first);costs={initial:0};parents={};heap=[(length(begin,end),0,*initial)];finish=None
+    own=[(start,begin),(end,goal)]
     @lru_cache(None)
     def penalty(x,y,nx,ny):
         p,q=(xs[x],ys[y]),(xs[nx],ys[ny])
         if any(hits(p,q,r) for r in obstacles):return None
+        # The route may meet its own lead-ins only where it joins them.
+        for a,b in own:
+            amount,point=relation(p,q,a,b)
+            if amount>0 or point not in (None,begin,end):return None
         cost=0;cross=set()
         for a,b in segments:
             amount,point=relation(p,q,a,b)
@@ -170,7 +212,7 @@ def plan(m,header_rect):
     nodes={n['id']:n for n in m['nodes']};ports=select_ports(m);routes={};segments=[]
     clearance=m.get('routing',{}).get('clearance',8);stub=m.get('routing',{}).get('stub',16)
     # Main traffic first, then secondary semantics; stable IDs make input order irrelevant.
-    rank={'traffic':0,'egress':1,'replication':2,'dns':3,'association':4,'management':5}
+    rank={kind:index for index,kind in enumerate(EDGE_KINDS)}
     def order(e):
         a,b=nodes[e['source']],nodes[e['target']]
         distance=length((a['x']+a['w']/2,a['y']+a['h']/2),(b['x']+b['w']/2,b['y']+b['h']/2))
@@ -184,6 +226,8 @@ def plan(m,header_rect):
         start,goal=anchor(a,sa,fa),anchor(b,sb,fb)
         try:pts=solve(start,goal,sa,sb,obstacles,m['width'],m['height'],segments,clearance,stub)
         except ValueError as exc:raise ValueError(f"{e['id']}: {exc}") from exc
+        if any(self_contact(pts)):
+            raise ValueError(f"{e['id']}: route doubles back on itself; choose other ports, widen the lane or lower routing.stub")
         routes[e['id']]=pts;segments.extend(zip(pts,pts[1:]))
     return routes,ports
 

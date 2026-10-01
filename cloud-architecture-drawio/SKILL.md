@@ -1,6 +1,6 @@
 ---
 name: cloud-architecture-drawio
-description: Create and revise editable AWS, Azure, and Google Cloud architecture diagrams in draw.io with CSP icons, network boundaries, availability placement, and communication paths. Use for cloud topology diagrams from requirements, IaC, or reference images.
+description: Create and revise editable AWS, Azure, and Google Cloud (GCP) architecture diagrams as draw.io / diagrams.net files with CSP icons, VPC/VNet/subnet/AZ boundaries, availability placement, and labeled communication paths, plus a verified PNG. Use for cloud architecture or network topology diagrams (구성도, 아키텍처 다이어그램) from requirements, Terraform/CloudFormation/Bicep, or reference images, including multi-cloud views. Not for sequence diagrams, ERDs, or Mermaid/PlantUML output.
 ---
 
 # Cloud architecture in draw.io
@@ -18,13 +18,13 @@ Deliver an editable `.drawio`, a rendered PNG, the architecture model, and a sho
    python3 scripts/cloud_drawio.py validate /path/to/model.json
    python3 scripts/cloud_drawio.py build /path/to/model.json /path/to/architecture.drawio
    ```
-   Resolve errors and inspect `.report.json` warnings and quality metrics. The compiler rejects overlapping route segments and unplaceable labels; enlarge a lane or change ports instead of omitting a relationship or label. `validate` checks structure; `build` also checks route and label feasibility.
-6. Render using actual draw.io, following [rendering](references/rendering.md). Inspect the full PNG and dense areas at readable size. Check icon visibility, Korean text, clipping, route direction, line crossings, and box meanings. Confirm residual crossings have visible jump arcs and cannot be mistaken for branches. Verify that labels remain attached to their edges. Fix the model and rebuild. Stop once acceptance criteria pass. If rendering is unavailable, deliver the editable source with a clear “visual verification not completed” status, never claim visual approval.
+   Resolve errors and inspect `.report.json` warnings and quality metrics. The compiler rejects overlapping route segments and unplaceable labels; enlarge a lane or change ports instead of omitting a relationship or label. `validate` checks structure, misspelled keys, reserved page bands, and whether every shape's drawn position matches its declared `parent`; `build` also checks route and label feasibility. `build` refuses to overwrite a `.drawio` that changed after it was built; see the editing section before using `--force`.
+6. Render using actual draw.io with `scripts/render.cjs`, following [rendering](references/rendering.md). It fails on clipped text, missing icons, crossings without a jump arc, and drift from the planned geometry, but you still inspect the full PNG and dense areas at readable size: icon visibility, Korean text, route direction, line crossings, and box meanings. Confirm residual crossings cannot be mistaken for branches and labels remain attached to their edges. Fix the model and rebuild. Stop once acceptance criteria pass. If rendering is unavailable, deliver the editable source with a clear “visual verification not completed” status, never claim visual approval.
 7. Deliver links to source, preview, model, and substantive assumptions. State which network paths were intentionally omitted. Do not call a diagram deployable or fully network-validated based on this linter alone.
 
 ## Editing an existing diagram
 
-If a matching model exists and the drawing has not been manually edited, change only affected IDs and layout coordinates. If the `.drawio` has manual edits, preserve its original, read its XML and patch affected cells; do not regenerate from a stale model. Stable resource IDs are part of the interface. For unsupported topologies such as explicit branch junctions or self-loops, author native draw.io XML with these same domain and visual rules. Record that manual source is authoritative and rerender it.
+If a matching model exists and the drawing has not been manually edited, change only affected IDs and layout coordinates. `build` detects manual edits: the report records the hash of the file it wrote, and a rebuild over a changed file stops with an error. Never answer that error with `--force` unless the user wants their edits discarded. If the `.drawio` has manual edits, preserve its original, read its XML and patch affected cells; do not regenerate from a stale model. Render a patched file with `--no-report`, because its planned geometry no longer applies. Stable resource IDs are part of the interface. For unsupported topologies such as explicit branch junctions or self-loops, author native draw.io XML with these same domain and visual rules. Record that manual source is authoritative and rerender it.
 
 When expanding AZs or changing service modes, update labels and attachments as well as boxes. A three-AZ application does not imply a third standby for a two-AZ DB deployment. Make geography/count annotations consistent with the updated topology.
 
@@ -34,6 +34,6 @@ When expanding AZs or changing service modes, update labels and attachments as w
 - Each provider's scopes and network boundaries are correct for the selected service mode.
 - No resource overlap, clipped label, missing icon, connector through an unrelated resource, or ambiguous shared line segment.
 - Labels avoid other labels, routes, resources, and boundary titles. Residual crossings are individually reviewed with visible jump arcs; fewer crossings must not change the intended topology.
-- Request traffic, DNS, policy association, replication, and egress have distinct semantics and a legend.
+- Request traffic, DNS, policy association, replication, and egress have distinct semantics and a legend in the diagram's language (`locale` or `legend` in the model).
 - `.drawio` opens as individually editable shapes and connectors with attached labels; PNG is rendered from that source. Review route metrics alongside the image, not as a substitute for it.
 - Preserve ambiguity as labeled assumptions. Ask only about missing facts that materially change topology; use reasonable presentation defaults without pausing.
