@@ -4,7 +4,7 @@
   "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
   "icons": 36,
   "tests": {
-    "passed": 104,
+    "passed": 105,
     "failed": 0,
     "skipped_without_renderer": 10,
     "command": "NODE_PATH=<playwright>/node_modules python3 -m unittest discover -s evals -v"

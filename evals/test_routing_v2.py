@@ -318,6 +318,18 @@ class RoutingTests(unittest.TestCase):
         finally:
             routing.plan = original
 
+    def test_work_limit_stops_the_fallback_and_says_why(self):
+        sys.path.insert(0, str(BASE/'evals'))
+        import bench_routing
+        model = bench_routing.grid(1005, 6, 6, 110, True)
+        limit = routing.ROUTING_WORK_LIMIT
+        routing.ROUTING_WORK_LIMIT = 1
+        try:
+            with self.assertRaisesRegex(ValueError, r'stopped after 1 of \d+ routing modes: this diagram is large'):
+                routing.route_and_label(model, c.header_rect)
+        finally:
+            routing.ROUTING_WORK_LIMIT = limit
+
     def test_lead_in_advice_is_the_exact_move_that_fixes_it(self):
         for y, move in ((244, 24), (248, 20), (252, 16), (260, 8)):
             with self.subTest(y=y), self.assertRaisesRegex(ValueError, f'move them {move}px further apart'):

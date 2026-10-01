@@ -135,9 +135,11 @@ PARALLEL_V=60
 PARALLEL_FACTOR=.3
 # Captions prefer this much space from connectors other than their own.
 CAPTION_GAP=8
+# Search steps (A* expansions) all routing modes may use together.
+ROUTING_WORK_LIMIT=1_500_000
 
 
-def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,pending=(),borders=(),spread=True,names=None,owners=None,stub_lanes=True):
+def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,pending=(),borders=(),spread=True,names=None,owners=None,stub_lanes=True,work=None):
     """Directed lead-ins, obstacle padding, exact overlap rejection and crossing cost."""
     vx,vy=SIDES[sa];wx,wy=SIDES[sb]
     begin=(start[0]+vx*stub,start[1]+vy*stub);end=(goal[0]+wx*stub,goal[1]+wy*stub)
@@ -255,8 +257,9 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,p
             if max(min(p[0],q[0]),min(a[0],b[0]))<min(max(p[0],q[0]),max(a[0],b[0])) if p[1]==q[1] else max(min(p[1],q[1]),min(a[1],b[1]))<min(max(p[1],q[1]),max(a[1],b[1])):
                 cost+=length(p,q)*BORDER_FACTOR
         return cost+len(cross)*180
+    work=work if work is not None else {}
     while heap:
-        _,cost,x,y,d=heapq.heappop(heap);state=(x,y,d)
+        _,cost,x,y,d=heapq.heappop(heap);state=(x,y,d);work['steps']=work.get('steps',0)+1
         if cost!=costs[state]:continue
         if (x,y)==(gx,gy):finish=state;break
         for nd,(dx,dy) in enumerate(dirs):
@@ -278,7 +281,7 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,p
     return simplify([start]+points+[goal])
 
 
-def plan(m,header_rect,reserve=True,clear_borders=True,spread=True,stub_lanes=True):
+def plan(m,header_rect,reserve=True,clear_borders=True,spread=True,stub_lanes=True,work=None):
     nodes={n['id']:n for n in m['nodes']};ports=select_ports(m);routes={};segments=[];seg_owners=[]
     clearance=m.get('routing',{}).get('clearance',8);stub=m.get('routing',{}).get('stub',16)
     title_pad=4
@@ -309,7 +312,7 @@ def plan(m,header_rect,reserve=True,clear_borders=True,spread=True,stub_lanes=Tr
         start,goal=anchor(a,sa,fa),anchor(b,sb,fb)
         waiting=[(eid,seg) for (eid,_),seg in stubs.items() if eid!=e['id'] and eid not in routes]
         try:pts=solve(start,goal,sa,sb,obstacles,m['width'],m['height'],segments,clearance,stub,[seg for _,seg in waiting],borders,spread,
-                      list(zip(names,margins)),seg_owners+[eid for eid,_ in waiting],stub_lanes)
+                      list(zip(names,margins)),seg_owners+[eid for eid,_ in waiting],stub_lanes,work)
         except ValueError as exc:raise RouteError(f"{e['id']}: {exc}") from exc
         if any(self_contact(pts)):
             raise RouteError(f"{e['id']}: route doubles back on itself; choose other ports, widen the lane or lower routing.stub")
@@ -341,10 +344,15 @@ def route_and_label(m,header_rect):
     When no mode succeeds, report the attempt that got furthest: one that routed
     everything and missed the fewest captions, else the preferred mode's error.
     """
-    best=None
-    for mode in ROUTING_MODES:
+    best=None;work={'steps':0}
+    for tried,mode in enumerate(ROUTING_MODES):
+        # A deterministic budget of search steps, so a large diagram that no mode
+        # can draw fails in seconds rather than after every mode has run.
+        if tried and work['steps']>ROUTING_WORK_LIMIT:
+            best.args=(f'{best}\n(stopped after {tried} of {len(ROUTING_MODES)} routing modes: this diagram is large for one view; split it, or widen the lanes named above)',)
+            break
         try:
-            routes,ports=plan(m,header_rect,mode['reservedLeadIns'],mode['borderClearance'],mode['spreadParallels'],mode['stubLanes'])
+            routes,ports=plan(m,header_rect,mode['reservedLeadIns'],mode['borderClearance'],mode['spreadParallels'],mode['stubLanes'],work)
             return routes,ports,place_labels(m,routes,header_rect),dict(mode)
         except LabelError as exc:
             if not isinstance(best,LabelError) or len(exc.failures)<len(best.failures):best=exc
