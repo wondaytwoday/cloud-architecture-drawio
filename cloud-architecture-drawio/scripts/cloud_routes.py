@@ -136,7 +136,7 @@ PARALLEL_V=60
 PARALLEL_FACTOR=.3
 
 
-def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,pending=(),borders=(),spread=True):
+def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,pending=(),borders=(),spread=True,names=None,owners=None):
     """Directed lead-ins, obstacle padding, exact overlap rejection and crossing cost."""
     vx,vy=SIDES[sa];wx,wy=SIDES[sb]
     begin=(start[0]+vx*stub,start[1]+vy*stub);end=(goal[0]+wx*stub,goal[1]+wy*stub)
@@ -149,14 +149,20 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,p
         raise ValueError('the source and target lead-ins cross each other; move the cards apart or choose other ports')
     # Lead-ins of connectors that are not routed yet block like finished lines.
     blocking=list(segments)+list(pending)
-    for a,b in [(start,begin),(end,goal)]:
-        if any(hits(a,b,r) for r in obstacles):raise ValueError('Connector lead-in intersects a card or title; increase gap or choose another port')
-        for c,d in blocking:
+    names=names or ['a card or title']*len(obstacles);owners=owners or [None]*len(blocking)
+    for end_name,port,(dx,dy),(a,b) in (('source',start,(vx,vy),(start,begin)),('target',goal,(wx,wy),(end,goal))):
+        for r,name in zip(obstacles,names):
+            if hits(a,b,r):
+                x,y,w,h=r
+                clear=max(0,(x-port[0]) if dx>0 else (port[0]-x-w) if dx<0 else (y-port[1]) if dy>0 else (port[1]-y-h))
+                raise ValueError(f'Connector {end_name} lead-in intersects {name}: only {clear:g}px of its {stub:g}px is clear (cards keep {clearance:g}px apart from lines), so move them {stub-clear:g}px further apart or choose another port')
+        for (c,d),owner in zip(blocking,owners):
             amount,point=relation(a,b,c,d)
-            if amount>0:raise ValueError('Connector lead-ins overlap; use distinct port offsets')
+            other=f'connector {owner!r}' if owner else 'another connector'
+            if amount>0:raise ValueError(f'Connector lead-ins overlap with {other}; use distinct port offsets')
             # An arrow ending on another line reads as a junction, not a crossing.
             if point in (start,goal):
-                raise ValueError(f"Connector {'source' if point==start else 'target'} port at ({point[0]:g}, {point[1]:g}) lies on another connector, which reads as a junction; choose another side or offset, or widen the lane beside the card")
+                raise ValueError(f"Connector {'source' if point==start else 'target'} port at ({point[0]:g}, {point[1]:g}) lies on {other}, which reads as a junction; choose another side or offset, or widen the lane beside the card")
     # Event-based grid includes obstacle boundaries, not every pixel of a huge canvas.
     for end_name,(px,py) in (('source',begin),('target',end)):
         if not MARGIN_SIDE<=px<=width-MARGIN_SIDE:
@@ -270,8 +276,9 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,p
 
 
 def plan(m,header_rect,reserve=True,clear_borders=True,spread=True):
-    nodes={n['id']:n for n in m['nodes']};ports=select_ports(m);routes={};segments=[]
+    nodes={n['id']:n for n in m['nodes']};ports=select_ports(m);routes={};segments=[];seg_owners=[]
     clearance=m.get('routing',{}).get('clearance',8);stub=m.get('routing',{}).get('stub',16)
+    names=[f"card {n['id']!r}" for n in m['nodes']]+[f"the title of {c['id']!r}" for c in m['containers']]
     # Main traffic first, then secondary semantics; stable IDs make input order irrelevant.
     rank={kind:index for index,kind in enumerate(EDGE_KINDS)}
     def order(e):
@@ -295,12 +302,13 @@ def plan(m,header_rect,reserve=True,clear_borders=True,spread=True):
         obstacles=[pad(rect(n),0 if n['id'] in (a['id'],b['id']) else clearance) for n in m['nodes']]
         obstacles += [pad(header_rect(c),4) for c in m['containers']]
         start,goal=anchor(a,sa,fa),anchor(b,sb,fb)
-        pending=[seg for (eid,_),seg in stubs.items() if eid!=e['id'] and eid not in routes]
-        try:pts=solve(start,goal,sa,sb,obstacles,m['width'],m['height'],segments,clearance,stub,pending,borders,spread)
-        except ValueError as exc:raise ValueError(f"{e['id']}: {exc}") from exc
+        waiting=[(eid,seg) for (eid,_),seg in stubs.items() if eid!=e['id'] and eid not in routes]
+        try:pts=solve(start,goal,sa,sb,obstacles,m['width'],m['height'],segments,clearance,stub,[seg for _,seg in waiting],borders,spread,
+                      names,seg_owners+[eid for eid,_ in waiting])
+        except ValueError as exc:raise RouteError(f"{e['id']}: {exc}") from exc
         if any(self_contact(pts)):
-            raise ValueError(f"{e['id']}: route doubles back on itself; choose other ports, widen the lane or lower routing.stub")
-        routes[e['id']]=pts;segments.extend(zip(pts,pts[1:]))
+            raise RouteError(f"{e['id']}: route doubles back on itself; choose other ports, widen the lane or lower routing.stub")
+        routes[e['id']]=pts;segments.extend(zip(pts,pts[1:]));seg_owners.extend([e['id']]*(len(pts)-1))
     return routes,ports
 
 
@@ -312,26 +320,48 @@ ROUTING_MODES=tuple({'reservedLeadIns':r,'borderClearance':b,'spreadParallels':p
                     for r in (True,False) for p in (False,True) for b in (True,False))
 
 
+class RouteError(ValueError):
+    """A connector could not be routed."""
+
+
+class LabelError(ValueError):
+    """Every connector was routed, but some captions found no clear place."""
+    def __init__(self,failures):
+        super().__init__('\n'.join(failures));self.failures=failures
+
+
 def route_and_label(m,header_rect):
     """Return routes, ports, labels and the first routing mode that places every caption.
 
-    Raises the preferred mode's error when no mode succeeds.
+    When no mode succeeds, report the attempt that got furthest: one that routed
+    everything and missed the fewest captions, else the preferred mode's error.
     """
-    first=None
+    best=None
     for mode in ROUTING_MODES:
         try:
             routes,ports=plan(m,header_rect,mode['reservedLeadIns'],mode['borderClearance'],mode['spreadParallels'])
             return routes,ports,place_labels(m,routes,header_rect),dict(mode)
+        except LabelError as exc:
+            if not isinstance(best,LabelError) or len(exc.failures)<len(best.failures):best=exc
         except ValueError as exc:
-            first=first or exc
-    raise first
+            best=best or exc
+    raise best
 
 
 def place_labels(m,routes,header_rect):
-    obstacles=[pad(rect(n),4) for n in m['nodes']]+[pad(header_rect(b),4) for b in m['containers']]
+    obstacles=[(pad(rect(n),4),f"card {n['id']!r}") for n in m['nodes']]+[(pad(header_rect(b),4),f"the title of {b['id']!r}") for b in m['containers']]
     labels={};segments=[(eid,a,b) for eid,pts in routes.items() for a,b in zip(pts,pts[1:])]
-    borders=[seg for c in m['containers'] for seg in (((c['x'],c['y']),(c['x']+c['w'],c['y'])),((c['x'],c['y']+c['h']),(c['x']+c['w'],c['y']+c['h'])),((c['x'],c['y']),(c['x'],c['y']+c['h'])),((c['x']+c['w'],c['y']),(c['x']+c['w'],c['y']+c['h'])))]
-    by={e['id']:e for e in m['edges']}
+    borders=[(seg,c['id']) for c in m['containers'] for seg in (((c['x'],c['y']),(c['x']+c['w'],c['y'])),((c['x'],c['y']+c['h']),(c['x']+c['w'],c['y']+c['h'])),((c['x'],c['y']),(c['x'],c['y']+c['h'])),((c['x']+c['w'],c['y']),(c['x']+c['w'],c['y']+c['h'])))]
+    by={e['id']:e for e in m['edges']};failures=[]
+    def blockers(eid,r):
+        """Names of whatever keeps a caption rectangle from being clear."""
+        found=[]
+        if r[0]<12 or r[1]<80 or r[0]+r[2]>m['width']-12 or r[1]+r[3]>m['height']-88:found.append('the page margin')
+        found+=[name for o,name in obstacles if overlap(r,o)]
+        found+=['its own connector' if other==eid else f'connector {other!r}' for other,u,v in segments if hits(u,v,pad(r,3))]
+        # Avoid captions covering container boundary lines.
+        found+=[f'the border of {cid!r}' for (u,v),cid in borders if hits(u,v,pad(r,2))]
+        return found
     for eid in sorted(routes,key=lambda k:(-len(by[k].get('label','')),k)):
         e=by[eid];label=e.get('label')
         if not label:continue
@@ -351,13 +381,21 @@ def place_labels(m,routes,header_rect):
                     candidates.append((score,(cx+dx,cy+dy,lw,lh),(before+seglen*f)/total*2-1,(cx,cy)))
             before+=seglen
         # The best-scoring clear candidate wins; checking in score order stops early.
-        for _,r,along,point in sorted(candidates,key=lambda v:(v[0],v[1])):
-            if r[0]<12 or r[1]<80 or r[0]+lw>m['width']-12 or r[1]+lh>m['height']-88:continue
-            if any(overlap(r,o) for o in obstacles):continue
-            if any(hits(u,v,pad(r,3)) for _,u,v in segments):continue
-            # Avoid captions covering container boundary lines.
-            if any(hits(u,v,pad(r,2)) for u,v in borders):continue
-            labels[eid]={'rect':r,'relativeX':along,'offset':(r[0]-point[0],r[1]-point[1])};obstacles.append(pad(r,4))
+        ranked=sorted(candidates,key=lambda v:(v[0],v[1]))
+        for _,r,along,point in ranked:
+            if blockers(eid,r):continue
+            labels[eid]={'rect':r,'relativeX':along,'offset':(r[0]-point[0],r[1]-point[1])};obstacles.append((pad(r,4),f'the caption of {eid!r}'))
             break
-        else:raise ValueError(f'{eid}: no clear label position for {label!r}; enlarge a lane or shorten the label')
+        else:
+            longest,run=max((length(a,b),a[1]==b[1]) for a,b in zip(pts,pts[1:]))
+            if not ranked:
+                failures.append(f'{eid}: no clear label position for {label!r}; every segment of its route is shorter than 24px (longest {longest:g}px), so give it a straight run or shorten the label')
+                continue
+            seen={}
+            for _,r,_,_ in ranked[:12]:
+                for name in blockers(eid,r):seen[name]=seen.get(name,0)+1
+            worst=', '.join(sorted(seen,key=lambda n:(-seen[n],n))[:3])
+            hint=f'; a straight horizontal run needs about {lw+24:.0f}px' if run else ''
+            failures.append(f'{eid}: no clear label position for {label!r}; a {lw:.0f}x{lh}px caption fits beside none of its segments (longest {longest:g}px{hint}), and the best spots are blocked by {worst}. Widen the lane beside that segment, move those shapes, or shorten the label')
+    if failures:raise LabelError(failures)
     return labels

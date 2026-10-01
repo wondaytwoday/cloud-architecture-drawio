@@ -230,20 +230,31 @@ class RoutingTests(unittest.TestCase):
             # A card 8px below the source blocks its 16px lead-in.
             ([('a', 200, 120), ('blocker', 200, 252), ('b', 600, 450)],
              [{'id': 'blocked', 'source': 'a', 'target': 'b', 'sourcePort': 'bottom'}],
-             r'blocked: Connector lead-in intersects a card or title'),
+             r"blocked: Connector source lead-in intersects card 'blocker': only 0px of its 16px is clear.*move them 16px further apart"),
             ([('a', 10, 300), ('b', 400, 300)], [{'id': 'side', 'source': 'b', 'target': 'a', 'targetPort': 'left'}],
              r'side: Connector target lead-in enters the 10px side margin'),
             ([('a', 300, 80), ('b', 300, 400)], [{'id': 'top', 'source': 'b', 'target': 'a', 'targetPort': 'top'}],
              r'top: Connector target lead-in enters the title band or legend footer'),
             ([('a', 200, 250), ('b', 396, 250)], [{'id': 'caption', 'source': 'a', 'target': 'b',
                                                    'label': 'HTTPS 443 · mutual TLS'}],
-             r'caption: no clear label position'),
+             r"caption: no clear label position for 'HTTPS 443 · mutual TLS'; a \d+x22px caption fits beside none of its segments \(longest 40px; a straight horizontal run needs about 180px\)"),
         ]
         for nodes, edges, message in cases:
             with self.subTest(edge=edges[0]['id']), self.assertRaisesRegex(ValueError, message):
                 self.build_failure(nodes, edges)
         # 2 x stub is enough for a straight connector.
         self.build_failure([('a', 200, 250), ('b', 388, 250)], [{'id': 'close', 'source': 'a', 'target': 'b'}])
+
+    def test_every_caption_failure_is_reported_at_once(self):
+        model = {'provider': 'aws', 'title': 'Two tight captions', 'width': 900, 'height': 700, 'containers': [],
+                 'nodes': [dict(id=i, label=i, x=x, y=y, w=156, h=124) for i, x, y in
+                           (('a', 60, 120), ('b', 256, 120), ('c', 60, 400), ('d', 256, 400))],
+                 'edges': [{'id': 'top', 'source': 'a', 'target': 'b', 'label': 'HTTPS 443 · mutual TLS'},
+                           {'id': 'bottom', 'source': 'c', 'target': 'd', 'label': 'gRPC streaming · mTLS'}]}
+        with tempfile.TemporaryDirectory() as tmp, self.assertRaises(routing.LabelError) as caught:
+            c.build(model, Path(tmp)/'captions.drawio')
+        self.assertEqual([line.split(':')[0] for line in str(caught.exception).splitlines()], ['top', 'bottom'])
+        self.assertIn("blocked by card 'a', card 'b'", str(caught.exception))
 
     def test_routes_never_touch_their_own_lead_ins(self):
         # Three auto-port edges between diagonal neighbours 40px apart used to
@@ -269,7 +280,7 @@ class RoutingTests(unittest.TestCase):
                            {'id': 'e6', 'source': 'n4', 'target': 'n2', 'kind': 'egress'}]}
         # Plain sequential routing lays e4 along n2's border first, so e6's port
         # would sit on it; that is a build error, never a silent junction.
-        with self.assertRaisesRegex(ValueError, r'e6: Connector target port at \(822, 166\) lies on another connector'):
+        with self.assertRaisesRegex(ValueError, r"e6: Connector target port at \(822, 166\) lies on connector 'e4'"):
             routing.plan(model, c.header_rect, reserve=False, clear_borders=False, spread=False)
         # Reserved lead-ins keep the port clear, so the model builds.
         with tempfile.TemporaryDirectory() as tmp:

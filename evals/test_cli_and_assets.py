@@ -102,6 +102,23 @@ class CliTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(json.loads(result.stdout)['output'], str(out))
 
+    def test_check_without_a_renderer_says_verification_is_incomplete(self):
+        with tempfile.TemporaryDirectory() as d:
+            env = {k: v for k, v in os.environ.items() if k not in ('DRAWIO_VIEWER',)}
+            env['CLOUD_DRAWIO_CACHE'] = str(Path(d)/'empty-cache')
+            result = cli('check', SKILL/'assets/templates/gcp-regional.json', Path(d)/'gcp.drawio', env=env)
+            self.assertEqual(result.returncode, 2, result.stderr)
+            verdict = json.loads(result.stdout)
+            self.assertEqual((verdict['ok'], verdict['rendered'], verdict['stage']), (False, False, 'render'))
+            self.assertIn('visual verification as not completed', verdict['reason'])
+            self.assertTrue((Path(d)/'gcp.drawio').exists())
+            model = json.loads((SKILL/'assets/templates/gcp-regional.json').read_text(encoding='utf-8'))
+            model['nodes'][0]['w'] = 90
+            (Path(d)/'bad.json').write_text(json.dumps(model), encoding='utf-8')
+            result = cli('check', Path(d)/'bad.json', Path(d)/'bad.drawio', env=env)
+            self.assertEqual(result.returncode, 1)
+            self.assertEqual(json.loads(result.stdout)['stage'], 'validate')
+
     def test_korean_model_builds_under_a_legacy_korean_locale(self):
         env = dict(os.environ, PYTHONUTF8='0', LC_ALL='ko_KR.eucKR', LANG='ko_KR.eucKR')
         probe = subprocess.run([sys.executable, '-c', 'import locale;print(locale.getpreferredencoding(False))'],
@@ -267,6 +284,22 @@ class RenderTests(unittest.TestCase):
         result, rendered = self.render(self.build(model, 'legend'))
         self.assertEqual(result.returncode, 1)
         self.assertEqual([item['id'] for item in rendered['textOverflow']], ['__legend_text_traffic'])
+
+    def test_check_builds_renders_and_judges_in_one_step(self):
+        node, viewer = RENDERER
+        env = dict(os.environ, DRAWIO_VIEWER=viewer)
+        result = cli('check', BASE/'examples/aws-three-az.model.json', self.dir/'az.drawio', env=env)
+        self.assertEqual(result.returncode, 0, result.stdout+result.stderr)
+        verdict = json.loads(result.stdout)
+        self.assertTrue(verdict['ok'] and verdict['rendered'])
+        self.assertEqual(verdict['problems'], {})
+        self.assertTrue((self.dir/'az.png').exists())
+        model = json.loads((SKILL/'assets/templates/aws-three-tier.json').read_text(encoding='utf-8'))
+        next(n for n in model['nodes'] if n['id'] == 'res-app-a')['label'] = 'PRODUCTION DATABASE WRITER NODE'
+        (self.dir/'caps.json').write_text(json.dumps(model), encoding='utf-8')
+        result = cli('check', self.dir/'caps.json', self.dir/'caps.drawio', env=env)
+        self.assertEqual(result.returncode, 1)
+        self.assertEqual([item['id'] for item in json.loads(result.stdout)['problems']['textOverflow']], ['__name_res-app-a'])
 
     def test_option_without_value_is_rejected(self):
         result, _ = self.render(self.build(self.fixture(), 'cross'), '--report')

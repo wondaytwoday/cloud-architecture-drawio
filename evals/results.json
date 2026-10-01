@@ -4,9 +4,9 @@
   "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
   "icons": 36,
   "tests": {
-    "passed": 92,
+    "passed": 95,
     "failed": 0,
-    "skipped_without_renderer": 8,
+    "skipped_without_renderer": 9,
     "command": "NODE_PATH=<playwright>/node_modules python3 -m unittest discover -s evals -v"
   },
   "skill_validation": "Skill is valid!",
@@ -285,7 +285,7 @@
         "geometry": {
           "checkedRoutes": 18,
           "checkedLabels": 18,
-          "jumpMarkers": 2,
+          "jumpMarkers": 0,
           "missingJumps": 0,
           "mismatches": []
         },
@@ -301,7 +301,7 @@
         "pageErrors": [],
         "warnings": [],
         "provenance": {
-          "input_sha256": "a6b8e64c8961b4efbae62f5d8089e57451e9ba15c6047c2c3ee5d04cd21e3d23",
+          "input_sha256": "06d11257cf2539ef1e3c5dde77f9107b0da4d52e1801bf183b2e91b45a90f112",
           "report": "examples/aws-three-az.report.json",
           "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
           "playwright": "1.61.1"
@@ -310,7 +310,18 @@
       "warnings": [
         "2 connector crossings: inspect jump markers or revise ports/lanes"
       ],
-      "drawio_sha256": "a6b8e64c8961b4efbae62f5d8089e57451e9ba15c6047c2c3ee5d04cd21e3d23"
+      "drawio_sha256": "06d11257cf2539ef1e3c5dde77f9107b0da4d52e1801bf183b2e91b45a90f112",
+      "routing": {
+        "reservedLeadIns": true,
+        "borderClearance": true,
+        "spreadParallels": false
+      },
+      "quality_v3": {
+        "crossingCount": 0,
+        "overlapLength": 0,
+        "bendCount": 31,
+        "totalLength": 10019.8
+      }
     },
     {
       "case": "aws-three-tier-ko",
@@ -415,14 +426,25 @@
         "pageErrors": [],
         "warnings": [],
         "provenance": {
-          "input_sha256": "8bf987b3f6b6ec15985eefbd7e84ad72bf883ac3d93f3a6d9f5e7ec0d94abd10",
+          "input_sha256": "5a8e9495fd13d2c8d1b320f68eac4905955e07e658e133dd8330eecc81c9ef71",
           "report": "examples/aws-three-tier-ko.report.json",
           "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
           "playwright": "1.61.1"
         }
       },
       "warnings": [],
-      "drawio_sha256": "8bf987b3f6b6ec15985eefbd7e84ad72bf883ac3d93f3a6d9f5e7ec0d94abd10"
+      "drawio_sha256": "5a8e9495fd13d2c8d1b320f68eac4905955e07e658e133dd8330eecc81c9ef71",
+      "routing": {
+        "reservedLeadIns": true,
+        "borderClearance": true,
+        "spreadParallels": false
+      },
+      "quality_v3": {
+        "crossingCount": 0,
+        "overlapLength": 0,
+        "bendCount": 18,
+        "totalLength": 5573.0
+      }
     },
     {
       "case": "aws-three-tier",
@@ -527,14 +549,25 @@
         "pageErrors": [],
         "warnings": [],
         "provenance": {
-          "input_sha256": "ded5c9f234bda50bd852467a38a2248c4f1e7b2607d074f4b9ebc0b351073554",
+          "input_sha256": "f7b3bf55a448c187fcdb75f9a64cf1d43c35c0e0b5730382ebb62cd98182cf6a",
           "report": "examples/aws-three-tier.report.json",
           "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
           "playwright": "1.61.1"
         }
       },
       "warnings": [],
-      "drawio_sha256": "ded5c9f234bda50bd852467a38a2248c4f1e7b2607d074f4b9ebc0b351073554"
+      "drawio_sha256": "f7b3bf55a448c187fcdb75f9a64cf1d43c35c0e0b5730382ebb62cd98182cf6a",
+      "routing": {
+        "reservedLeadIns": true,
+        "borderClearance": true,
+        "spreadParallels": false
+      },
+      "quality_v3": {
+        "crossingCount": 0,
+        "overlapLength": 0,
+        "bendCount": 22,
+        "totalLength": 5573.0
+      }
     },
     {
       "case": "azure-regional",
@@ -622,14 +655,25 @@
         "pageErrors": [],
         "warnings": [],
         "provenance": {
-          "input_sha256": "92f61095f796c1e2c62d912f56e0b049076f827d1e46cc45232dce30fe713173",
+          "input_sha256": "05e16c0844f8cf01277295d1d11205490aa52c68008c923d1ca1bfc6f8d6c339",
           "report": "examples/azure-regional.report.json",
           "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
           "playwright": "1.61.1"
         }
       },
       "warnings": [],
-      "drawio_sha256": "92f61095f796c1e2c62d912f56e0b049076f827d1e46cc45232dce30fe713173"
+      "drawio_sha256": "05e16c0844f8cf01277295d1d11205490aa52c68008c923d1ca1bfc6f8d6c339",
+      "routing": {
+        "reservedLeadIns": true,
+        "borderClearance": true,
+        "spreadParallels": false
+      },
+      "quality_v3": {
+        "crossingCount": 0,
+        "overlapLength": 0,
+        "bendCount": 14,
+        "totalLength": 3654.0
+      }
     },
     {
       "case": "gcp-regional",
@@ -727,14 +771,25 @@
         "pageErrors": [],
         "warnings": [],
         "provenance": {
-          "input_sha256": "5d3c63f8cfd82b11dc9e546351eee34b1ca45f44e93e42b8818b8600a7f3b837",
+          "input_sha256": "8fc5613d6e5def4e9985c79ac8d92f15bd1268fb4d275f21448b1bce2fe1d122",
           "report": "examples/gcp-regional.report.json",
           "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
           "playwright": "1.61.1"
         }
       },
       "warnings": [],
-      "drawio_sha256": "5d3c63f8cfd82b11dc9e546351eee34b1ca45f44e93e42b8818b8600a7f3b837"
+      "drawio_sha256": "8fc5613d6e5def4e9985c79ac8d92f15bd1268fb4d275f21448b1bce2fe1d122",
+      "routing": {
+        "reservedLeadIns": true,
+        "borderClearance": true,
+        "spreadParallels": false
+      },
+      "quality_v3": {
+        "crossingCount": 0,
+        "overlapLength": 0,
+        "bendCount": 12,
+        "totalLength": 3092.0
+      }
     }
   ],
   "crossing_fixture": {
@@ -794,5 +849,268 @@
     "installed_template_build": "azure-regional: passed, no warnings",
     "skill_validation": "Skill is valid!",
     "note": "v3 is not installed yet; the installed copy still holds v2"
+  },
+  "routing_benchmark": {
+    "command": "python3 evals/bench_routing.py --compare OLD NEW",
+    "cases": 841,
+    "phase1": {
+      "examples": {
+        "cases": 5,
+        "invalid": 0,
+        "ok": 5,
+        "route_fail": 0,
+        "label_fail": 0,
+        "seconds_median": 0.07
+      },
+      "examples-auto-ports": {
+        "cases": 5,
+        "invalid": 0,
+        "ok": 2,
+        "route_fail": 0,
+        "label_fail": 3,
+        "seconds_median": 0.099
+      },
+      "small-unlabeled-gap74": {
+        "cases": 139,
+        "invalid": 11,
+        "ok": 127,
+        "route_fail": 12,
+        "label_fail": 0,
+        "seconds_median": 0.004
+      },
+      "small-unlabeled-gap144": {
+        "cases": 150,
+        "invalid": 0,
+        "ok": 136,
+        "route_fail": 14,
+        "label_fail": 0,
+        "seconds_median": 0.003
+      },
+      "labeled-gap74": {
+        "cases": 86,
+        "invalid": 14,
+        "ok": 42,
+        "route_fail": 28,
+        "label_fail": 16,
+        "seconds_median": 0.01
+      },
+      "labeled-gap100": {
+        "cases": 100,
+        "invalid": 0,
+        "ok": 62,
+        "route_fail": 30,
+        "label_fail": 8,
+        "seconds_median": 0.011
+      },
+      "labeled-gap144": {
+        "cases": 100,
+        "invalid": 0,
+        "ok": 65,
+        "route_fail": 30,
+        "label_fail": 5,
+        "seconds_median": 0.011
+      },
+      "dense-8x8": {
+        "cases": 60,
+        "invalid": 0,
+        "ok": 41,
+        "route_fail": 13,
+        "label_fail": 6,
+        "seconds_median": 0.038
+      },
+      "dense-10x12": {
+        "cases": 60,
+        "invalid": 0,
+        "ok": 31,
+        "route_fail": 21,
+        "label_fail": 8,
+        "seconds_median": 0.118
+      },
+      "dense-12x16": {
+        "cases": 60,
+        "invalid": 0,
+        "ok": 7,
+        "route_fail": 39,
+        "label_fail": 14,
+        "seconds_median": 0.216
+      },
+      "fanout-2": {
+        "cases": 4,
+        "invalid": 0,
+        "ok": 4,
+        "route_fail": 0,
+        "label_fail": 0,
+        "seconds_median": 0.001
+      },
+      "fanout-3": {
+        "cases": 4,
+        "invalid": 0,
+        "ok": 2,
+        "route_fail": 0,
+        "label_fail": 2,
+        "seconds_median": 0.001
+      },
+      "fanout-4": {
+        "cases": 4,
+        "invalid": 0,
+        "ok": 3,
+        "route_fail": 0,
+        "label_fail": 1,
+        "seconds_median": 0.006
+      },
+      "fanout-5": {
+        "cases": 4,
+        "invalid": 0,
+        "ok": 4,
+        "route_fail": 0,
+        "label_fail": 0,
+        "seconds_median": 0.008
+      },
+      "subnets": {
+        "cases": 60,
+        "invalid": 0,
+        "ok": 16,
+        "route_fail": 23,
+        "label_fail": 21,
+        "seconds_median": 0.085
+      }
+    },
+    "v3": {
+      "examples": {
+        "cases": 5,
+        "invalid": 0,
+        "ok": 5,
+        "route_fail": 0,
+        "label_fail": 0,
+        "seconds_median": 0.046
+      },
+      "examples-auto-ports": {
+        "cases": 5,
+        "invalid": 0,
+        "ok": 5,
+        "route_fail": 0,
+        "label_fail": 0,
+        "seconds_median": 0.058
+      },
+      "small-unlabeled-gap74": {
+        "cases": 139,
+        "invalid": 11,
+        "ok": 139,
+        "route_fail": 0,
+        "label_fail": 0,
+        "seconds_median": 0.003
+      },
+      "small-unlabeled-gap144": {
+        "cases": 150,
+        "invalid": 0,
+        "ok": 150,
+        "route_fail": 0,
+        "label_fail": 0,
+        "seconds_median": 0.003
+      },
+      "labeled-gap74": {
+        "cases": 86,
+        "invalid": 14,
+        "ok": 62,
+        "route_fail": 0,
+        "label_fail": 24,
+        "seconds_median": 0.014
+      },
+      "labeled-gap100": {
+        "cases": 100,
+        "invalid": 0,
+        "ok": 97,
+        "route_fail": 0,
+        "label_fail": 3,
+        "seconds_median": 0.011
+      },
+      "labeled-gap144": {
+        "cases": 100,
+        "invalid": 0,
+        "ok": 100,
+        "route_fail": 0,
+        "label_fail": 0,
+        "seconds_median": 0.01
+      },
+      "dense-8x8": {
+        "cases": 60,
+        "invalid": 0,
+        "ok": 59,
+        "route_fail": 0,
+        "label_fail": 1,
+        "seconds_median": 0.026
+      },
+      "dense-10x12": {
+        "cases": 60,
+        "invalid": 0,
+        "ok": 56,
+        "route_fail": 0,
+        "label_fail": 4,
+        "seconds_median": 0.076
+      },
+      "dense-12x16": {
+        "cases": 60,
+        "invalid": 0,
+        "ok": 45,
+        "route_fail": 0,
+        "label_fail": 15,
+        "seconds_median": 0.229
+      },
+      "fanout-2": {
+        "cases": 4,
+        "invalid": 0,
+        "ok": 4,
+        "route_fail": 0,
+        "label_fail": 0,
+        "seconds_median": 0.001
+      },
+      "fanout-3": {
+        "cases": 4,
+        "invalid": 0,
+        "ok": 4,
+        "route_fail": 0,
+        "label_fail": 0,
+        "seconds_median": 0.003
+      },
+      "fanout-4": {
+        "cases": 4,
+        "invalid": 0,
+        "ok": 4,
+        "route_fail": 0,
+        "label_fail": 0,
+        "seconds_median": 0.005
+      },
+      "fanout-5": {
+        "cases": 4,
+        "invalid": 0,
+        "ok": 4,
+        "route_fail": 0,
+        "label_fail": 0,
+        "seconds_median": 0.005
+      },
+      "subnets": {
+        "cases": 60,
+        "invalid": 0,
+        "ok": 40,
+        "route_fail": 0,
+        "label_fail": 20,
+        "seconds_median": 0.188
+      }
+    },
+    "totals": {
+      "ok": [
+        547,
+        774
+      ],
+      "route_fail": [
+        210,
+        0
+      ],
+      "label_fail": [
+        84,
+        67
+      ]
+    },
+    "newly_failing": 0
   }
 }

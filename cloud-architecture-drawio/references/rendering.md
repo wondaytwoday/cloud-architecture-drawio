@@ -19,7 +19,15 @@ curl -L --fail https://viewer.diagrams.net/js/viewer-static.min.js -o /tmp/viewe
 NODE_PATH=/tmp/cloud-diagram-runtime/node_modules node scripts/render.cjs architecture.drawio architecture.png /tmp/viewer-static.min.js
 ```
 
-Use an existing available Playwright installation instead of installing again. The viewer path may also come from `$DRAWIO_VIEWER`, and `CHROME_PATH` can specify an existing browser executable. Follow host permission rules for installation/download. The renderer blocks all browser network requests after loading the local bundle; diagram content and embedded icons stay local. The viewer URL is mutable: `.render.json` records the viewer's SHA-256, the Playwright version, and the input's SHA-256 for reproducibility.
+For repeated use, install once into the cache that `cloud_drawio.py check` searches (`~/.cache/cloud-architecture-drawio`, or `$CLOUD_DRAWIO_CACHE`), with the Playwright version the examples were verified with:
+
+```sh
+npm install --prefix ~/.cache/cloud-architecture-drawio playwright@1.61.1
+~/.cache/cloud-architecture-drawio/node_modules/.bin/playwright install chromium
+curl -L --fail https://viewer.diagrams.net/js/viewer-static.min.js -o ~/.cache/cloud-architecture-drawio/viewer-static.min.js
+```
+
+`check` also honours `NODE_PATH` and `$DRAWIO_VIEWER`, and writes the PNG next to the `.drawio`. Use an existing available Playwright installation instead of installing again. The viewer path may also come from `$DRAWIO_VIEWER`, and `CHROME_PATH` can specify an existing browser executable. Follow host permission rules for installation/download. The renderer blocks all browser network requests after loading the local bundle; diagram content and embedded icons stay local. The viewer URL is mutable: `.render.json` records the viewer's SHA-256, the Playwright version, and the input's SHA-256 for reproducibility.
 
 ```
 node scripts/render.cjs INPUT.drawio OUTPUT.png [VIEWER.js] [--report REPORT.json | --no-report] [--page N]

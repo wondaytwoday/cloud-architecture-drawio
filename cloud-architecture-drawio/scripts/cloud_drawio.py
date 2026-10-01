@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import subprocess
 import sys
 import unicodedata
 import urllib.parse
@@ -20,6 +21,8 @@ import cloud_routes
 from model_validation import EDGE_KINDS, legend_captions, validate_structure
 
 ROOT = Path(__file__).resolve().parents[1]
+# Where `check` looks for a persistent renderer: node_modules/playwright and the viewer.
+CACHE = Path(os.environ.get('CLOUD_DRAWIO_CACHE') or Path.home()/'.cache/cloud-architecture-drawio')
 CAT = json.loads((ROOT / 'assets/icon-catalog.json').read_text(encoding='utf-8'))
 KINDS = {'cloud', 'account', 'project', 'region', 'vpc', 'vnet', 'az', 'subnet', 'group'}
 PALETTE = {
@@ -245,13 +248,59 @@ def emit(value, **options):
     print(text)
 
 
+def find_renderer(viewer=None):
+    """Return (command, environment) for render.cjs, or (None, reason)."""
+    node=shutil.which('node')
+    if not node: return None,'node is not installed'
+    viewer=viewer or os.environ.get('DRAWIO_VIEWER') or str(CACHE/'viewer-static.min.js')
+    if not Path(viewer).is_file(): return None,f'draw.io viewer bundle not found at {viewer}'
+    env=dict(os.environ)
+    env['NODE_PATH']=os.pathsep.join(p for p in (env.get('NODE_PATH'),str(CACHE/'node_modules')) if p)
+    if subprocess.run([node,'-e','require("playwright")'],env=env,capture_output=True).returncode:
+        return None,'playwright is not installed for node'
+    return ([node,str(ROOT/'scripts/render.cjs'),'{input}','{output}',viewer],env),None
+
+
+def check(m, output, force=False, viewer=None):
+    """Validate, build and render-verify in one step. Returns (verdict, exit code).
+
+    Exit 0 means every automated check passed (visual review still applies), 1 a
+    failure, 2 a successful build that could not be render-verified here.
+    """
+    errors,warnings=validate(m)
+    if errors: return {'ok':False,'stage':'validate','errors':errors,'warnings':warnings},1
+    try: report=build(m,output,force)
+    except ValueError as e: return {'ok':False,'stage':'build','errors':str(e).splitlines(),'warnings':warnings},1
+    verdict={'output':str(output),'routing':report['routing'],'warnings':report['warnings'],
+             'quality':{k:report['quality'][k] for k in ('crossingCount','overlapLength','bendCount','totalLength')}}
+    found,reason=find_renderer(viewer)
+    if not found:
+        return {**verdict,'ok':False,'stage':'render','rendered':False,
+                'reason':f'{reason}; install the renderer as in references/rendering.md, or report visual verification as not completed'},2
+    command,env=found;png=Path(output).with_suffix('.png')
+    done=subprocess.run([part.format(input=output,output=png) for part in command],env=env,capture_output=True,text=True)
+    try: rendered=json.loads(done.stdout)
+    except ValueError: rendered=None
+    verdict.update(stage='render',rendered=rendered is not None,png=str(png))
+    if rendered is None:
+        return {**verdict,'ok':False,'errors':(done.stderr.strip() or 'renderer failed').splitlines()[-3:]},1
+    problems={k:rendered[k] for k in ('unknownIcons','offPage','brokenImages','textOverflow','pageErrors') if rendered.get(k)}
+    if rendered['geometry']['mismatches']: problems['mismatches']=rendered['geometry']['mismatches']
+    if rendered['editability'].get('error'): problems['editability']=rendered['editability']['error']
+    verdict.update(ok=done.returncode==0 and not problems,problems=problems,warnings=verdict['warnings']+rendered.get('warnings',[]),
+                   jumpMarkers=rendered['geometry']['jumpMarkers'])
+    return verdict,(0 if verdict['ok'] else 1)
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__); sub=p.add_subparsers(dest='cmd',required=True)
-    for command in ('build','validate'):
+    for command in ('build','validate','check'):
         s=sub.add_parser(command); s.add_argument('model');
-        if command=='build':
+        if command in ('build','check'):
             s.add_argument('output')
             s.add_argument('--force',action='store_true',help='replace an output that changed after it was built')
+        if command=='check':
+            s.add_argument('--viewer',help='draw.io viewer-static.min.js (default: $DRAWIO_VIEWER, then the cache)')
     sub.add_parser('icons')
     a=p.parse_args()
     try:
@@ -259,9 +308,11 @@ def main():
         m=json.loads(Path(a.model).read_text(encoding='utf-8-sig'))
         if a.cmd=='validate':
             errors,warnings=validate(m); emit({'errors':errors,'warnings':warnings},indent=2); sys.exit(bool(errors))
+        if a.cmd=='check':
+            verdict,code=check(m,a.output,a.force,a.viewer); emit(verdict,indent=2); sys.exit(code)
         report=build(m,a.output,a.force); emit({'output':a.output,'warnings':report['warnings']})
     except OSError as e:
-        where=e.filename or (a.output if a.cmd=='build' else getattr(a,'model',''))
+        where=e.filename or (a.output if a.cmd in ('build','check') else getattr(a,'model',''))
         p.exit(1,f'{where}: {e.strerror or e}\n')
     except (ValueError,KeyError,TypeError) as e: p.exit(1,str(e)+'\n')
 

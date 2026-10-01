@@ -312,10 +312,13 @@ def validate_structure(m, catalog, wrapped, header_rect):
         if parent in box_by:
             p = box_by[parent]
             if not _inside(_rect(item), _rect(p)):
-                errors.append(f'{name}: outside parent {parent}')
+                x, y, w, h = _rect(item)
+                beyond = [(side, amount) for side, amount in (('left', p['x']-x), ('top', p['y']-y),
+                          ('right', x+w-p['x']-p['w']), ('bottom', y+h-p['y']-p['h'])) if amount > 0]
+                errors.append(f"{name}: outside parent {parent} ({', '.join(f'{side} edge {amount:g}px beyond' for side, amount in beyond)})")
                 misplaced.add(name)
             if item['y'] < p['y']+34:
-                errors.append(f'{name}: overlaps parent header')
+                errors.append(f"{name}: overlaps parent header (starts {item['y']-p['y']:g}px below {parent}'s top; needs 34px)")
         seen = {name}
         while parent in box_by:
             if parent in seen:

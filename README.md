@@ -21,7 +21,16 @@ v3는 "검사를 통과하면 올바른 그림"이라는 약속을 지키도록 
   - 범례를 현지화합니다(`locale: "ko"`).
   - 한국어 Windows 같은 비 UTF-8 로캘에서도 동작합니다.
 
-회귀 테스트는 92개입니다(렌더 환경이 없으면 8개는 건너뜁니다). 예제의 경로와 라우팅 지표는 v2와 같습니다.
+- **라우터**
+  - 아직 그리지 않은 연결선의 리드인을 미리 예약하고, 컨테이너 테두리에 붙어 달리지 않습니다.
+  - 라벨이 들어가지 않으면 평행선을 벌리는 방식 등 단순한 방식으로 차례로 다시 시도합니다.
+  - 고정 코퍼스 841개 모델 기준으로 빌드 성공이 547 → 774개로 늘었고, 경로 실패는 210 → 0개입니다. 기존에 되던 모델이 실패하는 경우는 없습니다.
+  - AWS 3-AZ 예제의 교차는 2 → 0입니다.
+- **진단과 실행**
+  - 빌드가 실패하면 들어가지 않는 라벨을 모두, 막는 도형 이름과 필요한 간격과 함께 보여 줍니다.
+  - `check` 명령 하나로 검증·빌드·렌더 판정까지 끝냅니다.
+
+회귀 테스트는 95개입니다(렌더 환경이 없으면 9개는 건너뜁니다). 라우팅 벤치마크는 `python3 evals/bench_routing.py`로 재현합니다.
 
 v2는 연결 지점 분산, 선 중첩 방지, 장애물 여백, 교차 점프 표시, 연결선에 붙는 라벨, CSP 경계 검사를 보강했습니다. 다섯 예제의 선 교차는 25 → 2, 중첩 길이는 236 → 0 px로 줄었습니다. 라우터와 예제 배치 개선을 함께 반영한 수치입니다.
 
@@ -67,6 +76,14 @@ python3 cloud-architecture-drawio/scripts/cloud_drawio.py build \
   cloud-architecture-drawio/assets/templates/aws-three-tier.json \
   examples/aws-three-tier.drawio
 python3 -m unittest discover -s evals -v
+```
+
+렌더 환경까지 갖췄다면 `check`가 검증·빌드·렌더 검사를 한 번에 합니다. 종료 코드는 성공 0, 실패 1, 렌더 불가 2입니다.
+
+```sh
+python3 cloud-architecture-drawio/scripts/cloud_drawio.py check \
+  cloud-architecture-drawio/assets/templates/aws-three-tier.json \
+  examples/aws-three-tier.drawio
 ```
 
 `build`는 draw.io에서 수정된 출력 파일을 덮어쓰지 않고 멈춥니다. 수정 내용을 버리려면 `--force`를 붙입니다. v3 이전에 만든 출력은 리포트에 파일 해시가 없어 이 보호를 받지 못합니다. 스킬 폴더를 바꾼 뒤에는 `python3 tools/build_dist.py`로 배포 ZIP을 다시 만드세요. ZIP과 폴더가 다르면 테스트가 실패합니다.
