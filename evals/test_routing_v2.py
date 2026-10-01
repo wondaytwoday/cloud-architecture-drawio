@@ -109,10 +109,11 @@ class RoutingTests(unittest.TestCase):
             reordered = copy.deepcopy(model)
             reordered['edges'].reverse()
             with self.subTest(model=name):
-                routes, ports = routing.plan(reordered, c.header_rect)
+                routes, ports, labels, mode = routing.route_and_label(reordered, c.header_rect)
+                self.assertEqual(mode, report['routing'])
                 self.assertEqual(routes, report['routes'])
                 self.assertEqual(ports, routing.select_ports(model))
-                self.assertEqual(routing.place_labels(reordered, routes, c.header_rect), report['labels'])
+                self.assertEqual(labels, report['labels'])
 
     def test_high_degree_resources_have_distinct_attachment_coordinates(self):
         for name, (model, report, _) in self.cases.items():
@@ -266,9 +267,14 @@ class RoutingTests(unittest.TestCase):
                            {'id': 'n4', 'label': 'Node 4', 'x': 430, 'y': 334, 'w': 156, 'h': 140}],
                  'edges': [{'id': 'e4', 'source': 'n3', 'target': 'n2', 'kind': 'egress', 'targetPort': 'top'},
                            {'id': 'e6', 'source': 'n4', 'target': 'n2', 'kind': 'egress'}]}
-        with tempfile.TemporaryDirectory() as tmp, \
-                self.assertRaisesRegex(ValueError, r'e6: Connector target port at \(822, 166\) lies on another connector'):
-            c.build(model, Path(tmp)/'tcontact.drawio')
+        # Plain sequential routing lays e4 along n2's border first, so e6's port
+        # would sit on it; that is a build error, never a silent junction.
+        with self.assertRaisesRegex(ValueError, r'e6: Connector target port at \(822, 166\) lies on another connector'):
+            routing.plan(model, c.header_rect, reserve=False, clear_borders=False, spread=False)
+        # Reserved lead-ins keep the port clear, so the model builds.
+        with tempfile.TemporaryDirectory() as tmp:
+            report = c.build(model, Path(tmp)/'tcontact.drawio')
+        self.assertEqual(report['quality']['crossingCount'], 0)
 
     def test_crossing_fixture_has_one_proper_crossing_and_jump_styles(self):
         model = json.loads((BASE/'evals/fixtures/routing-crossings.model.json').read_text(encoding='utf-8'))

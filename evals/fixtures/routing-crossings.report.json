@@ -4,6 +4,11 @@
   "warnings": [
     "1 connector crossings: inspect jump markers or revise ports/lanes"
   ],
+  "routing": {
+    "reservedLeadIns": true,
+    "borderClearance": true,
+    "spreadParallels": false
+  },
   "routes": {
     "horizontal": [
       [

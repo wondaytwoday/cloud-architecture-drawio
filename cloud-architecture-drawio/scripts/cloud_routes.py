@@ -1,4 +1,5 @@
 """Deterministic orthogonal routing, global label placement and geometric QA."""
+from bisect import bisect_left, bisect_right
 from collections import defaultdict
 from functools import lru_cache
 import heapq
@@ -126,7 +127,16 @@ def select_ports(m):
     return ports
 
 
-def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16):
+PENDING_GRID=True
+BORDER_GAP=8
+BORDER_LANE=10
+BORDER_FACTOR=3
+PARALLEL_H=40
+PARALLEL_V=60
+PARALLEL_FACTOR=.3
+
+
+def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,pending=(),borders=(),spread=True):
     """Directed lead-ins, obstacle padding, exact overlap rejection and crossing cost."""
     vx,vy=SIDES[sa];wx,wy=SIDES[sb]
     begin=(start[0]+vx*stub,start[1]+vy*stub);end=(goal[0]+wx*stub,goal[1]+wy*stub)
@@ -137,9 +147,11 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16):
         raise ValueError(f'facing card sides are {gap:g}px apart; connected sides need at least 2 x stub ({2*stub:g}px), so move the cards apart, choose other ports or lower routing.stub')
     if touch and begin!=end:
         raise ValueError('the source and target lead-ins cross each other; move the cards apart or choose other ports')
+    # Lead-ins of connectors that are not routed yet block like finished lines.
+    blocking=list(segments)+list(pending)
     for a,b in [(start,begin),(end,goal)]:
         if any(hits(a,b,r) for r in obstacles):raise ValueError('Connector lead-in intersects a card or title; increase gap or choose another port')
-        for c,d in segments:
+        for c,d in blocking:
             amount,point=relation(a,b,c,d)
             if amount>0:raise ValueError('Connector lead-ins overlap; use distinct port offsets')
             # An arrow ending on another line reads as a junction, not a crossing.
@@ -154,7 +166,10 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16):
     xs={MARGIN_SIDE,width-MARGIN_SIDE,begin[0],end[0]};ys={MARGIN_TOP,height-MARGIN_BOTTOM,begin[1],end[1]}
     for x,y,w,h in obstacles:
         xs.update((x-10,x,x+w,x+w+10));ys.update((y-10,y,y+h,y+h+10))
-    for a,b in segments:
+    # Lanes 10px either side of a boundary let routes keep clear of it.
+    for a,b in borders:
+        xs.update((a[0]-BORDER_LANE,a[0]+BORDER_LANE,b[0]-BORDER_LANE,b[0]+BORDER_LANE));ys.update((a[1]-BORDER_LANE,a[1]+BORDER_LANE,b[1]-BORDER_LANE,b[1]+BORDER_LANE))
+    for a,b in (blocking if PENDING_GRID else segments):
         xs.update((a[0]-10,a[0],a[0]+10,b[0]-10,b[0],b[0]+10))
         ys.update((a[1]-10,a[1],a[1]+10,b[1]-10,b[1],b[1]+10))
     xs=sorted(x for x in xs if MARGIN_SIDE<=x<=width-MARGIN_SIDE and (x in (begin[0],end[0]) or all(abs(x-v)>=10 for v in (begin[0],end[0]))))
@@ -164,16 +179,52 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16):
     dirs=list(SIDES.values());first=dirs.index((vx,vy));last=dirs.index((-wx,-wy))
     initial=(sx,sy,first);costs={initial:0};parents={};heap=[(length(begin,end),0,*initial)];finish=None
     own=[(start,begin),(end,goal)]
-    @lru_cache(None)
+    # Index obstacles and earlier lines by grid line. The search asks about many
+    # short moves, and scanning every card and line per move dominated runtime.
+    blocked=set()
+    for x,y,w,h in obstacles:
+        for j in range(bisect_right(ys,y),bisect_left(ys,y+h)):
+            for i in range(max(0,bisect_right(xs,x)-1),min(len(xs)-1,bisect_left(xs,x+w))):
+                if max(xs[i],x)<min(xs[i+1],x+w):blocked.add((i,j,i+1,j))
+        for i in range(bisect_right(xs,x),bisect_left(xs,x+w)):
+            for j in range(max(0,bisect_right(ys,y)-1),min(len(ys)-1,bisect_left(ys,y+h))):
+                if max(ys[j],y)<min(ys[j+1],y+h):blocked.add((i,j,i,j+1))
+    lines=({},{})  # horizontal segments by y, vertical segments by x
+    for k,(a,b) in enumerate(blocking):
+        axis=1 if a[1]==b[1] else 0
+        lines[axis-1 if axis else 1].setdefault(a[axis],[]).append(k)
+    keys=tuple(sorted(index) for index in lines)
+    def nearby(p,q):
+        """Indices of earlier segments that can touch, cross or run beside p-q."""
+        if p[1]==q[1]:same,cross,at,lo,hi=lines[0],lines[1],p[1],min(p[0],q[0]),max(p[0],q[0]);sk,ck=keys
+        else:same,cross,at,lo,hi=lines[1],lines[0],p[0],min(p[1],q[1]),max(p[1],q[1]);ck,sk=keys
+        reach=max(10,(PARALLEL_H if p[1]==q[1] else PARALLEL_V) if spread else 10)
+        found=[k for v in sk[bisect_right(sk,at-reach):bisect_left(sk,at+reach)] for k in same[v]]
+        found+=[k for v in ck[bisect_left(ck,lo):bisect_right(ck,hi)] for k in cross[v]]
+        return sorted(found)
+    border_lines=({},{})
+    for a,b in borders:
+        axis=1 if a[1]==b[1] else 0
+        border_lines[0 if axis else 1].setdefault(a[axis],[]).append((a,b))
+    border_keys=tuple(sorted(index) for index in border_lines)
+    def near_borders(p,q):
+        """Boundary edges parallel to p-q and closer than BORDER_GAP px."""
+        horizontal=p[1]==q[1];index,ks=(border_lines[0],border_keys[0]) if horizontal else (border_lines[1],border_keys[1])
+        at=p[1] if horizontal else p[0]
+        return [seg for v in ks[bisect_right(ks,at-BORDER_GAP):bisect_left(ks,at+BORDER_GAP)] for seg in index[v]]
     def penalty(x,y,nx,ny):
+        # Moves are symmetric, so both directions share one cache entry.
+        return move_cost(*((x,y,nx,ny) if (x,y)<=(nx,ny) else (nx,ny,x,y)))
+    @lru_cache(None)
+    def move_cost(x,y,nx,ny):
         p,q=(xs[x],ys[y]),(xs[nx],ys[ny])
-        if any(hits(p,q,r) for r in obstacles):return None
+        if (x,y,nx,ny) in blocked:return None
         # The route may meet its own lead-ins only where it joins them.
         for a,b in own:
             amount,point=relation(p,q,a,b)
             if amount>0 or point not in (None,begin,end):return None
         cost=0;cross=set()
-        for a,b in segments:
+        for a,b in (blocking[k] for k in nearby(p,q)):
             amount,point=relation(p,q,a,b)
             if amount>0:return None
             if point in (a,b):return None
@@ -184,6 +235,16 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16):
                 if max(min(p[0],q[0]),min(a[0],b[0]))<min(max(p[0],q[0]),max(a[0],b[0])):cost+=length(p,q)*3
             if p[0]==q[0] and a[0]==b[0] and 0<abs(p[0]-a[0])<10:
                 if max(min(p[1],q[1]),min(a[1],b[1]))<min(max(p[1],q[1]),max(a[1],b[1])):cost+=length(p,q)*3
+            # Long neighbouring runs squeeze the caption lane between them.
+            if not spread:continue
+            if p[1]==q[1] and a[1]==b[1] and 10<=abs(p[1]-a[1])<PARALLEL_H:
+                if max(min(p[0],q[0]),min(a[0],b[0]))<min(max(p[0],q[0]),max(a[0],b[0])):cost+=length(p,q)*PARALLEL_FACTOR
+            if p[0]==q[0] and a[0]==b[0] and 10<=abs(p[0]-a[0])<PARALLEL_V:
+                if max(min(p[1],q[1]),min(a[1],b[1]))<min(max(p[1],q[1]),max(a[1],b[1])):cost+=length(p,q)*PARALLEL_FACTOR
+        # A line running along a boundary reads as part of that boundary.
+        for a,b in near_borders(p,q):
+            if max(min(p[0],q[0]),min(a[0],b[0]))<min(max(p[0],q[0]),max(a[0],b[0])) if p[1]==q[1] else max(min(p[1],q[1]),min(a[1],b[1]))<min(max(p[1],q[1]),max(a[1],b[1])):
+                cost+=length(p,q)*BORDER_FACTOR
         return cost+len(cross)*180
     while heap:
         _,cost,x,y,d=heapq.heappop(heap);state=(x,y,d)
@@ -208,7 +269,7 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16):
     return simplify([start]+points+[goal])
 
 
-def plan(m,header_rect):
+def plan(m,header_rect,reserve=True,clear_borders=True,spread=True):
     nodes={n['id']:n for n in m['nodes']};ports=select_ports(m);routes={};segments=[]
     clearance=m.get('routing',{}).get('clearance',8);stub=m.get('routing',{}).get('stub',16)
     # Main traffic first, then secondary semantics; stable IDs make input order irrelevant.
@@ -218,13 +279,24 @@ def plan(m,header_rect):
         distance=length((a['x']+a['w']/2,a['y']+a['h']/2),(b['x']+b['w']/2,b['y']+b['h']/2))
         return e.get('priority',rank[e.get('kind','traffic')]),distance,e['id']
     ordered=sorted(m['edges'],key=order)
+    borders=[] if not clear_borders else sorted(seg for c in m['containers'] if not c.get('overlay') for seg in (((c['x'],c['y']),(c['x']+c['w'],c['y'])),((c['x'],c['y']+c['h']),(c['x']+c['w'],c['y']+c['h'])),((c['x'],c['y']),(c['x'],c['y']+c['h'])),((c['x']+c['w'],c['y']),(c['x']+c['w'],c['y']+c['h']))))
+    # Every port's lead-in is known before routing starts. Reserving the ones not
+    # routed yet stops an early connector from blocking or crossing them.
+    stubs={}
+    if reserve:
+        # Sorted, so the input order of edges cannot change any route.
+        for e in sorted(m['edges'],key=lambda e:e['id']):
+            for end in ('source','target'):
+                side,f=ports[(e['id'],end)];p=anchor(nodes[e[end]],side,f);v=SIDES[side]
+                stubs[(e['id'],end)]=(p,(p[0]+v[0]*stub,p[1]+v[1]*stub))
     for e in ordered:
         a,b=nodes[e['source']],nodes[e['target']]
         sa,fa=ports[(e['id'],'source')];sb,fb=ports[(e['id'],'target')]
         obstacles=[pad(rect(n),0 if n['id'] in (a['id'],b['id']) else clearance) for n in m['nodes']]
         obstacles += [pad(header_rect(c),4) for c in m['containers']]
         start,goal=anchor(a,sa,fa),anchor(b,sb,fb)
-        try:pts=solve(start,goal,sa,sb,obstacles,m['width'],m['height'],segments,clearance,stub)
+        pending=[seg for (eid,_),seg in stubs.items() if eid!=e['id'] and eid not in routes]
+        try:pts=solve(start,goal,sa,sb,obstacles,m['width'],m['height'],segments,clearance,stub,pending,borders,spread)
         except ValueError as exc:raise ValueError(f"{e['id']}: {exc}") from exc
         if any(self_contact(pts)):
             raise ValueError(f"{e['id']}: route doubles back on itself; choose other ports, widen the lane or lower routing.stub")
@@ -232,9 +304,33 @@ def plan(m,header_rect):
     return routes,ports
 
 
+# Preferred first: reserved lead-ins stop early connectors from blocking or
+# crossing later ones, and boundary clearance keeps lines off container edges.
+# Both add constraints that occasionally leave no clear caption lane, so the
+# plainer modes remain as fallbacks.
+ROUTING_MODES=tuple({'reservedLeadIns':r,'borderClearance':b,'spreadParallels':p}
+                    for r in (True,False) for p in (False,True) for b in (True,False))
+
+
+def route_and_label(m,header_rect):
+    """Return routes, ports, labels and the first routing mode that places every caption.
+
+    Raises the preferred mode's error when no mode succeeds.
+    """
+    first=None
+    for mode in ROUTING_MODES:
+        try:
+            routes,ports=plan(m,header_rect,mode['reservedLeadIns'],mode['borderClearance'],mode['spreadParallels'])
+            return routes,ports,place_labels(m,routes,header_rect),dict(mode)
+        except ValueError as exc:
+            first=first or exc
+    raise first
+
+
 def place_labels(m,routes,header_rect):
     obstacles=[pad(rect(n),4) for n in m['nodes']]+[pad(header_rect(b),4) for b in m['containers']]
     labels={};segments=[(eid,a,b) for eid,pts in routes.items() for a,b in zip(pts,pts[1:])]
+    borders=[seg for c in m['containers'] for seg in (((c['x'],c['y']),(c['x']+c['w'],c['y'])),((c['x'],c['y']+c['h']),(c['x']+c['w'],c['y']+c['h'])),((c['x'],c['y']),(c['x'],c['y']+c['h'])),((c['x']+c['w'],c['y']),(c['x']+c['w'],c['y']+c['h'])))]
     by={e['id']:e for e in m['edges']}
     for eid in sorted(routes,key=lambda k:(-len(by[k].get('label','')),k)):
         e=by[eid];label=e.get('label')
@@ -244,19 +340,24 @@ def place_labels(m,routes,header_rect):
         for a,b in zip(pts,pts[1:]):
             seglen=length(a,b)
             if seglen<24:before+=seglen;continue
-            for f in (.5,.4,.6,.3,.7,.2,.8):
+            # Try anchors every ~6px, keeping clear of the bends at each end.
+            margin=min(12,seglen*.2);steps=max(1,int((seglen-2*margin)//6))
+            for k in range(steps+1):
+                f=(margin+(seglen-2*margin)*k/steps)/seglen
                 cx=a[0]+(b[0]-a[0])*f;cy=a[1]+(b[1]-a[1])*f
                 offsets=[(-lw/2,-lh-5),(-lw/2,5)] if a[1]==b[1] else [(6,-lh/2),(-lw-6,-lh/2)]
+                score=abs((before+seglen*f)/total-.5)*30+(0 if a[1]==b[1] else 5)
                 for dx,dy in offsets:
-                    r=(cx+dx,cy+dy,lw,lh)
-                    if r[0]<12 or r[1]<80 or r[0]+lw>m['width']-12 or r[1]+lh>m['height']-88:continue
-                    if any(overlap(r,o) for o in obstacles):continue
-                    if any(hits(u,v,pad(r,3)) for _,u,v in segments):continue
-                    # Avoid captions covering container boundary lines.
-                    if any(hits(u,v,pad(r,2)) for c in m['containers'] for u,v in [((c['x'],c['y']),(c['x']+c['w'],c['y'])),((c['x'],c['y']+c['h']),(c['x']+c['w'],c['y']+c['h'])),((c['x'],c['y']),(c['x'],c['y']+c['h'])),((c['x']+c['w'],c['y']),(c['x']+c['w'],c['y']+c['h']))]):continue
-                    score=abs((before+seglen*f)/total-.5)*30+(0 if a[1]==b[1] else 5)
-                    candidates.append((score,r,(before+seglen*f)/total*2-1,(cx,cy)))
+                    candidates.append((score,(cx+dx,cy+dy,lw,lh),(before+seglen*f)/total*2-1,(cx,cy)))
             before+=seglen
-        if not candidates:raise ValueError(f'{eid}: no clear label position for {label!r}; enlarge a lane or shorten the label')
-        _,r,along,point=min(candidates,key=lambda v:v[0]);labels[eid]={'rect':r,'relativeX':along,'offset':(r[0]-point[0],r[1]-point[1])};obstacles.append(pad(r,4))
+        # The best-scoring clear candidate wins; checking in score order stops early.
+        for _,r,along,point in sorted(candidates,key=lambda v:(v[0],v[1])):
+            if r[0]<12 or r[1]<80 or r[0]+lw>m['width']-12 or r[1]+lh>m['height']-88:continue
+            if any(overlap(r,o) for o in obstacles):continue
+            if any(hits(u,v,pad(r,3)) for _,u,v in segments):continue
+            # Avoid captions covering container boundary lines.
+            if any(hits(u,v,pad(r,2)) for u,v in borders):continue
+            labels[eid]={'rect':r,'relativeX':along,'offset':(r[0]-point[0],r[1]-point[1])};obstacles.append(pad(r,4))
+            break
+        else:raise ValueError(f'{eid}: no clear label position for {label!r}; enlarge a lane or shorten the label')
     return labels

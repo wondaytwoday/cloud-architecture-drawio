@@ -35,7 +35,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_ingress" value="HTTPS 443" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="ingress" connectable="0">
-          <mxGeometry as="geometry" x="0.028158844765342916" y="0" width="73.41999999999999" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.0021660649819494893" y="0" width="73.41999999999999" height="22" relative="1">
             <mxPoint as="offset" x="-36.710000000000036" y="-27.0" />
           </mxGeometry>
         </mxCell>
@@ -48,7 +48,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_lb-a" value="HTTPS" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="lb-a" connectable="0">
-          <mxGeometry as="geometry" x="0.05022831050228316" y="0" width="47.9" height="22" relative="1">
+          <mxGeometry as="geometry" x="-0.004566210045662156" y="0" width="47.9" height="22" relative="1">
             <mxPoint as="offset" x="-23.950000000000045" y="-27.0" />
           </mxGeometry>
         </mxCell>
@@ -61,20 +61,20 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_lb-b" value="HTTPS" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="lb-b" connectable="0">
-          <mxGeometry as="geometry" x="-0.1651376146788991" y="0" width="47.9" height="22" relative="1">
+          <mxGeometry as="geometry" x="-0.18772053634438957" y="0" width="47.9" height="22" relative="1">
             <mxPoint as="offset" x="-23.950000000000045" y="5.0" />
           </mxGeometry>
         </mxCell>
         <mxCell id="sql-a" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#4B6074;strokeWidth=1.6;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.4358974358974359;entryY=0;entryPerimeter=0;jumpStyle=arc;jumpSize=8;" edge="1" parent="1" source="app-a" target="psc">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="408.0" y="738" />
-              <mxPoint x="618.0" y="738" />
+              <mxPoint x="408.0" y="730" />
+              <mxPoint x="618.0" y="730" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_sql-a" value="TCP 5432" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="sql-a" connectable="0">
-          <mxGeometry as="geometry" x="0.05050505050505061" y="0" width="67.03999999999999" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.010101010101010166" y="0" width="67.03999999999999" height="22" relative="1">
             <mxPoint as="offset" x="-33.51999999999998" y="-27.0" />
           </mxGeometry>
         </mxCell>
@@ -87,21 +87,21 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_sql-b" value="TCP 5432" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="sql-b" connectable="0">
-          <mxGeometry as="geometry" x="0.03846153846153855" y="0" width="67.03999999999999" height="22" relative="1">
-            <mxPoint as="offset" x="-33.51999999999998" y="-27.0" />
+          <mxGeometry as="geometry" x="-0.008484162895927572" y="0" width="67.03999999999999" height="22" relative="1">
+            <mxPoint as="offset" x="-33.51999999999998" y="5.0" />
           </mxGeometry>
         </mxCell>
         <mxCell id="psc-service" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#4B6074;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;jumpStyle=arc;jumpSize=8;" edge="1" parent="1" source="psc" target="database">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="964" y="862.0" />
-              <mxPoint x="964" y="842.0" />
+              <mxPoint x="1070" y="862.0" />
+              <mxPoint x="1070" y="842.0" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_psc-service" value="Private Service Connect" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="psc-service" connectable="0">
-          <mxGeometry as="geometry" x="-0.0028985507246376274" y="0" width="162.74" height="22" relative="1">
-            <mxPoint as="offset" x="-81.37" y="5.0" />
+          <mxGeometry as="geometry" x="-0.0034506556245688103" y="0" width="162.74" height="22" relative="1">
+            <mxPoint as="offset" x="-81.37" y="-27.0" />
           </mxGeometry>
         </mxCell>
         <mxCell id="users" value="" style="group;fillColor=none;strokeColor=none;container=1;collapsible=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">

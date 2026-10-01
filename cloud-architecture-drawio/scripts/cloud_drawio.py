@@ -189,10 +189,9 @@ def build(m, target, force=False):
         if b['kind'] in ('az','group','region'): style+='dashed=1;dashPattern=5 4;'
         cell(b['id'],b['label'],style,b['x']-p['x'],b['y']-p['y'],b['w'],b['h'],parent)
         remaining.remove(b); emitted.add(b['id'])
-    routes,ports=cloud_routes.plan(m,header_rect)
-    labels=cloud_routes.place_labels(m,routes,header_rect)
+    routes,ports,labels,mode=cloud_routes.route_and_label(m,header_rect)
     quality=cloud_routes.metrics(routes)
-    report={'version':3,'errors':[], 'warnings':warnings,'routes':routes,'labels':labels,'quality':quality,'model_sha256':sha256(json.dumps(m,sort_keys=True).encode())}
+    report={'version':3,'errors':[], 'warnings':warnings,'routing':mode,'routes':routes,'labels':labels,'quality':quality,'model_sha256':sha256(json.dumps(m,sort_keys=True).encode())}
     if quality['crossingCount']:
         report['warnings'].append(f"{quality['crossingCount']} connector crossings: inspect jump markers or revise ports/lanes")
     for e in m['edges']:
