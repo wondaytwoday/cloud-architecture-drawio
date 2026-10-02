@@ -105,7 +105,7 @@ def icon_style(key):
     # Variable-aspect stencils (gcp2) would stretch to the square icon box.
     data=re.sub(r'(<shape\b[^>]*\baspect=")variable"',r'\1fixed"',data,count=1)
     # Inline original draw.io vector stencil so the file doesn't need an external library.
-    return 'shape=stencil('+compress(data)+');fillColor='+i.get('color','#4285F4')+';strokeColor=none;'
+    return 'shape=stencil('+compress(data)+');fillColor='+i.get('color','#4285F4')+';strokeColor='+i.get('stroke','none')+';'
 
 
 def report_path(target):
@@ -194,7 +194,9 @@ def build(m, target, force=False):
         remaining.remove(b); emitted.add(b['id'])
     routes,ports,labels,mode=cloud_routes.route_and_label(m,header_rect)
     quality=cloud_routes.metrics(routes)
-    report={'version':3,'errors':[], 'warnings':warnings,'routing':mode,'routes':routes,'labels':labels,'quality':quality,'model_sha256':sha256(json.dumps(m,sort_keys=True).encode())}
+    # Plain boxes stand in for products without a catalog icon; disclose them.
+    fallbacks=[n['id'] for n in m['nodes'] if n.get('icon','generic')=='generic']
+    report={'version':3,'errors':[], 'warnings':warnings,'routing':mode,'fallbackIcons':fallbacks,'routes':routes,'labels':labels,'quality':quality,'model_sha256':sha256(json.dumps(m,sort_keys=True).encode())}
     if quality['crossingCount']:
         report['warnings'].append(f"{quality['crossingCount']} connector crossings: inspect jump markers or revise ports/lanes")
     for e in m['edges']:
@@ -282,7 +284,7 @@ def check(m, output, force=False, viewer=None):
     if errors: return {'ok':False,'stage':'validate','errors':errors,'warnings':warnings},1
     try: report=build(m,output,force)
     except ValueError as e: return {'ok':False,'stage':'build','errors':str(e).splitlines(),'warnings':warnings},1
-    verdict={'output':str(output),'routing':report['routing'],'warnings':report['warnings'],
+    verdict={'output':str(output),'routing':report['routing'],'warnings':report['warnings'],'fallbackIcons':report['fallbackIcons'],
              'quality':{k:report['quality'][k] for k in ('crossingCount','overlapLength','bendCount','totalLength')}}
     unavailable=lambda reason:({**verdict,'ok':False,'stage':'render','rendered':False,
         'reason':f'{reason}; install the renderer as in references/rendering.md, or report visual verification as not completed'},2)

@@ -15,6 +15,7 @@ SKILL = BASE/'cloud-architecture-drawio'
 CLI = [sys.executable, str(SKILL/'scripts/cloud_drawio.py')]
 RENDER = SKILL/'scripts/render.cjs'
 sys.path.insert(0, str(BASE/'tools'))
+sys.path.insert(0, str(BASE/'evals'))
 import build_dist
 
 
@@ -148,8 +149,10 @@ class AssetTests(unittest.TestCase):
         pinned = re.compile(r'^https://(github\.com/jgraph/drawio/blob|raw\.githubusercontent\.com/jgraph/drawio)/[0-9a-f]{40}/')
         for key, entry in catalog.items():
             with self.subTest(icon=key):
-                self.assertRegex(key, r'^(aws|azure|gcp)\.[a-z0-9-]+$')
+                self.assertRegex(key, r'^(aws|azure|gcp|generic)\.[a-z0-9-]+$')
                 self.assertIn(entry['kind'], ('svg', 'stencil'))
+                self.assertIn(entry.get('placement', 'any'), ('any', 'managed', 'policy', 'network', 'subnet'))
+                self.assertLessEqual(set(entry), {'file', 'kind', 'color', 'stroke', 'name', 'source', 'sha256', 'placement'})
                 self.assertTrue(entry['name'].strip())
                 self.assertRegex(entry['source'], pinned)
                 data = (SKILL/'assets'/entry['file']).read_bytes()
@@ -162,6 +165,19 @@ class AssetTests(unittest.TestCase):
                     self.assertRegex(entry.get('color', ''), r'^#[0-9A-Fa-f]{6}$')
         on_disk = {f'icons/{p.name}' for p in (SKILL/'assets/icons').iterdir() if p.suffix in ('.svg', '.xml')}
         self.assertEqual({entry['file'] for entry in catalog.values()}, on_disk)
+
+    def test_gallery_shows_every_catalog_icon_and_builds(self):
+        import gallery
+        model = gallery.model()
+        catalog = json.loads((SKILL/'assets/icon-catalog.json').read_text(encoding='utf-8'))
+        self.assertLessEqual(set(catalog), {n['icon'] for n in model['nodes']})
+        committed = json.loads((BASE/'evals/fixtures/icon-gallery.model.json').read_text(encoding='utf-8'))
+        self.assertEqual(model, committed, 'regenerate it with: python3 evals/gallery.py')
+        sys.path.insert(0, str(SKILL/'scripts'))
+        import cloud_drawio
+        with tempfile.TemporaryDirectory() as d:
+            report = cloud_drawio.build(model, Path(d)/'gallery.drawio')
+        self.assertEqual(report['warnings'], [])
 
     def test_release_zip_matches_the_skill_folder(self):
         self.assertEqual(build_dist.differences(), [], 'rebuild it with: python3 tools/build_dist.py')
@@ -181,6 +197,47 @@ class AssetTests(unittest.TestCase):
         finally:
             probe.unlink(missing_ok=True)
             os.utime(source, (stat.st_atime, stat.st_mtime))
+
+
+CACHE = BASE/'.cache'
+
+
+@unittest.skipUnless((CACHE/'drawio-82af4345/stencils/aws4.xml').exists(),
+                     'needs the pinned draw.io libraries in .cache (python3 cloud-architecture-drawio/scripts/add_icon.py search aws4 ec2)')
+class AddIconTests(unittest.TestCase):
+    def setUp(self):
+        self.addCleanup(os.environ.pop, 'CLOUD_DRAWIO_CACHE', None)
+        os.environ['CLOUD_DRAWIO_CACHE'] = str(CACHE)
+        sys.path.insert(0, str(SKILL/'scripts'))
+        import importlib
+        import add_icon
+        self.tool = importlib.reload(add_icon)
+
+    def test_extraction_reproduces_the_bundled_icons_byte_for_byte(self):
+        catalog = json.loads((SKILL/'assets/icon-catalog.json').read_text(encoding='utf-8'))
+        for key, entry in catalog.items():
+            with self.subTest(icon=key):
+                library = entry['source'].rsplit('/', 1)[-1].removesuffix('.xml') if entry['kind'] == 'stencil' else 'azure2'
+                name = entry['name'] if entry['kind'] == 'stencil' else entry['source'].split('/azure2/')[1]
+                kind, data, source = self.tool.extract(library, name)
+                self.assertEqual((kind, source), (entry['kind'], entry['source']))
+                self.assertEqual(hashlib.sha256(data).hexdigest(), entry['sha256'])
+
+    def test_add_writes_a_pinned_entry_and_refuses_bad_input(self):
+        with tempfile.TemporaryDirectory() as d:
+            catalog = Path(d)/'icon-catalog.json'
+            (Path(d)/'icons').mkdir()
+            catalog.write_text('{}', encoding='utf-8')
+            entry = self.tool.add('aws.sqs', 'aws4:sqs', '#e7157b', placement='managed', catalog_path=catalog)
+            self.assertEqual(entry['color'], '#E7157B')
+            self.assertEqual(entry['placement'], 'managed')
+            self.assertEqual(hashlib.sha256((Path(d)/entry['file']).read_bytes()).hexdigest(), entry['sha256'])
+            for args, message in ((('aws.sqs', 'aws4:sqs', '#E7157B'), 'already in the catalog'),
+                                  (('gcp.sqs', 'aws4:sqs', '#E7157B'), 'need a key like aws.'),
+                                  (('aws.queue', 'aws4:sqs'), 'pass --color'),
+                                  (('aws.nothing', 'aws4:no such shape', '#E7157B'), 'no stencil')):
+                with self.subTest(args=args), self.assertRaisesRegex(ValueError, message):
+                    self.tool.add(*args, catalog_path=catalog)
 
 
 def _renderer():
@@ -222,6 +279,12 @@ class RenderTests(unittest.TestCase):
 
     def fixture(self):
         return json.loads((BASE/'evals/fixtures/routing-crossings.model.json').read_text(encoding='utf-8'))
+
+    def test_every_catalog_icon_renders(self):
+        result, rendered = self.render(BASE/'evals/fixtures/icon-gallery.drawio', '--report', str(BASE/'evals/fixtures/icon-gallery.report.json'),
+                                       output=self.dir/'gallery.png')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual((rendered['unknownIcons'], rendered['brokenImages'], rendered['textOverflow']), ([], [], []))
 
     def test_crossing_renders_with_its_jump_arc(self):
         result, report = self.render(self.build(self.fixture(), 'cross'))

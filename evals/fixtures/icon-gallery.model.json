@@ -1,0 +1,1215 @@
+{
+  "provider": "multi",
+  "title": "Icon gallery · 93 catalog icons",
+  "subtitle": "Every catalog icon and relationship kind, rebuilt from the catalog",
+  "width": 2220,
+  "height": 2378,
+  "containers": [
+    {
+      "id": "aws-net",
+      "kind": "vpc",
+      "provider": "aws",
+      "label": "aws network",
+      "x": 30,
+      "y": 1606,
+      "w": 296,
+      "h": 304
+    },
+    {
+      "id": "aws-az",
+      "kind": "az",
+      "label": "AZ",
+      "parent": "aws-net",
+      "x": 40,
+      "y": 1646,
+      "w": 276,
+      "h": 254
+    },
+    {
+      "id": "aws-network-firewall-subnet",
+      "kind": "subnet",
+      "label": "subnet",
+      "parent": "aws-az",
+      "x": 50,
+      "y": 1686,
+      "w": 256,
+      "h": 174
+    },
+    {
+      "id": "azure-net",
+      "kind": "vnet",
+      "provider": "azure",
+      "label": "azure network",
+      "x": 366,
+      "y": 1606,
+      "w": 1360,
+      "h": 264
+    },
+    {
+      "id": "azure-appgateway-subnet",
+      "kind": "subnet",
+      "label": "subnet",
+      "parent": "azure-net",
+      "x": 386,
+      "y": 1646,
+      "w": 256,
+      "h": 174
+    },
+    {
+      "id": "azure-bastion-subnet",
+      "kind": "subnet",
+      "label": "subnet",
+      "parent": "azure-net",
+      "x": 652,
+      "y": 1646,
+      "w": 256,
+      "h": 174
+    },
+    {
+      "id": "azure-firewall-subnet",
+      "kind": "subnet",
+      "label": "subnet",
+      "parent": "azure-net",
+      "x": 918,
+      "y": 1646,
+      "w": 256,
+      "h": 174
+    },
+    {
+      "id": "azure-privateendpoint-subnet",
+      "kind": "subnet",
+      "label": "subnet",
+      "parent": "azure-net",
+      "x": 1184,
+      "y": 1646,
+      "w": 256,
+      "h": 174
+    },
+    {
+      "id": "azure-vpn-gateway-subnet",
+      "kind": "subnet",
+      "label": "subnet",
+      "parent": "azure-net",
+      "x": 1450,
+      "y": 1646,
+      "w": 256,
+      "h": 174
+    }
+  ],
+  "nodes": [
+    {
+      "id": "aws-alb",
+      "icon": "aws.alb",
+      "label": "aws.alb",
+      "detail": "application load balancer",
+      "x": 30,
+      "y": 110,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-apigateway",
+      "icon": "aws.apigateway",
+      "label": "aws.apigateway",
+      "detail": "api gateway",
+      "x": 246,
+      "y": 110,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-asg",
+      "icon": "aws.asg",
+      "label": "aws.asg",
+      "detail": "auto scaling",
+      "x": 462,
+      "y": 110,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-aurora",
+      "icon": "aws.aurora",
+      "label": "aws.aurora",
+      "detail": "aurora",
+      "x": 678,
+      "y": 110,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-cloudfront",
+      "icon": "aws.cloudfront",
+      "label": "aws.cloudfront",
+      "detail": "cloudfront",
+      "x": 894,
+      "y": 110,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-cloudwatch",
+      "icon": "aws.cloudwatch",
+      "label": "aws.cloudwatch",
+      "detail": "cloudwatch",
+      "x": 1110,
+      "y": 110,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-cognito",
+      "icon": "aws.cognito",
+      "label": "aws.cognito",
+      "detail": "cognito",
+      "x": 1326,
+      "y": 110,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-direct-connect",
+      "icon": "aws.direct-connect",
+      "label": "aws.direct-connect",
+      "detail": "direct connect",
+      "x": 1542,
+      "y": 110,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-dynamodb",
+      "icon": "aws.dynamodb",
+      "label": "aws.dynamodb",
+      "detail": "dynamodb",
+      "x": 1758,
+      "y": 110,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-ec2",
+      "icon": "aws.ec2",
+      "label": "aws.ec2",
+      "detail": "ec2",
+      "x": 1974,
+      "y": 110,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-ecr",
+      "icon": "aws.ecr",
+      "label": "aws.ecr",
+      "detail": "ecr",
+      "x": 30,
+      "y": 274,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-ecs",
+      "icon": "aws.ecs",
+      "label": "aws.ecs",
+      "detail": "ecs",
+      "x": 246,
+      "y": 274,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-efs",
+      "icon": "aws.efs",
+      "label": "aws.efs",
+      "detail": "elastic file system",
+      "x": 462,
+      "y": 274,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-eks",
+      "icon": "aws.eks",
+      "label": "aws.eks",
+      "detail": "eks",
+      "x": 678,
+      "y": 274,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-elasticache",
+      "icon": "aws.elasticache",
+      "label": "aws.elasticache",
+      "detail": "elasticache",
+      "x": 894,
+      "y": 274,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-eventbridge",
+      "icon": "aws.eventbridge",
+      "label": "aws.eventbridge",
+      "detail": "eventbridge",
+      "x": 1110,
+      "y": 274,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-fargate",
+      "icon": "aws.fargate",
+      "label": "aws.fargate",
+      "detail": "fargate",
+      "x": 1326,
+      "y": 274,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-igw",
+      "icon": "aws.igw",
+      "label": "aws.igw",
+      "detail": "internet gateway",
+      "x": 1542,
+      "y": 274,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-kinesis",
+      "icon": "aws.kinesis",
+      "label": "aws.kinesis",
+      "detail": "kinesis data streams",
+      "x": 1758,
+      "y": 274,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-kms",
+      "icon": "aws.kms",
+      "label": "aws.kms",
+      "detail": "key management service",
+      "x": 1974,
+      "y": 274,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-lambda",
+      "icon": "aws.lambda",
+      "label": "aws.lambda",
+      "detail": "lambda",
+      "x": 30,
+      "y": 438,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-nat",
+      "icon": "aws.nat",
+      "label": "aws.nat",
+      "detail": "nat gateway",
+      "x": 246,
+      "y": 438,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-nlb",
+      "icon": "aws.nlb",
+      "label": "aws.nlb",
+      "detail": "network load balancer",
+      "x": 462,
+      "y": 438,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-rds",
+      "icon": "aws.rds",
+      "label": "aws.rds",
+      "detail": "rds",
+      "x": 678,
+      "y": 438,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-route53",
+      "icon": "aws.route53",
+      "label": "aws.route53",
+      "detail": "route 53",
+      "x": 894,
+      "y": 438,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-s3",
+      "icon": "aws.s3",
+      "label": "aws.s3",
+      "detail": "s3",
+      "x": 1110,
+      "y": 438,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-secrets-manager",
+      "icon": "aws.secrets-manager",
+      "label": "aws.secrets-manager",
+      "detail": "secrets manager",
+      "x": 1326,
+      "y": 438,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-shield",
+      "icon": "aws.shield",
+      "label": "aws.shield",
+      "detail": "shield",
+      "x": 1542,
+      "y": 438,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-sns",
+      "icon": "aws.sns",
+      "label": "aws.sns",
+      "detail": "sns",
+      "x": 1758,
+      "y": 438,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-sqs",
+      "icon": "aws.sqs",
+      "label": "aws.sqs",
+      "detail": "sqs",
+      "x": 1974,
+      "y": 438,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-step-functions",
+      "icon": "aws.step-functions",
+      "label": "aws.step-functions",
+      "detail": "step functions",
+      "x": 30,
+      "y": 602,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-transit-gateway",
+      "icon": "aws.transit-gateway",
+      "label": "aws.transit-gateway",
+      "detail": "transit gateway",
+      "x": 246,
+      "y": 602,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-vpc-endpoint",
+      "icon": "aws.vpc-endpoint",
+      "label": "aws.vpc-endpoint",
+      "detail": "endpoints",
+      "x": 462,
+      "y": 602,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-vpn-gateway",
+      "icon": "aws.vpn-gateway",
+      "label": "aws.vpn-gateway",
+      "detail": "vpn gateway",
+      "x": 678,
+      "y": 602,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-waf",
+      "icon": "aws.waf",
+      "label": "aws.waf",
+      "detail": "waf",
+      "x": 894,
+      "y": 602,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-aks",
+      "icon": "azure.aks",
+      "label": "azure.aks",
+      "detail": "Kubernetes_Services",
+      "x": 1110,
+      "y": 602,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-api-management",
+      "icon": "azure.api-management",
+      "label": "azure.api-management",
+      "detail": "API_Management_Services",
+      "x": 1326,
+      "y": 602,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-appservice",
+      "icon": "azure.appservice",
+      "label": "azure.appservice",
+      "detail": "App_Services",
+      "x": 1542,
+      "y": 602,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-container-registry",
+      "icon": "azure.container-registry",
+      "label": "azure.container-registry",
+      "detail": "Container_Registries",
+      "x": 1758,
+      "y": 602,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-cosmosdb",
+      "icon": "azure.cosmosdb",
+      "label": "azure.cosmosdb",
+      "detail": "Azure_Cosmos_DB",
+      "x": 1974,
+      "y": 602,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-dns",
+      "icon": "azure.dns",
+      "label": "azure.dns",
+      "detail": "DNS_Zones",
+      "x": 30,
+      "y": 766,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-entra-id",
+      "icon": "azure.entra-id",
+      "label": "azure.entra-id",
+      "detail": "Azure_Active_Directory",
+      "x": 246,
+      "y": 766,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-event-hubs",
+      "icon": "azure.event-hubs",
+      "label": "azure.event-hubs",
+      "detail": "Event_Hubs",
+      "x": 462,
+      "y": 766,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-frontdoor",
+      "icon": "azure.frontdoor",
+      "label": "azure.frontdoor",
+      "detail": "Front_Doors",
+      "x": 678,
+      "y": 766,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-functions",
+      "icon": "azure.functions",
+      "label": "azure.functions",
+      "detail": "Function_Apps",
+      "x": 894,
+      "y": 766,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-keyvault",
+      "icon": "azure.keyvault",
+      "label": "azure.keyvault",
+      "detail": "Key_Vaults",
+      "x": 1110,
+      "y": 766,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-lb",
+      "icon": "azure.lb",
+      "label": "azure.lb",
+      "detail": "Load_Balancers",
+      "x": 1326,
+      "y": 766,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-log-analytics",
+      "icon": "azure.log-analytics",
+      "label": "azure.log-analytics",
+      "detail": "Log_Analytics_Workspaces",
+      "x": 1542,
+      "y": 766,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-monitor",
+      "icon": "azure.monitor",
+      "label": "azure.monitor",
+      "detail": "Monitor",
+      "x": 1758,
+      "y": 766,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-redis",
+      "icon": "azure.redis",
+      "label": "azure.redis",
+      "detail": "Cache_Redis",
+      "x": 1974,
+      "y": 766,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-service-bus",
+      "icon": "azure.service-bus",
+      "label": "azure.service-bus",
+      "detail": "Service_Bus",
+      "x": 30,
+      "y": 930,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-sql",
+      "icon": "azure.sql",
+      "label": "azure.sql",
+      "detail": "SQL_Database",
+      "x": 246,
+      "y": 930,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-storage",
+      "icon": "azure.storage",
+      "label": "azure.storage",
+      "detail": "Storage_Accounts",
+      "x": 462,
+      "y": 930,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-vm",
+      "icon": "azure.vm",
+      "label": "azure.vm",
+      "detail": "Virtual_Machine",
+      "x": 678,
+      "y": 930,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-armor",
+      "icon": "gcp.armor",
+      "label": "gcp.armor",
+      "detail": "Cloud Armor",
+      "x": 894,
+      "y": 930,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-bigquery",
+      "icon": "gcp.bigquery",
+      "label": "gcp.bigquery",
+      "detail": "BigQuery",
+      "x": 1110,
+      "y": 930,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-cdn",
+      "icon": "gcp.cdn",
+      "label": "gcp.cdn",
+      "detail": "Cloud CDN",
+      "x": 1326,
+      "y": 930,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-compute",
+      "icon": "gcp.compute",
+      "label": "gcp.compute",
+      "detail": "Compute Engine",
+      "x": 1542,
+      "y": 930,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-container-registry",
+      "icon": "gcp.container-registry",
+      "label": "gcp.container-registry",
+      "detail": "Container Registry",
+      "x": 1758,
+      "y": 930,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-dns",
+      "icon": "gcp.dns",
+      "label": "gcp.dns",
+      "detail": "Cloud DNS",
+      "x": 1974,
+      "y": 930,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-firestore",
+      "icon": "gcp.firestore",
+      "label": "gcp.firestore",
+      "detail": "cloud firestore",
+      "x": 30,
+      "y": 1094,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-functions",
+      "icon": "gcp.functions",
+      "label": "gcp.functions",
+      "detail": "Cloud Functions",
+      "x": 246,
+      "y": 1094,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-gke",
+      "icon": "gcp.gke",
+      "label": "gcp.gke",
+      "detail": "Container Engine",
+      "x": 462,
+      "y": 1094,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-iam",
+      "icon": "gcp.iam",
+      "label": "gcp.iam",
+      "detail": "Cloud IAM",
+      "x": 678,
+      "y": 1094,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-interconnect",
+      "icon": "gcp.interconnect",
+      "label": "gcp.interconnect",
+      "detail": "Dedicated Interconnect",
+      "x": 894,
+      "y": 1094,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-kms",
+      "icon": "gcp.kms",
+      "label": "gcp.kms",
+      "detail": "Key Management Service",
+      "x": 1110,
+      "y": 1094,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-lb",
+      "icon": "gcp.lb",
+      "label": "gcp.lb",
+      "detail": "Cloud Load Balancing",
+      "x": 1326,
+      "y": 1094,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-logging",
+      "icon": "gcp.logging",
+      "label": "gcp.logging",
+      "detail": "Logging",
+      "x": 1542,
+      "y": 1094,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-memorystore",
+      "icon": "gcp.memorystore",
+      "label": "gcp.memorystore",
+      "detail": "Cloud Memorystore",
+      "x": 1758,
+      "y": 1094,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-monitoring",
+      "icon": "gcp.monitoring",
+      "label": "gcp.monitoring",
+      "detail": "cloud monitoring",
+      "x": 1974,
+      "y": 1094,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-nat",
+      "icon": "gcp.nat",
+      "label": "gcp.nat",
+      "detail": "Cloud NAT",
+      "x": 30,
+      "y": 1258,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-pubsub",
+      "icon": "gcp.pubsub",
+      "label": "gcp.pubsub",
+      "detail": "Cloud PubSub",
+      "x": 246,
+      "y": 1258,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-router",
+      "icon": "gcp.router",
+      "label": "gcp.router",
+      "detail": "Cloud Router",
+      "x": 462,
+      "y": 1258,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-run",
+      "icon": "gcp.run",
+      "label": "gcp.run",
+      "detail": "Cloud Run",
+      "x": 678,
+      "y": 1258,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-spanner",
+      "icon": "gcp.spanner",
+      "label": "gcp.spanner",
+      "detail": "Cloud Spanner",
+      "x": 894,
+      "y": 1258,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-sql",
+      "icon": "gcp.sql",
+      "label": "gcp.sql",
+      "detail": "Cloud SQL",
+      "x": 1110,
+      "y": 1258,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-storage",
+      "icon": "gcp.storage",
+      "label": "gcp.storage",
+      "detail": "Cloud Storage",
+      "x": 1326,
+      "y": 1258,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-vpc",
+      "icon": "gcp.vpc",
+      "label": "gcp.vpc",
+      "detail": "Virtual Private Cloud",
+      "x": 1542,
+      "y": 1258,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "gcp-vpn",
+      "icon": "gcp.vpn",
+      "label": "gcp.vpn",
+      "detail": "Cloud VPN",
+      "x": 1758,
+      "y": 1258,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "generic-desktop",
+      "icon": "generic.desktop",
+      "label": "generic.desktop",
+      "detail": "Desktop PC",
+      "x": 1974,
+      "y": 1258,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "generic-firewall",
+      "icon": "generic.firewall",
+      "label": "generic.firewall",
+      "detail": "Firewall",
+      "x": 30,
+      "y": 1422,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "generic-internet",
+      "icon": "generic.internet",
+      "label": "generic.internet",
+      "detail": "Cloud",
+      "x": 246,
+      "y": 1422,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "generic-mobile",
+      "icon": "generic.mobile",
+      "label": "generic.mobile",
+      "detail": "Mobile",
+      "x": 462,
+      "y": 1422,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "generic-onprem",
+      "icon": "generic.onprem",
+      "label": "generic.onprem",
+      "detail": "Business Center",
+      "x": 678,
+      "y": 1422,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "generic-router",
+      "icon": "generic.router",
+      "label": "generic.router",
+      "detail": "Router",
+      "x": 894,
+      "y": 1422,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "generic-server",
+      "icon": "generic.server",
+      "label": "generic.server",
+      "detail": "Server",
+      "x": 1110,
+      "y": 1422,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "generic-storage",
+      "icon": "generic.storage",
+      "label": "generic.storage",
+      "detail": "Storage",
+      "x": 1326,
+      "y": 1422,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "generic",
+      "icon": "generic",
+      "label": "generic",
+      "detail": "built-in",
+      "x": 1542,
+      "y": 1422,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "generic-user",
+      "icon": "generic.user",
+      "label": "generic.user",
+      "detail": "built-in",
+      "x": 1758,
+      "y": 1422,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "aws-network-firewall",
+      "icon": "aws.network-firewall",
+      "label": "aws.network-firewall",
+      "detail": "network firewall",
+      "parent": "aws-network-firewall-subnet",
+      "x": 90,
+      "y": 1726,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-appgateway",
+      "icon": "azure.appgateway",
+      "label": "azure.appgateway",
+      "detail": "Application_Gateways",
+      "parent": "azure-appgateway-subnet",
+      "x": 426,
+      "y": 1686,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-bastion",
+      "icon": "azure.bastion",
+      "label": "azure.bastion",
+      "detail": "Bastions",
+      "parent": "azure-bastion-subnet",
+      "x": 692,
+      "y": 1686,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-firewall",
+      "icon": "azure.firewall",
+      "label": "azure.firewall",
+      "detail": "Firewalls",
+      "parent": "azure-firewall-subnet",
+      "x": 958,
+      "y": 1686,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-privateendpoint",
+      "icon": "azure.privateendpoint",
+      "label": "azure.privateendpoint",
+      "detail": "Private_Link",
+      "parent": "azure-privateendpoint-subnet",
+      "x": 1224,
+      "y": 1686,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "azure-vpn-gateway",
+      "icon": "azure.vpn-gateway",
+      "label": "azure.vpn-gateway",
+      "detail": "Virtual_Network_Gateways",
+      "parent": "azure-vpn-gateway-subnet",
+      "x": 1490,
+      "y": 1686,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "traffic-from",
+      "icon": "generic",
+      "label": "traffic from",
+      "x": 30,
+      "y": 1970,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "traffic-to",
+      "icon": "generic",
+      "label": "traffic to",
+      "x": 386,
+      "y": 1970,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "egress-from",
+      "icon": "generic",
+      "label": "egress from",
+      "x": 602,
+      "y": 1970,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "egress-to",
+      "icon": "generic",
+      "label": "egress to",
+      "x": 958,
+      "y": 1970,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "replication-from",
+      "icon": "generic",
+      "label": "replication from",
+      "x": 1174,
+      "y": 1970,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "replication-to",
+      "icon": "generic",
+      "label": "replication to",
+      "x": 1530,
+      "y": 1970,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "dns-from",
+      "icon": "generic",
+      "label": "dns from",
+      "x": 30,
+      "y": 2134,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "dns-to",
+      "icon": "generic",
+      "label": "dns to",
+      "x": 386,
+      "y": 2134,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "association-from",
+      "icon": "generic",
+      "label": "association from",
+      "x": 602,
+      "y": 2134,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "association-to",
+      "icon": "generic",
+      "label": "association to",
+      "x": 958,
+      "y": 2134,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "management-from",
+      "icon": "generic",
+      "label": "management from",
+      "x": 1174,
+      "y": 2134,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "management-to",
+      "icon": "generic",
+      "label": "management to",
+      "x": 1530,
+      "y": 2134,
+      "w": 176,
+      "h": 124
+    }
+  ],
+  "edges": [
+    {
+      "id": "kind-traffic",
+      "source": "traffic-from",
+      "target": "traffic-to",
+      "kind": "traffic",
+      "label": "traffic"
+    },
+    {
+      "id": "kind-egress",
+      "source": "egress-from",
+      "target": "egress-to",
+      "kind": "egress",
+      "label": "egress"
+    },
+    {
+      "id": "kind-replication",
+      "source": "replication-from",
+      "target": "replication-to",
+      "kind": "replication",
+      "label": "replication"
+    },
+    {
+      "id": "kind-dns",
+      "source": "dns-from",
+      "target": "dns-to",
+      "kind": "dns",
+      "label": "dns"
+    },
+    {
+      "id": "kind-association",
+      "source": "association-from",
+      "target": "association-to",
+      "kind": "association",
+      "label": "association"
+    },
+    {
+      "id": "kind-management",
+      "source": "management-from",
+      "target": "management-to",
+      "kind": "management",
+      "label": "management"
+    }
+  ],
+  "routing": {
+    "clearance": 4
+  },
+  "notes": [
+    "Generated by evals/gallery.py; review icon shapes and line styles here."
+  ]
+}

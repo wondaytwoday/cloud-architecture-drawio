@@ -1,0 +1,37 @@
+{
+  "page": 1,
+  "pages": 1,
+  "width": 2220,
+  "height": 2378,
+  "background": "#FFFFFF",
+  "cells": 466,
+  "edges": 6,
+  "unknownIcons": [],
+  "offPage": [],
+  "brokenImages": [],
+  "textOverflow": [],
+  "geometry": {
+    "checkedRoutes": 6,
+    "checkedLabels": 6,
+    "jumpMarkers": 0,
+    "missingJumps": 0,
+    "mismatches": []
+  },
+  "editability": {
+    "movedResource": "traffic-from",
+    "restored": true,
+    "roundTripEdges": 6,
+    "allEdgesConnected": true,
+    "roundTripLabels": 6,
+    "allLabelsAttached": true,
+    "labelFollow": true
+  },
+  "pageErrors": [],
+  "warnings": [],
+  "provenance": {
+    "input_sha256": "9dc195343db7c17088d5ad2f4722adbddf070015e67783b999325cda7b7ded50",
+    "report": "evals/fixtures/icon-gallery.report.json",
+    "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
+    "playwright": "1.61.1"
+  }
+}

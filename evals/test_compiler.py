@@ -141,6 +141,11 @@ class CompilerTests(unittest.TestCase):
         xml=urllib.parse.unquote(zlib.decompress(base64.b64decode(payload),-15).decode())
         self.assertTrue(xml.startswith('<shape aspect="fixed"'))
 
+    def test_report_lists_plain_box_fallbacks(self):
+        with tempfile.TemporaryDirectory() as d:
+            report=c.build(self.model('gcp-regional'),Path(d)/'gcp.drawio')
+        self.assertEqual(report['fallbackIcons'],['psc'])
+
     def test_report_records_the_file_it_describes(self):
         with tempfile.TemporaryDirectory() as d:
             p=Path(d)/'diagram.drawio';report=c.build(self.model(),p)

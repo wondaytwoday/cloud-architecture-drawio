@@ -1,0 +1,196 @@
+<shape aspect="variable" h="100" name="Server" strokewidth="2" w="90">
+    <connections>
+        <constraint name="N" perimeter="0" x="0.5" y="0" />
+        <constraint name="S" perimeter="0" x="0.5" y="1" />
+        <constraint name="W" perimeter="0" x="0" y="0.5" />
+        <constraint name="E" perimeter="0" x="1" y="0.5" />
+        <constraint name="NW" perimeter="0" x="0" y="0.15" />
+        <constraint name="SW" perimeter="0" x="0" y="1" />
+        <constraint name="NE" perimeter="0" x="1" y="0.15" />
+        <constraint name="SE" perimeter="0" x="1" y="1" />
+    </connections>
+    <foreground>
+        <roundrect arcsize="13.33" h="15" w="90" x="0" y="85" />
+        <fillstroke />
+        <roundrect arcsize="13.33" h="15" w="90" x="0" y="67.5" />
+        <fillstroke />
+        <roundrect arcsize="13.33" h="15" w="90" x="0" y="50" />
+        <fillstroke />
+        <roundrect arcsize="13.33" h="15" w="90" x="0" y="32.5" />
+        <fillstroke />
+        <roundrect arcsize="13.33" h="15" w="90" x="0" y="15" />
+        <fillstroke />
+        <path>
+            <move x="4" y="13" />
+            <line x="25" y="0" />
+            <line x="65" y="0" />
+            <line x="86" y="13" />
+            <close />
+        </path>
+        <fillstroke />
+        <fillcolor color="#ffffff" />
+        <ellipse h="8" w="8" x="78" y="88.5" />
+        <fill />
+        <ellipse h="8" w="8" x="77.67" y="71" />
+        <fill />
+        <ellipse h="8" w="8" x="78" y="53.5" />
+        <fill />
+        <ellipse h="8" w="8" x="78" y="36" />
+        <fill />
+        <ellipse h="8" w="8" x="78" y="18.5" />
+        <fill />
+        <path>
+            <move x="5" y="98" />
+            <line x="10" y="87" />
+            <line x="15" y="87" />
+            <line x="10" y="98" />
+            <close />
+            <move x="15" y="98" />
+            <line x="20" y="87" />
+            <line x="25" y="87" />
+            <line x="20" y="98" />
+            <close />
+            <move x="25" y="98" />
+            <line x="30" y="87" />
+            <line x="35" y="87" />
+            <line x="30" y="98" />
+            <close />
+            <move x="35" y="98" />
+            <line x="40" y="87" />
+            <line x="45" y="87" />
+            <line x="40" y="98" />
+            <close />
+            <move x="45" y="98" />
+            <line x="50" y="87" />
+            <line x="55" y="87" />
+            <line x="50" y="98" />
+            <close />
+            <move x="55" y="98" />
+            <line x="60" y="87" />
+            <line x="65" y="87" />
+            <line x="60" y="98" />
+            <close />
+            <move x="5" y="80.5" />
+            <line x="10" y="69.5" />
+            <line x="15" y="69.5" />
+            <line x="10" y="80.5" />
+            <close />
+            <move x="15" y="80.5" />
+            <line x="20" y="69.5" />
+            <line x="25" y="69.5" />
+            <line x="20" y="80.5" />
+            <close />
+            <move x="25" y="80.5" />
+            <line x="30" y="69.5" />
+            <line x="35" y="69.5" />
+            <line x="30" y="80.5" />
+            <close />
+            <move x="35" y="80.5" />
+            <line x="40" y="69.5" />
+            <line x="45" y="69.5" />
+            <line x="40" y="80.5" />
+            <close />
+            <move x="45" y="80.5" />
+            <line x="50" y="69.5" />
+            <line x="55" y="69.5" />
+            <line x="50" y="80.5" />
+            <close />
+            <move x="55" y="80.5" />
+            <line x="60" y="69.5" />
+            <line x="65" y="69.5" />
+            <line x="60" y="80.5" />
+            <close />
+            <move x="5" y="63" />
+            <line x="10" y="52" />
+            <line x="15" y="52" />
+            <line x="10" y="63" />
+            <close />
+            <move x="15" y="63" />
+            <line x="20" y="52" />
+            <line x="25" y="52" />
+            <line x="20" y="63" />
+            <close />
+            <move x="25" y="63" />
+            <line x="29.5" y="52" />
+            <line x="34.5" y="52" />
+            <line x="29.5" y="63" />
+            <close />
+            <move x="35" y="63" />
+            <line x="40" y="52" />
+            <line x="45" y="52" />
+            <line x="40" y="63" />
+            <close />
+            <move x="45" y="63" />
+            <line x="50" y="52" />
+            <line x="55" y="52" />
+            <line x="50" y="63" />
+            <close />
+            <move x="55" y="63" />
+            <line x="60" y="52" />
+            <line x="65" y="52" />
+            <line x="60" y="63" />
+            <close />
+            <move x="5" y="45.5" />
+            <line x="10" y="34.5" />
+            <line x="15" y="34.5" />
+            <line x="10" y="45.5" />
+            <close />
+            <move x="15" y="45.5" />
+            <line x="20" y="34.5" />
+            <line x="25" y="34.5" />
+            <line x="20" y="45.5" />
+            <close />
+            <move x="25" y="45.5" />
+            <line x="30" y="34.5" />
+            <line x="35" y="34.5" />
+            <line x="30" y="45.5" />
+            <close />
+            <move x="35" y="45.5" />
+            <line x="40" y="34.5" />
+            <line x="45" y="34.5" />
+            <line x="40" y="45.5" />
+            <close />
+            <move x="45" y="45.5" />
+            <line x="50" y="34.5" />
+            <line x="55" y="34.5" />
+            <line x="50" y="45.5" />
+            <close />
+            <move x="55" y="45.5" />
+            <line x="60" y="34.5" />
+            <line x="65" y="34.5" />
+            <line x="60" y="45.5" />
+            <close />
+            <move x="5" y="28" />
+            <line x="10" y="17" />
+            <line x="15" y="17" />
+            <line x="10" y="28" />
+            <close />
+            <move x="15" y="28" />
+            <line x="20" y="17" />
+            <line x="25" y="17" />
+            <line x="20" y="28" />
+            <close />
+            <move x="25" y="28" />
+            <line x="30" y="17" />
+            <line x="35" y="17" />
+            <line x="30" y="28" />
+            <close />
+            <move x="35" y="28" />
+            <line x="40" y="17" />
+            <line x="45" y="17" />
+            <line x="40" y="28" />
+            <close />
+            <move x="45" y="28" />
+            <line x="50" y="17" />
+            <line x="55" y="17" />
+            <line x="50" y="28" />
+            <close />
+            <move x="55" y="28" />
+            <line x="60" y="17" />
+            <line x="65" y="17" />
+            <line x="60" y="28" />
+            <close />
+        </path>
+        <fill />
+    </foreground>
+</shape>

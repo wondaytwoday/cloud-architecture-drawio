@@ -1,0 +1,37 @@
+<shape aspect="variable" h="100" name="Mobile" strokewidth="2" w="51.4">
+    <connections>
+        <constraint name="N" perimeter="0" x="0.5" y="0" />
+        <constraint name="S" perimeter="0" x="0.5" y="1" />
+        <constraint name="W" perimeter="0" x="0" y="0.5" />
+        <constraint name="E" perimeter="0" x="1" y="0.5" />
+        <constraint name="NW" perimeter="0" x="0.05" y="0.03" />
+        <constraint name="SW" perimeter="0" x="0.05" y="0.97" />
+        <constraint name="NE" perimeter="0" x="0.95" y="0.03" />
+        <constraint name="SE" perimeter="0" x="0.95" y="0.97" />
+    </connections>
+    <foreground>
+        <path>
+            <move x="0" y="9.5" />
+            <arc large-arc-flag="0" rx="9.5" ry="9.5" sweep-flag="1" x="9.5" x-axis-rotation="0" y="0" />
+            <line x="42" y="0" />
+            <arc large-arc-flag="0" rx="9.5" ry="9.5" sweep-flag="1" x="51.4" x-axis-rotation="0" y="9.5" />
+            <line x="51.4" y="90.5" />
+            <arc large-arc-flag="0" rx="9.5" ry="9.5" sweep-flag="1" x="42" x-axis-rotation="0" y="100" />
+            <line x="9.5" y="100" />
+            <arc large-arc-flag="0" rx="9.5" ry="9.5" sweep-flag="1" x="0" x-axis-rotation="0" y="90.5" />
+            <close />
+        </path>
+        <fillstroke />
+        <fillcolor color="#ffffff" />
+        <path>
+            <move x="2" y="9" />
+            <line x="2" y="91" />
+            <line x="49.4" y="91.12" />
+            <line x="49.4" y="9" />
+            <close />
+        </path>
+        <fill />
+        <roundrect arcsize="50" h="3.6" w="12.3" x="19.5" y="93.8" />
+        <fill />
+    </foreground>
+</shape>

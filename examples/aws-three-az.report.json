@@ -8,6 +8,7 @@
     "spreadParallels": false,
     "stubLanes": false
   },
+  "fallbackIcons": [],
   "routes": {
     "https": [
       [

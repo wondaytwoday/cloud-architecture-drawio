@@ -1,0 +1,26 @@
+<shape aspect="variable" h="60" name="Desktop PC" strokewidth="2" w="30">
+    <connections>
+        <constraint name="N" perimeter="0" x="0.5" y="0" />
+        <constraint name="S" perimeter="0" x="0.5" y="1" />
+        <constraint name="W" perimeter="0" x="0" y="0.5" />
+        <constraint name="E" perimeter="0" x="1" y="0.5" />
+        <constraint name="NW" perimeter="0" x="0.02" y="0.02" />
+        <constraint name="SW" perimeter="0" x="0.02" y="0.98" />
+        <constraint name="NE" perimeter="0" x="0.98" y="0.02" />
+        <constraint name="SE" perimeter="0" x="0.98" y="0.98" />
+    </connections>
+    <foreground>
+        <roundrect arcsize="6.67" h="60" w="30" x="0" y="0" />
+        <fillstroke />
+        <path>
+            <move x="0" y="10" />
+            <line x="30" y="10" />
+            <move x="0" y="30" />
+            <line x="30" y="30" />
+        </path>
+        <stroke />
+        <fillcolor color="#ffffff" />
+        <ellipse h="4" w="4" x="3" y="33" />
+        <fill />
+    </foreground>
+</shape>

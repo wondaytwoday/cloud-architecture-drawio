@@ -10,6 +10,8 @@ import re
 
 
 PROVIDERS = {'aws', 'azure', 'gcp', 'multi'}
+# Drawn by the compiler itself rather than from the catalog.
+BUILTIN_ICONS = ('generic', 'generic.user')
 CSPS = ('aws', 'azure', 'gcp')
 KINDS = {'cloud', 'account', 'project', 'region', 'vpc', 'vnet', 'az', 'subnet', 'group'}
 NETWORK_KINDS = {'vpc', 'vnet', 'az', 'subnet'}
@@ -28,19 +30,13 @@ LEGEND_NAMES = {
            'dns': 'DNS 조회', 'association': '정책 연결', 'management': '관리'},
 }
 
-# These keys denote the service itself, not its private access endpoint.  Do not
-# add generic services with both subnet-hosted and managed deployment modes.
-OUTSIDE_SUBNET = {
-    'aws.cloudfront', 'aws.route53', 'aws.s3',
-    'azure.dns', 'azure.frontdoor', 'azure.sql', 'azure.storage',
-    'gcp.dns', 'gcp.memorystore', 'gcp.sql', 'gcp.storage',
-}
-# Policies are associated with the resource they protect; they host nothing.
-POLICY_ASSOCIATIONS = {'aws.shield', 'aws.waf', 'gcp.armor'}
-# Attached to a VPC/network or region rather than to one subnet or zone.
-NETWORK_LEVEL = {'aws.igw', 'gcp.nat', 'gcp.router', 'gcp.vpc'}
-# These resources take an address in the subnet that hosts them.
-SUBNET_REQUIRED = {'azure.appgateway', 'azure.privateendpoint'}
+# Placement rules come from each catalog entry's `placement`:
+#   managed  the service itself, never inside a subnet/AZ (its private endpoint is
+#            a separate node); do not mark services with subnet-hosted modes
+#   policy   associated with the resource it protects; it hosts nothing
+#   network  attached to a VPC/network or region, not to one subnet or zone
+#   subnet   takes an address in the subnet that hosts it
+PLACEMENTS = ('any', 'managed', 'policy', 'network', 'subnet')
 
 TOP_KEYS = {'provider', 'title', 'subtitle', 'width', 'height', 'routing', 'containers',
             'nodes', 'edges', 'notes', 'locale', 'legend'}
@@ -430,11 +426,12 @@ def validate_structure(m, catalog, wrapped, header_rect):
 
     for n in nodes:
         icon, owner = n.get('icon', 'generic'), owner_of(n)
-        if icon not in ('generic', 'generic.user') and icon not in catalog:
+        if icon not in BUILTIN_ICONS and icon not in catalog:
             close = difflib.get_close_matches(icon, sorted(catalog), n=1, cutoff=0.6)
             hint = f'; did you mean {close[0]!r}?' if close else '; list keys with `cloud_drawio.py icons` or see references/assets.md'
             errors.append(f"{n['id']}: unknown icon {icon}{hint}")
-        if icon not in ('generic', 'generic.user') and owner != 'multi' and not icon.startswith(owner+'.'):
+        # generic.* glyphs are provider-neutral and fit any diagram.
+        if not icon.startswith('generic') and owner != 'multi' and not icon.startswith(owner+'.'):
             errors.append(f"{n['id']}: provider/icon mismatch")
         if n['w'] < 100 or n['h'] < 124:
             errors.append(f"{n['id']}: resource card needs >=100x124")
@@ -447,13 +444,14 @@ def validate_structure(m, catalog, wrapped, header_rect):
         lineage = ancestors(n)
         lineage += [b for b in enclosing(n) if b not in lineage]
         zonal = any(p['kind'] in ('subnet', 'az') for p in lineage)
-        if icon in OUTSIDE_SUBNET and zonal:
+        placement = catalog.get(icon, {}).get('placement', 'any')
+        if placement == 'managed' and zonal:
             errors.append(f"{n['id']}: managed/global service must not be placed inside subnet/AZ; model its endpoint separately")
-        if icon in POLICY_ASSOCIATIONS and zonal:
+        if placement == 'policy' and zonal:
             errors.append(f"{n['id']}: {icon} is a policy association, not a host; place it outside subnets/AZs and draw an association edge to the protected service")
-        if icon in NETWORK_LEVEL and zonal:
+        if placement == 'network' and zonal:
             errors.append(f"{n['id']}: {icon} attaches to the VPC/network, not to a subnet or AZ; place it outside subnets/AZs")
-        if icon in SUBNET_REQUIRED and not any(p['kind'] == 'subnet' for p in lineage):
+        if placement == 'subnet' and not any(p['kind'] == 'subnet' for p in lineage):
             errors.append(f"{n['id']}: {icon} takes an address in a subnet; place it inside the subnet that hosts it")
         if owner == 'aws' and n.get('zone') and any(p.get('zone') and n['zone'] != p['zone'] for p in lineage if p['kind'] in ('subnet', 'az')):
             errors.append(f"{n['id']}: zone differs from subnet/AZ")

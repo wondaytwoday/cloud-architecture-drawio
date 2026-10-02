@@ -1,0 +1,178 @@
+{
+  "version": 3,
+  "errors": [],
+  "warnings": [],
+  "routing": {
+    "reservedLeadIns": true,
+    "borderClearance": true,
+    "spreadParallels": false,
+    "stubLanes": false
+  },
+  "fallbackIcons": [
+    "generic",
+    "traffic-from",
+    "traffic-to",
+    "egress-from",
+    "egress-to",
+    "replication-from",
+    "replication-to",
+    "dns-from",
+    "dns-to",
+    "association-from",
+    "association-to",
+    "management-from",
+    "management-to"
+  ],
+  "routes": {
+    "kind-traffic": [
+      [
+        206,
+        2032.0
+      ],
+      [
+        386,
+        2032.0
+      ]
+    ],
+    "kind-egress": [
+      [
+        778,
+        2032.0
+      ],
+      [
+        958,
+        2032.0
+      ]
+    ],
+    "kind-replication": [
+      [
+        1350,
+        2032.0
+      ],
+      [
+        1530,
+        2032.0
+      ]
+    ],
+    "kind-dns": [
+      [
+        206,
+        2196.0
+      ],
+      [
+        386,
+        2196.0
+      ]
+    ],
+    "kind-association": [
+      [
+        778,
+        2196.0
+      ],
+      [
+        958,
+        2196.0
+      ]
+    ],
+    "kind-management": [
+      [
+        1350,
+        2196.0
+      ],
+      [
+        1530,
+        2196.0
+      ]
+    ]
+  },
+  "labels": {
+    "kind-association": {
+      "rect": [
+        824.91,
+        2169.0,
+        86.17999999999999,
+        22
+      ],
+      "relativeX": 0.0,
+      "offset": [
+        -43.09000000000003,
+        -27.0
+      ]
+    },
+    "kind-replication": {
+      "rect": [
+        1396.91,
+        2005.0,
+        86.17999999999999,
+        22
+      ],
+      "relativeX": 0.0,
+      "offset": [
+        -43.08999999999992,
+        -27.0
+      ]
+    },
+    "kind-management": {
+      "rect": [
+        1400.1,
+        2169.0,
+        79.8,
+        22
+      ],
+      "relativeX": 0.0,
+      "offset": [
+        -39.90000000000009,
+        -27.0
+      ]
+    },
+    "kind-traffic": {
+      "rect": [
+        265.67,
+        2005.0,
+        60.66,
+        22
+      ],
+      "relativeX": 0.0,
+      "offset": [
+        -30.329999999999984,
+        -27.0
+      ]
+    },
+    "kind-egress": {
+      "rect": [
+        840.86,
+        2005.0,
+        54.279999999999994,
+        22
+      ],
+      "relativeX": 0.0,
+      "offset": [
+        -27.139999999999986,
+        -27.0
+      ]
+    },
+    "kind-dns": {
+      "rect": [
+        274.0,
+        2169.0,
+        44,
+        22
+      ],
+      "relativeX": 0.0,
+      "offset": [
+        -22.0,
+        -27.0
+      ]
+    }
+  },
+  "quality": {
+    "crossingCount": 0,
+    "overlapLength": 0,
+    "bendCount": 0,
+    "totalLength": 1080.0,
+    "crossings": [],
+    "overlaps": []
+  },
+  "model_sha256": "31db5493ca1c74d0f3dc66d75d5cbf27b872950ed1f6a39dc443418f864afa76",
+  "drawio_sha256": "9dc195343db7c17088d5ad2f4722adbddf070015e67783b999325cda7b7ded50"
+}

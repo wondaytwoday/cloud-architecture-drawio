@@ -8,6 +8,9 @@
     "spreadParallels": false,
     "stubLanes": false
   },
+  "fallbackIcons": [
+    "psc"
+  ],
   "routes": {
     "sql-a": [
       [

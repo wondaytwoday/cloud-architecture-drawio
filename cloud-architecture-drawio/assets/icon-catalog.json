@@ -45,7 +45,8 @@
     "color": "#8C4FFF",
     "name": "cloudfront",
     "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
-    "sha256": "08891246ae159e6b7c4d25d92231bbf148d56a2178dc77594fda19c254b3915b"
+    "sha256": "08891246ae159e6b7c4d25d92231bbf148d56a2178dc77594fda19c254b3915b",
+    "placement": "managed"
   },
   "aws.route53": {
     "file": "icons/aws-route53.xml",
@@ -53,7 +54,8 @@
     "color": "#8C4FFF",
     "name": "route 53",
     "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
-    "sha256": "6fb6d2ed46f5c4180430da8495b735ebf40565177e5f471a8305f66f638fa5c9"
+    "sha256": "6fb6d2ed46f5c4180430da8495b735ebf40565177e5f471a8305f66f638fa5c9",
+    "placement": "managed"
   },
   "aws.waf": {
     "file": "icons/aws-waf.xml",
@@ -61,7 +63,8 @@
     "color": "#DD344C",
     "name": "waf",
     "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
-    "sha256": "9d9c6715d69d6db11d30c132a76011cd26afcd957eac4127d2a8a06f00516efa"
+    "sha256": "9d9c6715d69d6db11d30c132a76011cd26afcd957eac4127d2a8a06f00516efa",
+    "placement": "policy"
   },
   "aws.shield": {
     "file": "icons/aws-shield.xml",
@@ -69,7 +72,8 @@
     "color": "#DD344C",
     "name": "shield",
     "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
-    "sha256": "ff078248e63247f1471b4ce11ce62a15850dcdc8505bcb7ab05d0edf86f5801d"
+    "sha256": "ff078248e63247f1471b4ce11ce62a15850dcdc8505bcb7ab05d0edf86f5801d",
+    "placement": "policy"
   },
   "aws.nat": {
     "file": "icons/aws-nat.xml",
@@ -85,7 +89,8 @@
     "color": "#8C4FFF",
     "name": "internet gateway",
     "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
-    "sha256": "c46e3e4860b744af6d59bf4f4cd8637ebff9dd87caa4d267958c0cc2d3f0f065"
+    "sha256": "c46e3e4860b744af6d59bf4f4cd8637ebff9dd87caa4d267958c0cc2d3f0f065",
+    "placement": "network"
   },
   "aws.elasticache": {
     "file": "icons/aws-elasticache.xml",
@@ -141,7 +146,8 @@
     "color": "#4285F4",
     "name": "Cloud SQL",
     "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
-    "sha256": "e48055c02abcdf326a95992500882ce3dd792fb7d1111ec319de8ca87730ba3f"
+    "sha256": "e48055c02abcdf326a95992500882ce3dd792fb7d1111ec319de8ca87730ba3f",
+    "placement": "managed"
   },
   "gcp.storage": {
     "file": "icons/gcp-storage.xml",
@@ -149,7 +155,8 @@
     "color": "#4285F4",
     "name": "Cloud Storage",
     "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
-    "sha256": "2480a05b005af782b3abf2074947af4ae87a36d5c7be82685efeed890097360a"
+    "sha256": "2480a05b005af782b3abf2074947af4ae87a36d5c7be82685efeed890097360a",
+    "placement": "managed"
   },
   "gcp.dns": {
     "file": "icons/gcp-dns.xml",
@@ -157,7 +164,8 @@
     "color": "#4285F4",
     "name": "Cloud DNS",
     "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
-    "sha256": "3b768dd9c9e8c0b4e67dcd77d48368c4e1ff6d5076ea8193a91b69f4e025dde5"
+    "sha256": "3b768dd9c9e8c0b4e67dcd77d48368c4e1ff6d5076ea8193a91b69f4e025dde5",
+    "placement": "managed"
   },
   "gcp.nat": {
     "file": "icons/gcp-nat.xml",
@@ -165,7 +173,8 @@
     "color": "#4285F4",
     "name": "Cloud NAT",
     "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
-    "sha256": "deaf7ca1f85dfd51c059778a3105758dd2f6f14884867cc3b1aec69788140de1"
+    "sha256": "deaf7ca1f85dfd51c059778a3105758dd2f6f14884867cc3b1aec69788140de1",
+    "placement": "network"
   },
   "gcp.router": {
     "file": "icons/gcp-router.xml",
@@ -173,7 +182,8 @@
     "color": "#4285F4",
     "name": "Cloud Router",
     "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
-    "sha256": "10e8e7b679411a970253327c25d9f43a0326b42290831ca7e29359d0aad905c8"
+    "sha256": "10e8e7b679411a970253327c25d9f43a0326b42290831ca7e29359d0aad905c8",
+    "placement": "network"
   },
   "gcp.armor": {
     "file": "icons/gcp-armor.xml",
@@ -181,7 +191,8 @@
     "color": "#4285F4",
     "name": "Cloud Armor",
     "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
-    "sha256": "303bb4bb62b5048fc9187e1de3068a1dd729d5fb32d8f92df0be6b3a9f687639"
+    "sha256": "303bb4bb62b5048fc9187e1de3068a1dd729d5fb32d8f92df0be6b3a9f687639",
+    "placement": "policy"
   },
   "gcp.memorystore": {
     "file": "icons/gcp-memorystore.xml",
@@ -189,7 +200,8 @@
     "color": "#4285F4",
     "name": "Cloud Memorystore",
     "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
-    "sha256": "51abcd1fe3a96306e5744b4c6c09993bbf91299cd76d874b1d22f067d7c14f5d"
+    "sha256": "51abcd1fe3a96306e5744b4c6c09993bbf91299cd76d874b1d22f067d7c14f5d",
+    "placement": "managed"
   },
   "gcp.run": {
     "file": "icons/gcp-run.xml",
@@ -205,7 +217,8 @@
     "color": "#4285F4",
     "name": "Virtual Private Cloud",
     "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
-    "sha256": "ed8bd5275b6471959c7da227141510fc7c6283f88e9823e21e357fe4e9bb1774"
+    "sha256": "ed8bd5275b6471959c7da227141510fc7c6283f88e9823e21e357fe4e9bb1774",
+    "placement": "network"
   },
   "azure.vm": {
     "file": "icons/azure-vm.svg",
@@ -219,7 +232,8 @@
     "kind": "svg",
     "name": "Application_Gateways",
     "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/networking/Application_Gateways.svg",
-    "sha256": "514d11244c6c86bd0349fce0b014498b1278f707dc25e71764ea4cdd7f25fb3a"
+    "sha256": "514d11244c6c86bd0349fce0b014498b1278f707dc25e71764ea4cdd7f25fb3a",
+    "placement": "subnet"
   },
   "azure.lb": {
     "file": "icons/azure-lb.svg",
@@ -233,35 +247,40 @@
     "kind": "svg",
     "name": "DNS_Zones",
     "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/networking/DNS_Zones.svg",
-    "sha256": "811d727a9bb29c4bbcd7be6bb5d3ff65bc69b84f358eedd53d5f6c1b224a4fb0"
+    "sha256": "811d727a9bb29c4bbcd7be6bb5d3ff65bc69b84f358eedd53d5f6c1b224a4fb0",
+    "placement": "managed"
   },
   "azure.frontdoor": {
     "file": "icons/azure-frontdoor.svg",
     "kind": "svg",
     "name": "Front_Doors",
     "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/networking/Front_Doors.svg",
-    "sha256": "8394ba7e39ab65ba372f684506da061586d0ab9d5c08e59de1834146034166ba"
+    "sha256": "8394ba7e39ab65ba372f684506da061586d0ab9d5c08e59de1834146034166ba",
+    "placement": "managed"
   },
   "azure.privateendpoint": {
     "file": "icons/azure-privateendpoint.svg",
     "kind": "svg",
     "name": "Private_Link",
     "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/networking/Private_Link.svg",
-    "sha256": "841f9d562b614011a53efb592a3e0413e88673d1a438b1e36d5e14ac403d1d44"
+    "sha256": "841f9d562b614011a53efb592a3e0413e88673d1a438b1e36d5e14ac403d1d44",
+    "placement": "subnet"
   },
   "azure.sql": {
     "file": "icons/azure-sql.svg",
     "kind": "svg",
     "name": "SQL_Database",
     "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/databases/SQL_Database.svg",
-    "sha256": "956c95674f7487fa66e024660387ada06546017ecd7a64d8984318392eba4e3e"
+    "sha256": "956c95674f7487fa66e024660387ada06546017ecd7a64d8984318392eba4e3e",
+    "placement": "managed"
   },
   "azure.storage": {
     "file": "icons/azure-storage.svg",
     "kind": "svg",
     "name": "Storage_Accounts",
     "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/storage/Storage_Accounts.svg",
-    "sha256": "098f82d9e8155f38d52eaff9fe8826bfcbde08c4d8f4715c6f23c69697d00e34"
+    "sha256": "098f82d9e8155f38d52eaff9fe8826bfcbde08c4d8f4715c6f23c69697d00e34",
+    "placement": "managed"
   },
   "azure.appservice": {
     "file": "icons/azure-appservice.svg",
@@ -276,6 +295,496 @@
     "name": "s3",
     "color": "#7AA116",
     "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
-    "sha256": "d1c82cb95ac634198dea9c87b73cd1b9887ff9a680ce1f26e2f3f9ae560a1849"
+    "sha256": "d1c82cb95ac634198dea9c87b73cd1b9887ff9a680ce1f26e2f3f9ae560a1849",
+    "placement": "managed"
+  },
+  "aws.dynamodb": {
+    "file": "icons/aws-dynamodb.xml",
+    "kind": "stencil",
+    "color": "#C925D1",
+    "name": "dynamodb",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "8e1a68b6bdda9167f3e6693f33c3e46d2eead5b83c459720b582fbe245609a03",
+    "placement": "managed"
+  },
+  "aws.aurora": {
+    "file": "icons/aws-aurora.xml",
+    "kind": "stencil",
+    "color": "#C925D1",
+    "name": "aurora",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "ff807961c560014e4b9348ec51359470697cf22a39b9fd114f0551825051b0ba"
+  },
+  "aws.sqs": {
+    "file": "icons/aws-sqs.xml",
+    "kind": "stencil",
+    "color": "#E7157B",
+    "name": "sqs",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "f251d0101b5ba9c45c89c3304f32db86aa446590bc007ea983800841d0732b42",
+    "placement": "managed"
+  },
+  "aws.sns": {
+    "file": "icons/aws-sns.xml",
+    "kind": "stencil",
+    "color": "#E7157B",
+    "name": "sns",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "5c0dc20911069646b35124eb18ae188e8c1f435130d6df5546d3a2a70c9ee3ab",
+    "placement": "managed"
+  },
+  "aws.eventbridge": {
+    "file": "icons/aws-eventbridge.xml",
+    "kind": "stencil",
+    "color": "#E7157B",
+    "name": "eventbridge",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "6ea93748bd78f76cdafd6a7c148708b62d432217b11e6169bc2093e1a2845450",
+    "placement": "managed"
+  },
+  "aws.step-functions": {
+    "file": "icons/aws-step-functions.xml",
+    "kind": "stencil",
+    "color": "#E7157B",
+    "name": "step functions",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "9450d95b0e0ae9244790bec6169f06cbf468051485ab6fb46a6ebd4837c2a8aa",
+    "placement": "managed"
+  },
+  "aws.kinesis": {
+    "file": "icons/aws-kinesis.xml",
+    "kind": "stencil",
+    "color": "#8C4FFF",
+    "name": "kinesis data streams",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "2405fdaa0c60d96e0c5fbb3dcd6820b9eb19f8ef463031fc6ca2f4e95d5dcd0f",
+    "placement": "managed"
+  },
+  "aws.ecs": {
+    "file": "icons/aws-ecs.xml",
+    "kind": "stencil",
+    "color": "#ED7100",
+    "name": "ecs",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "c003aaebe4cfc9fa8e8ad5b23423044aa69b7101b07794ffca6bb7ff149b86b9"
+  },
+  "aws.eks": {
+    "file": "icons/aws-eks.xml",
+    "kind": "stencil",
+    "color": "#ED7100",
+    "name": "eks",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "0752d6e4541c3f743d1b17f354f3119051742765a13a788a61746edc6eed176d"
+  },
+  "aws.ecr": {
+    "file": "icons/aws-ecr.xml",
+    "kind": "stencil",
+    "color": "#ED7100",
+    "name": "ecr",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "95faeb4a046a1413cc103eeac2beb32863df829b8e9da4b989e621b2ce382765",
+    "placement": "managed"
+  },
+  "aws.fargate": {
+    "file": "icons/aws-fargate.xml",
+    "kind": "stencil",
+    "color": "#ED7100",
+    "name": "fargate",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "1d51b27dc9ec62ee974edb98e32981637f0f5bd51197e24847cc452e4b79157d"
+  },
+  "aws.cognito": {
+    "file": "icons/aws-cognito.xml",
+    "kind": "stencil",
+    "color": "#DD344C",
+    "name": "cognito",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "1dfb20a07dcc57278d6cec4292b09fcb6770b45f5ccbab4b9a186244ee74671c",
+    "placement": "managed"
+  },
+  "aws.cloudwatch": {
+    "file": "icons/aws-cloudwatch.xml",
+    "kind": "stencil",
+    "color": "#E7157B",
+    "name": "cloudwatch",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "ed6eb72ab841f5a7b9898a9f07b7f2a31adb7b5733661925ec7cc6a25bbe89ed",
+    "placement": "managed"
+  },
+  "aws.secrets-manager": {
+    "file": "icons/aws-secrets-manager.xml",
+    "kind": "stencil",
+    "color": "#DD344C",
+    "name": "secrets manager",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "5f0aff278b898c53883159a04dc3794acbcffa7ffb96533aa6a93a5acc7734cc",
+    "placement": "managed"
+  },
+  "aws.kms": {
+    "file": "icons/aws-kms.xml",
+    "kind": "stencil",
+    "color": "#DD344C",
+    "name": "key management service",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "a30760448a6203452bedbd5a184f8d276064f63b683822a8a269f72910b19a76",
+    "placement": "managed"
+  },
+  "aws.transit-gateway": {
+    "file": "icons/aws-transit-gateway.xml",
+    "kind": "stencil",
+    "color": "#8C4FFF",
+    "name": "transit gateway",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "6e2b11e34e86f274a649bcdb94dfc44483062db0b4c7bb132273e5c352f1231f",
+    "placement": "network"
+  },
+  "aws.vpc-endpoint": {
+    "file": "icons/aws-vpc-endpoint.xml",
+    "kind": "stencil",
+    "color": "#8C4FFF",
+    "name": "endpoints",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "ac76e0863e61303fdc6182ac2a8bf6765926dc6fc23aa1da5b2fd6adc9af664e"
+  },
+  "aws.direct-connect": {
+    "file": "icons/aws-direct-connect.xml",
+    "kind": "stencil",
+    "color": "#8C4FFF",
+    "name": "direct connect",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "8db7710dbcdd6a4d08e716592785b01d5181b853ca95fc4b5c5544de8b606ebf",
+    "placement": "managed"
+  },
+  "aws.vpn-gateway": {
+    "file": "icons/aws-vpn-gateway.xml",
+    "kind": "stencil",
+    "color": "#8C4FFF",
+    "name": "vpn gateway",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "f8c2064008100b27da1dcc808614cbea587fc29dde9fef1c1021c73163a95fbf",
+    "placement": "network"
+  },
+  "aws.network-firewall": {
+    "file": "icons/aws-network-firewall.xml",
+    "kind": "stencil",
+    "color": "#DD344C",
+    "name": "network firewall",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/aws4.xml",
+    "sha256": "5809c7c7db9688b030816dee37a802720e4c0f7823d918a20420d0f93716f786",
+    "placement": "subnet"
+  },
+  "azure.aks": {
+    "file": "icons/azure-aks.svg",
+    "kind": "svg",
+    "name": "Kubernetes_Services",
+    "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/containers/Kubernetes_Services.svg",
+    "sha256": "768bcd41b0a4d689292e63cb9f5ca806e0cf02c5efcff8588c7dd22bcf7a54bb"
+  },
+  "azure.functions": {
+    "file": "icons/azure-functions.svg",
+    "kind": "svg",
+    "name": "Function_Apps",
+    "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/compute/Function_Apps.svg",
+    "sha256": "2365771dd0d4cf236b4a7393a401bb5705d3b0708997eb1ea6164ceb905e036e"
+  },
+  "azure.cosmosdb": {
+    "file": "icons/azure-cosmosdb.svg",
+    "kind": "svg",
+    "name": "Azure_Cosmos_DB",
+    "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/databases/Azure_Cosmos_DB.svg",
+    "sha256": "f9cb9e3339295eaee49947b59f1ad780b40b9ba413ce0e85dd19d0338565a267",
+    "placement": "managed"
+  },
+  "azure.redis": {
+    "file": "icons/azure-redis.svg",
+    "kind": "svg",
+    "name": "Cache_Redis",
+    "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/databases/Cache_Redis.svg",
+    "sha256": "f5bce354870a22bfec08f44f5b5559b3aa276af73fc4ff9c29ead0979ddb8619",
+    "placement": "managed"
+  },
+  "azure.keyvault": {
+    "file": "icons/azure-keyvault.svg",
+    "kind": "svg",
+    "name": "Key_Vaults",
+    "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/security/Key_Vaults.svg",
+    "sha256": "67a2d3e45df9a8cc2f553beb64bc859d1f7dd437ec0b41cebab347b52c6a2f7f",
+    "placement": "managed"
+  },
+  "azure.firewall": {
+    "file": "icons/azure-firewall.svg",
+    "kind": "svg",
+    "name": "Firewalls",
+    "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/networking/Firewalls.svg",
+    "sha256": "053d34ab57a35418de455e022dae4ca69e486eacb843a7b4fcbfb8804ed12da6",
+    "placement": "subnet"
+  },
+  "azure.bastion": {
+    "file": "icons/azure-bastion.svg",
+    "kind": "svg",
+    "name": "Bastions",
+    "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/networking/Bastions.svg",
+    "sha256": "23551918bdb30abeb719bcf602b7ae62970e18d2396840380862f7d1d517970e",
+    "placement": "subnet"
+  },
+  "azure.vpn-gateway": {
+    "file": "icons/azure-vpn-gateway.svg",
+    "kind": "svg",
+    "name": "Virtual_Network_Gateways",
+    "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/networking/Virtual_Network_Gateways.svg",
+    "sha256": "86b0e3d30c9fb82c2a512769d0c2dfc62151216a2e59291307e8c1bbe86d7313",
+    "placement": "subnet"
+  },
+  "azure.service-bus": {
+    "file": "icons/azure-service-bus.svg",
+    "kind": "svg",
+    "name": "Service_Bus",
+    "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/integration/Service_Bus.svg",
+    "sha256": "aac9cfa217258c3d0e7543abd35a366ca9de4a0181e67b1174bc8bb5570195d2",
+    "placement": "managed"
+  },
+  "azure.event-hubs": {
+    "file": "icons/azure-event-hubs.svg",
+    "kind": "svg",
+    "name": "Event_Hubs",
+    "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/analytics/Event_Hubs.svg",
+    "sha256": "ccf94f33486cbbd585e70b66980ea7bf56ad7fbcb93dfcb8e34f83d485013106",
+    "placement": "managed"
+  },
+  "azure.monitor": {
+    "file": "icons/azure-monitor.svg",
+    "kind": "svg",
+    "name": "Monitor",
+    "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/management_governance/Monitor.svg",
+    "sha256": "985c5d8b7d646917fbde849cd5d3d5b295a43076fb366dbeee41124682dd7904",
+    "placement": "managed"
+  },
+  "azure.log-analytics": {
+    "file": "icons/azure-log-analytics.svg",
+    "kind": "svg",
+    "name": "Log_Analytics_Workspaces",
+    "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/management_governance/Log_Analytics_Workspaces.svg",
+    "sha256": "6488ec47c5c51dd45fa76891917ae0cc5255ae9799ebb5891ece3f0563b00cba",
+    "placement": "managed"
+  },
+  "azure.entra-id": {
+    "file": "icons/azure-entra-id.svg",
+    "kind": "svg",
+    "name": "Azure_Active_Directory",
+    "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/identity/Azure_Active_Directory.svg",
+    "sha256": "cbc868ea674a23a8160cd89561828f06c9d0882f1edb0fed46d9ae97fd72e307",
+    "placement": "managed"
+  },
+  "azure.container-registry": {
+    "file": "icons/azure-container-registry.svg",
+    "kind": "svg",
+    "name": "Container_Registries",
+    "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/containers/Container_Registries.svg",
+    "sha256": "5abd2c16d2d9d26baf67ebbd0ae4f0f9131fb49a2236a5ece5a9bc3b13018620",
+    "placement": "managed"
+  },
+  "azure.api-management": {
+    "file": "icons/azure-api-management.svg",
+    "kind": "svg",
+    "name": "API_Management_Services",
+    "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/integration/API_Management_Services.svg",
+    "sha256": "b00bfe4e33704a264b4c570f39017b602be41c6ddbbb46a6092b79394544c989"
+  },
+  "gcp.gke": {
+    "file": "icons/gcp-gke.xml",
+    "kind": "stencil",
+    "color": "#4285F4",
+    "name": "Container Engine",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
+    "sha256": "0b437f10fdea4c865b34c6d4320fe4906c6e6e2db5e1dd5618d8375a20459ffd"
+  },
+  "gcp.functions": {
+    "file": "icons/gcp-functions.xml",
+    "kind": "stencil",
+    "color": "#4285F4",
+    "name": "Cloud Functions",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
+    "sha256": "009338990e85ecb834af6d6d2cf4d9d05c953cf961bb88f5f97fb0fc09f4b290",
+    "placement": "managed"
+  },
+  "gcp.pubsub": {
+    "file": "icons/gcp-pubsub.xml",
+    "kind": "stencil",
+    "color": "#4285F4",
+    "name": "Cloud PubSub",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
+    "sha256": "095960406c9baa7a08d9562ca4ee9b4797833a4910b6449f8d884bd4c76ec2dd",
+    "placement": "managed"
+  },
+  "gcp.bigquery": {
+    "file": "icons/gcp-bigquery.xml",
+    "kind": "stencil",
+    "color": "#4285F4",
+    "name": "BigQuery",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
+    "sha256": "c3173265036329d44a13f5e792dd572c95dda3d81c507cc6c79eb7ce6213f021",
+    "placement": "managed"
+  },
+  "gcp.firestore": {
+    "file": "icons/gcp-firestore.xml",
+    "kind": "stencil",
+    "color": "#4285F4",
+    "name": "cloud firestore",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
+    "sha256": "2b913ce1d0178f4efa74bc2f3b720f134ba9a4a8567c0707a3fc7952034c007d",
+    "placement": "managed"
+  },
+  "gcp.spanner": {
+    "file": "icons/gcp-spanner.xml",
+    "kind": "stencil",
+    "color": "#4285F4",
+    "name": "Cloud Spanner",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
+    "sha256": "f5d97983dde366cfcd0cd0c0b3ad26c9237a76778f9a91bac57d9cc4b59af8ab",
+    "placement": "managed"
+  },
+  "gcp.logging": {
+    "file": "icons/gcp-logging.xml",
+    "kind": "stencil",
+    "color": "#4285F4",
+    "name": "Logging",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
+    "sha256": "032e4a7f3b3e00a61caef3d57de3a217a28f67c887b63e06ac4746eacc643b34",
+    "placement": "managed"
+  },
+  "gcp.monitoring": {
+    "file": "icons/gcp-monitoring.xml",
+    "kind": "stencil",
+    "color": "#4285F4",
+    "name": "cloud monitoring",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
+    "sha256": "029c7c76bee580860856970be663578d3f63b4ed0b1387382fff3cadccf5c39e",
+    "placement": "managed"
+  },
+  "gcp.kms": {
+    "file": "icons/gcp-kms.xml",
+    "kind": "stencil",
+    "color": "#4285F4",
+    "name": "Key Management Service",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
+    "sha256": "ae7e5d97634b5ee8da074233865ff5c766bd01ef784ace18a0a067b1a0a211d5",
+    "placement": "managed"
+  },
+  "gcp.iam": {
+    "file": "icons/gcp-iam.xml",
+    "kind": "stencil",
+    "color": "#4285F4",
+    "name": "Cloud IAM",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
+    "sha256": "9cb2dd811f068437617babfa200f2198867459e7828c9d82a2b10ea66c714c5d",
+    "placement": "managed"
+  },
+  "gcp.vpn": {
+    "file": "icons/gcp-vpn.xml",
+    "kind": "stencil",
+    "color": "#4285F4",
+    "name": "Cloud VPN",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
+    "sha256": "f0d23c27b3ab802cd4b28cf4bccffc682d498d2527c3e2aa185de484cf449852",
+    "placement": "network"
+  },
+  "gcp.interconnect": {
+    "file": "icons/gcp-interconnect.xml",
+    "kind": "stencil",
+    "color": "#4285F4",
+    "name": "Dedicated Interconnect",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
+    "sha256": "8cbb4ea41abf4ea4827aebf88a8e831d2357b7c083538e4f1eaeca0373a57060",
+    "placement": "managed"
+  },
+  "gcp.container-registry": {
+    "file": "icons/gcp-container-registry.xml",
+    "kind": "stencil",
+    "color": "#4285F4",
+    "name": "Container Registry",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
+    "sha256": "2db24b0b087dcf3c220e1971c53e5b13fe52676f5c21ca54d39e4033a226dcec",
+    "placement": "managed"
+  },
+  "gcp.cdn": {
+    "file": "icons/gcp-cdn.xml",
+    "kind": "stencil",
+    "color": "#4285F4",
+    "name": "Cloud CDN",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
+    "sha256": "2907ee347da41ad1c2ef6be01e1e645f74654a1f97e5a8a3791fc6fb119d0ffb",
+    "placement": "managed"
+  },
+  "generic.server": {
+    "file": "icons/generic-server.xml",
+    "kind": "stencil",
+    "color": "#DCE3EA",
+    "stroke": "#5A6B7B",
+    "name": "Server",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/networks.xml",
+    "sha256": "9ba26f405c40a7948eebe24ad78c8f32b735c3d7c5d61f74b700dd2407433715"
+  },
+  "generic.onprem": {
+    "file": "icons/generic-onprem.xml",
+    "kind": "stencil",
+    "color": "#DCE3EA",
+    "stroke": "#5A6B7B",
+    "name": "Business Center",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/networks.xml",
+    "sha256": "0472a41c77985947d4e294df65a5600606256e6ceaef9d19bd8e91475fb8908c"
+  },
+  "generic.mobile": {
+    "file": "icons/generic-mobile.xml",
+    "kind": "stencil",
+    "color": "#DCE3EA",
+    "stroke": "#5A6B7B",
+    "name": "Mobile",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/networks.xml",
+    "sha256": "096010e2b24deb56f93847b143eaeb87050328173a752e72e3f760973c3e69a1"
+  },
+  "generic.desktop": {
+    "file": "icons/generic-desktop.xml",
+    "kind": "stencil",
+    "color": "#DCE3EA",
+    "stroke": "#5A6B7B",
+    "name": "Desktop PC",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/networks.xml",
+    "sha256": "370ea9cfae6a08649bd3d9d851add08b877d3adfb7ba22f2548cd7dbe28531cd"
+  },
+  "generic.internet": {
+    "file": "icons/generic-internet.xml",
+    "kind": "stencil",
+    "color": "#DCE3EA",
+    "stroke": "#5A6B7B",
+    "name": "Cloud",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/networks.xml",
+    "sha256": "2fb69a1c30fca340d4bcacf9b2fe242da2f6b21713a1eb138b26a9b937bcb3ce"
+  },
+  "generic.firewall": {
+    "file": "icons/generic-firewall.xml",
+    "kind": "stencil",
+    "color": "#DCE3EA",
+    "stroke": "#5A6B7B",
+    "name": "Firewall",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/networks.xml",
+    "sha256": "25cf48600c8bef29feee91951c68aa8ad5375beff6b5679bf013a75fd19c33a7"
+  },
+  "generic.router": {
+    "file": "icons/generic-router.xml",
+    "kind": "stencil",
+    "color": "#DCE3EA",
+    "stroke": "#5A6B7B",
+    "name": "Router",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/networks.xml",
+    "sha256": "acc876c30f5dc15978ee62cafaa20cb5edab2d421c08a990dcbc9324fd5171f3"
+  },
+  "generic.storage": {
+    "file": "icons/generic-storage.xml",
+    "kind": "stencil",
+    "color": "#DCE3EA",
+    "stroke": "#5A6B7B",
+    "name": "Storage",
+    "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/networks.xml",
+    "sha256": "fd85087744520c89e98edf50627ba96a5303522820121cf90c7f1bf5bfdcbf23"
   }
 }

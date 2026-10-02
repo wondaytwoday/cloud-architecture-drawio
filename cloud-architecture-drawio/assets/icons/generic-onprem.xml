@@ -1,0 +1,148 @@
+<shape aspect="variable" h="100" name="Business Center" strokewidth="2" w="87">
+    <connections>
+        <constraint name="N1" perimeter="0" x="0.22" y="0" />
+        <constraint name="N2" perimeter="0" x="0.44" y="0.26" />
+        <constraint name="NE" perimeter="0" x="0.83" y="0.33" />
+        <constraint name="NW" perimeter="0" x="0" y="0.26" />
+        <constraint name="S" perimeter="0" x="0.44" y="1" />
+        <constraint name="SE" perimeter="0" x="1" y="1" />
+        <constraint name="SW" perimeter="0" x="0" y="1" />
+        <constraint name="W" perimeter="0" x="0" y="0.5" />
+        <constraint name="E" perimeter="0" x="1" y="0.5" />
+    </connections>
+    <foreground>
+        <save />
+        <path>
+            <move x="0" y="100" />
+            <line x="0" y="26" />
+            <line x="7" y="26" />
+            <line x="7" y="20" />
+            <line x="12" y="20" />
+            <line x="12" y="14" />
+            <line x="16" y="14" />
+            <line x="19" y="0" />
+            <line x="22" y="14" />
+            <line x="26" y="14" />
+            <line x="26" y="20" />
+            <line x="31" y="20" />
+            <line x="31" y="26" />
+            <line x="38" y="26" />
+            <line x="38" y="100" />
+            <close />
+            <move x="49" y="100" />
+            <line x="49" y="64" />
+            <line x="61" y="64" />
+            <line x="61" y="41" />
+            <line x="87" y="41" />
+            <line x="87" y="100" />
+            <close />
+        </path>
+        <fillstroke />
+        <fillcolor color="#ffffff" />
+        <rect h="4" w="6" x="77" y="45" />
+        <fill />
+        <rect h="4" w="6" x="77" y="52.5" />
+        <fill />
+        <rect h="4" w="6" x="77" y="60" />
+        <fill />
+        <rect h="4" w="6" x="77" y="67.5" />
+        <fill />
+        <rect h="4" w="6" x="77" y="75" />
+        <fill />
+        <rect h="4" w="6" x="77" y="82.5" />
+        <fill />
+        <rect h="4" w="6" x="77" y="90" />
+        <fill />
+        <rect h="4" w="6" x="65" y="45" />
+        <fill />
+        <rect h="4" w="6" x="65" y="52.5" />
+        <fill />
+        <rect h="4" w="6" x="65" y="60" />
+        <fill />
+        <rect h="4" w="6" x="65" y="67.5" />
+        <fill />
+        <rect h="4" w="6" x="65" y="75" />
+        <fill />
+        <rect h="4" w="6" x="65" y="82.5" />
+        <fill />
+        <rect h="4" w="6" x="65" y="90" />
+        <fill />
+        <rect h="4" w="6" x="53" y="67.5" />
+        <fill />
+        <rect h="4" w="6" x="53" y="75" />
+        <fill />
+        <rect h="4" w="6" x="53" y="82.5" />
+        <fill />
+        <rect h="4" w="6" x="53" y="90" />
+        <fill />
+        <rect h="4" w="6" x="28" y="30" />
+        <fill />
+        <rect h="4" w="6" x="28" y="37.5" />
+        <fill />
+        <rect h="4" w="6" x="28" y="45" />
+        <fill />
+        <rect h="4" w="6" x="28" y="52.5" />
+        <fill />
+        <rect h="4" w="6" x="28" y="60" />
+        <fill />
+        <rect h="4" w="6" x="28" y="67.5" />
+        <fill />
+        <rect h="4" w="6" x="28" y="75" />
+        <fill />
+        <rect h="4" w="6" x="28" y="82.5" />
+        <fill />
+        <rect h="4" w="6" x="16" y="30" />
+        <fill />
+        <rect h="4" w="6" x="16" y="37.5" />
+        <fill />
+        <rect h="4" w="6" x="16" y="45" />
+        <fill />
+        <rect h="4" w="6" x="16" y="52.5" />
+        <fill />
+        <rect h="4" w="6" x="16" y="60" />
+        <fill />
+        <rect h="4" w="6" x="16" y="67.5" />
+        <fill />
+        <rect h="4" w="6" x="16" y="75" />
+        <fill />
+        <rect h="4" w="6" x="16" y="82.5" />
+        <fill />
+        <rect h="4" w="6" x="4" y="30" />
+        <fill />
+        <rect h="4" w="6" x="4" y="37.5" />
+        <fill />
+        <rect h="4" w="6" x="4" y="45" />
+        <fill />
+        <rect h="4" w="6" x="4" y="52.5" />
+        <fill />
+        <rect h="4" w="6" x="4" y="60" />
+        <fill />
+        <rect h="4" w="6" x="4" y="67.5" />
+        <fill />
+        <rect h="4" w="6" x="4" y="75" />
+        <fill />
+        <rect h="4" w="6" x="4" y="82.5" />
+        <fill />
+        <rect h="9" w="6" x="16" y="90" />
+        <fill />
+        <rect h="4" w="6" x="4" y="90" />
+        <fill />
+        <rect h="4" w="6" x="28" y="90" />
+        <fill />
+        <restore />
+        <rect />
+        <stroke />
+        <path>
+            <move x="70" y="41" />
+            <line x="74" y="37" />
+            <line x="78" y="41" />
+        </path>
+        <stroke />
+        <path>
+            <move x="72" y="33" />
+            <arc large-arc-flag="0" rx="4" ry="4" sweep-flag="0" x="78" x-axis-rotation="0" y="37" />
+            <close />
+        </path>
+        <fillstroke />
+    </foreground>
+</shape>

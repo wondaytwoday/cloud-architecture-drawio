@@ -1,0 +1,23 @@
+<shape aspect="variable" h="48.51" name="Cloud" strokewidth="2" w="92.1">
+    <connections>
+        <constraint name="N" perimeter="0" x="0.5" y="0.08" />
+        <constraint name="S" perimeter="0" x="0.5" y="1" />
+        <constraint name="W" perimeter="0" x="0.06" y="0.5" />
+        <constraint name="E" perimeter="0" x="0.91" y="0.5" />
+        <constraint name="NW" perimeter="0" x="0.26" y="0.22" />
+        <constraint name="SW" perimeter="0" x="0.14" y="1" />
+        <constraint name="NE" perimeter="0" x="0.7" y="0.07" />
+        <constraint name="SE" perimeter="0" x="0.88" y="1" />
+    </connections>
+    <foreground>
+        <path>
+            <move x="80.28" y="48.51" />
+            <arc large-arc-flag="1" rx="10" ry="10" sweep-flag="0" x="77.28" x-axis-rotation="0" y="23.51" />
+            <arc large-arc-flag="0" rx="22" ry="22" sweep-flag="0" x="35.28" x-axis-rotation="0" y="14.51" />
+            <arc large-arc-flag="0" rx="12" ry="12" sweep-flag="0" x="14.28" x-axis-rotation="0" y="21.51" />
+            <arc large-arc-flag="0" rx="13" ry="13" sweep-flag="0" x="13.28" x-axis-rotation="0" y="48.51" />
+            <close />
+        </path>
+        <fillstroke />
+    </foreground>
+</shape>
