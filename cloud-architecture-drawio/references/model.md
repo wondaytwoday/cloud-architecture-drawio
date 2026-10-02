@@ -27,6 +27,16 @@ Use bundled templates as complete starting models:
 - `assets/templates/azure-regional.json`: regional subnets, zonal compute, separate SQL private endpoint.
 - `assets/templates/gcp-regional.json`: global VPC, regional subnets, zonal compute, separate PSC endpoint.
 
+## Layout shorthands
+
+Coordinates may be absolute numbers everywhere, as in the templates, or left to these shorthands, which `validate`, `build` and `check` resolve first. `cloud_drawio.py normalize model.json` prints the resolved absolute model.
+
+- Node `w`/`h` may be omitted for the standard 156×124 card.
+- A top-level `"grid": {"left": 60, "top": 140, "column": 236, "row": 204}` (defaults shown) lets nodes give `col`/`row` instead of `x`/`y`; fractions such as `1.5` are allowed. A node gives either `x` or `col`, not both.
+- A container's `x`, `y`, `w` or `h` may be `"fit"`: it wraps its children with 24 px at the sides and bottom and 56 px for the title, enough for a card connected through its top side. An overlay group fits its `members` (node or container IDs) instead of its children. `"match:ID"` copies that dimension from another container, for example equal-height AZ columns.
+- `"width"`/`"height": "auto"` sizes the canvas to the content, the footer, and the legend.
+- When nested fits reach into the page margins, the whole layout shifts right and down to clear them.
+
 ## Containers
 
 Required: `id`, `kind`, `label`, `x`, `y`, `w`, `h`. Optional: `parent`, `provider`, `zone`, `public`, `overlay`, `labelAlign`, `labelOffset`.

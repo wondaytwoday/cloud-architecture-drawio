@@ -18,6 +18,7 @@ import zlib
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import cloud_routes
+import model_layout
 from model_validation import EDGE_KINDS, legend_captions, validate_structure
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -86,6 +87,9 @@ def wrapped(text, width, font):
 
 
 def validate(m):
+    """Check the model after resolving layout shorthands such as 'fit' and grid cells."""
+    try: m=model_layout.normalize(m)
+    except (ValueError,TypeError) as e: return [f'layout: {e}'],[]
     return validate_structure(m, CAT, wrapped, header_rect)
 
 
@@ -165,6 +169,7 @@ def build(m, target, force=False):
     errors,warnings=validate(m)
     if errors: raise ValueError('\n'.join(errors))
     if not force: check_overwrite(target)
+    source,m=m,model_layout.normalize(m)
     width,height=m['width'],m['height']; by={i['id']:i for i in m['containers']+m['nodes']}
     rootfile=ET.Element('mxfile',host='cloud-architecture-drawio',version='1.0')
     dia=ET.SubElement(rootfile,'diagram',id='architecture',name=m.get('title','Architecture'))
@@ -196,7 +201,7 @@ def build(m, target, force=False):
     quality=cloud_routes.metrics(routes)
     # Plain boxes stand in for products without a catalog icon; disclose them.
     fallbacks=[n['id'] for n in m['nodes'] if n.get('icon','generic')=='generic']
-    report={'version':3,'errors':[], 'warnings':warnings,'routing':mode,'fallbackIcons':fallbacks,'routes':routes,'labels':labels,'quality':quality,'model_sha256':sha256(json.dumps(m,sort_keys=True).encode())}
+    report={'version':3,'errors':[], 'warnings':warnings,'routing':mode,'fallbackIcons':fallbacks,'routes':routes,'labels':labels,'quality':quality,'model_sha256':sha256(json.dumps(source,sort_keys=True).encode())}
     if quality['crossingCount']:
         report['warnings'].append(f"{quality['crossingCount']} connector crossings: inspect jump markers or revise ports/lanes")
     for e in m['edges']:
@@ -309,7 +314,7 @@ def check(m, output, force=False, viewer=None):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__); sub=p.add_subparsers(dest='cmd',required=True)
-    for command in ('build','validate','check'):
+    for command in ('build','validate','check','normalize'):
         s=sub.add_parser(command); s.add_argument('model');
         if command in ('build','check'):
             s.add_argument('output')
@@ -321,6 +326,8 @@ def main():
     try:
         if a.cmd=='icons': print('\n'.join(sorted(CAT))); return
         m=json.loads(Path(a.model).read_text(encoding='utf-8-sig'))
+        if a.cmd=='normalize':
+            emit(model_layout.normalize(m),indent=2); return
         if a.cmd=='validate':
             errors,warnings=validate(m); emit({'errors':errors,'warnings':warnings},indent=2); sys.exit(bool(errors))
         if a.cmd=='check':
