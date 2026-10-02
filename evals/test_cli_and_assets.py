@@ -166,6 +166,23 @@ class AssetTests(unittest.TestCase):
         on_disk = {f'icons/{p.name}' for p in (SKILL/'assets/icons').iterdir() if p.suffix in ('.svg', '.xml')}
         self.assertEqual({entry['file'] for entry in catalog.values()}, on_disk)
 
+    def test_icon_files_hold_nothing_that_runs_or_loads_from_outside(self):
+        sys.path.insert(0, str(SKILL/'scripts'))
+        import add_icon
+        catalog = json.loads((SKILL/'assets/icon-catalog.json').read_text(encoding='utf-8'))
+        for key, entry in catalog.items():
+            self.assertEqual(add_icon.unsafe((SKILL/'assets'/entry['file']).read_bytes()), [], key)
+        svg = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">{}</svg>'
+        for body in ('<rect onload="alert(1)"/>', '<svg:script xmlns:svg="http://www.w3.org/2000/svg">x</svg:script>',
+                     '<image xlink:href = "http://example.com/x.png"/>', '<image href="//example.com/x"/>',
+                     '<rect style="fill:url( \'https://example.com/x\' )"/>', '<style>@import "https://example.com/x.css";</style>',
+                     '<a href="data:text/html;base64,AAAA"><rect/></a>', '<a href="java&#x73;cript:alert(1)"><rect/></a>'):
+            with self.subTest(body=body):
+                self.assertTrue(add_icon.unsafe(svg.format(body).encode()))
+        self.assertTrue(add_icon.unsafe(b'<!DOCTYPE svg [<!ENTITY x SYSTEM "https://example.com/">]><svg>&x;</svg>'))
+        self.assertEqual(add_icon.unsafe(svg.format('<defs><linearGradient id="g"/></defs><rect fill="url(#g)"/>'
+                                                    '<image href="data:image/png;base64,AAAA"/>').encode()), [])
+
     def test_gallery_shows_every_catalog_icon_and_builds(self):
         import gallery
         model = gallery.model()
@@ -177,6 +194,9 @@ class AssetTests(unittest.TestCase):
         import cloud_drawio
         with tempfile.TemporaryDirectory() as d:
             report = cloud_drawio.build(model, Path(d)/'gallery.drawio')
+            # The render test opens the committed gallery, so it must be this build.
+            self.assertEqual((Path(d)/'gallery.drawio').read_bytes(), (BASE/'evals/fixtures/icon-gallery.drawio').read_bytes(),
+                             'rebuild it with: python3 evals/gallery.py && cloud_drawio.py check evals/fixtures/icon-gallery.model.json evals/fixtures/icon-gallery.drawio --force')
         self.assertEqual(report['warnings'], [])
 
     def test_release_zip_matches_the_skill_folder(self):
@@ -199,11 +219,22 @@ class AssetTests(unittest.TestCase):
             os.utime(source, (stat.st_atime, stat.st_mtime))
 
 
-CACHE = BASE/'.cache'
+def _icon_cache():
+    """A cache holding every pinned draw.io library file the catalog came from:
+    the repository's .cache, $CLOUD_DRAWIO_CACHE or the add_icon default."""
+    catalog = json.loads((SKILL/'assets/icon-catalog.json').read_text(encoding='utf-8'))
+    needed = {'azure2/index.txt'} | {f"stencils/{e['source'].rsplit('/', 1)[-1]}" if e['kind'] == 'stencil'
+                                     else 'img/lib/azure2/'+e['source'].split('/azure2/')[1] for e in catalog.values()}
+    for root in (BASE/'.cache', os.environ.get('CLOUD_DRAWIO_CACHE'), Path.home()/'.cache/cloud-architecture-drawio'):
+        if root and all((Path(root)/'drawio-82af4345'/f).exists() for f in needed):
+            return Path(root)
+    return None
 
 
-@unittest.skipUnless((CACHE/'drawio-82af4345/stencils/aws4.xml').exists(),
-                     'needs the pinned draw.io libraries in .cache (python3 cloud-architecture-drawio/scripts/add_icon.py search aws4 ec2)')
+CACHE = _icon_cache()
+
+
+@unittest.skipUnless(CACHE, 'needs the pinned draw.io libraries in a local cache; add_icon.py search and add download them once')
 class AddIconTests(unittest.TestCase):
     def setUp(self):
         self.addCleanup(os.environ.pop, 'CLOUD_DRAWIO_CACHE', None)
@@ -235,7 +266,8 @@ class AddIconTests(unittest.TestCase):
             for args, message in ((('aws.sqs', 'aws4:sqs', '#E7157B'), 'already in the catalog'),
                                   (('gcp.sqs', 'aws4:sqs', '#E7157B'), 'need a key like aws.'),
                                   (('aws.queue', 'aws4:sqs'), 'pass --color'),
-                                  (('aws.nothing', 'aws4:no such shape', '#E7157B'), 'no stencil')):
+                                  (('aws.nothing', 'aws4:no such shape', '#E7157B'), 'no stencil'),
+                                  (('generic.user', 'networks:User Male', '#DCE3EA'), 'built-in glyph')):
                 with self.subTest(args=args), self.assertRaisesRegex(ValueError, message):
                     self.tool.add(*args, catalog_path=catalog)
 

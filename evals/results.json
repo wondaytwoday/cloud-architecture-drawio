@@ -1,12 +1,13 @@
 {
-  "date": "2026-10-02",
+  "date": "2026-10-03",
   "version": 3,
   "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
   "icons": 93,
   "tests": {
-    "passed": 124,
+    "passed": 144,
     "failed": 0,
     "skipped_without_renderer": 13,
+    "skipped_on_fresh_clone_without_renderer_or_icon_cache": 15,
     "command": "NODE_PATH=<playwright>/node_modules python3 -m unittest discover -s evals -v"
   },
   "skill_validation": "Skill is valid!",
@@ -1168,7 +1169,7 @@
         "nodes": 8,
         "edges": 8,
         "crossingCount": 0,
-        "bendCount": 12,
+        "bendCount": 8,
         "continuationCount": 0,
         "warnings": 0,
         "fallbackIcons": [],
@@ -1183,7 +1184,7 @@
         "nodes": 10,
         "edges": 10,
         "crossingCount": 0,
-        "bendCount": 26,
+        "bendCount": 24,
         "continuationCount": 0,
         "warnings": 0,
         "fallbackIcons": [],
@@ -1198,7 +1199,7 @@
         "nodes": 9,
         "edges": 10,
         "crossingCount": 0,
-        "bendCount": 20,
+        "bendCount": 18,
         "continuationCount": 0,
         "warnings": 0,
         "fallbackIcons": [],
@@ -1265,7 +1266,8 @@
       "textOverflow": 0
     },
     "pull": {
-      "examples_identity": "12/12 unedited builds pull back to the same model"
+      "examples_identity": "12/12 unedited builds pull back to the same model",
+      "template_moves": "304 single-card moves across 8 templates rebuild exactly as drawn (275 keep shorthands, 29 fall back to drawn geometry)"
     },
     "embed": {
       "png": "tEXt mxfile chunk read back by Editor.extractGraphModelFromPng",
@@ -1288,27 +1290,28 @@
       },
       "newly_failing": 0,
       "new_example_cases": "14 cases use new icons and kinds: invalid for phase 2, ok for phase 3",
+      "joins_metric": "connector ends within 24 px on lines less than 10 px apart",
       "common_ok": {
         "cases": 785,
         "joins": [
-          782,
-          194
+          995,
+          254
         ],
         "crossings": [
           1788,
-          1781
+          1768
         ],
         "bends": [
           12509,
-          12649
+          12769
         ],
         "length": [
           2644796.2,
-          2644096.2
+          2649003.0
         ],
         "jogs": [
           996,
-          1059
+          1110
         ],
         "overhang": [
           36,
@@ -1316,16 +1319,37 @@
         ],
         "crowded": [
           23,
-          27
+          29
         ],
         "hug": [
           10222,
-          10270
+          9838
         ]
       },
       "seconds": [
-        68.3,
-        82.0
+        72.6,
+        89.0
+      ]
+    },
+    "review": {
+      "range": "c614f45..0add985",
+      "areas": [
+        "editing loop",
+        "layout, routing and validation",
+        "icons and templates",
+        "docs and tests"
+      ],
+      "findings": 32,
+      "confirmed": 30,
+      "fixed": 30,
+      "rejected": [
+        "hub-spoke direct spoke line (fixed anyway: it contradicted the note)",
+        "DR legend caption for Route 53 records"
+      ],
+      "also_found_by_inspection": [
+        "near-collinear joins missed by the detector (aws-eks)",
+        "fitted-title detours (aws-egress, aws-eks)",
+        "S3 replication along subnet borders (aws-multi-region-dr)"
       ]
     }
   }

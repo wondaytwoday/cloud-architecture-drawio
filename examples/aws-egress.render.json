@@ -29,7 +29,7 @@
   "pageErrors": [],
   "warnings": [],
   "provenance": {
-    "input_sha256": "98689c4253bc0059e6f8a4c2a90a47003acfb868c09e6021629c4335ca958e1f",
+    "input_sha256": "154996f7fe90146c029d9c61c704785c006d311d9aabc5f72980ec8db682bb4e",
     "report": "examples/aws-egress.report.json",
     "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
     "playwright": "1.61.1"

@@ -71,47 +71,43 @@
             <mxPoint as="offset" x="-22.0" y="-27.0" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="sql-a" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#4B6074;strokeWidth=1.6;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;jumpStyle=arc;jumpSize=8;" edge="1" parent="1" source="eks-a" target="db-a">
+        <mxCell id="sql-a" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#4B6074;strokeWidth=1.6;exitX=0;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;jumpStyle=arc;jumpSize=8;" edge="1" parent="1" source="eks-a" target="db-a">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="204.0" y="813.25" />
-              <mxPoint x="94" y="813.25" />
-              <mxPoint x="94" y="863.25" />
-              <mxPoint x="204.0" y="863.25" />
+              <mxPoint x="94" y="664.5" />
+              <mxPoint x="94" y="941.25" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_sql-a" value="SQL" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="sql-a" connectable="0">
-          <mxGeometry as="geometry" x="-0.07463830602663601" y="0" width="44" height="22" relative="1">
-            <mxPoint as="offset" x="-22.0" y="-27.0" />
+          <mxGeometry as="geometry" x="0.0" y="0" width="44" height="22" relative="1">
+            <mxPoint as="offset" x="6.0" y="-11.0" />
           </mxGeometry>
         </mxCell>
         <mxCell id="sql-b" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#4B6074;strokeWidth=1.6;exitX=0;exitY=0.5806451612903226;exitPerimeter=0;entryX=1;entryY=0.41935483870967744;entryPerimeter=0;jumpStyle=arc;jumpSize=8;" edge="1" parent="1" source="eks-b" target="db-a">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="316" y="674.5" />
-              <mxPoint x="316" y="931.25" />
+              <mxPoint x="340" y="674.5" />
+              <mxPoint x="340" y="931.25" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_sql-b" value="SQL writes" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="sql-b" connectable="0">
-          <mxGeometry as="geometry" x="-0.0018626504375327535" y="0" width="79.8" height="22" relative="1">
+          <mxGeometry as="geometry" x="-0.0017754733286198254" y="0" width="79.8" height="22" relative="1">
             <mxPoint as="offset" x="-39.89999999999998" y="-27.0" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="reads" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#4B6074;strokeWidth=1.6;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;jumpStyle=arc;jumpSize=8;" edge="1" parent="1" source="eks-b" target="db-b">
+        <mxCell id="reads" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#4B6074;strokeWidth=1.6;exitX=1;exitY=0.7419354838709677;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;jumpStyle=arc;jumpSize=8;" edge="1" parent="1" source="eks-b" target="db-b">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="1164.0" y="813.25" />
-              <mxPoint x="1054" y="813.25" />
-              <mxPoint x="1054" y="863.25" />
-              <mxPoint x="1164.0" y="863.25" />
+              <mxPoint x="1274" y="694.5" />
+              <mxPoint x="1274" y="941.25" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_reads" value="SQL reads" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="reads" connectable="0">
-          <mxGeometry as="geometry" x="-0.1735172942416403" y="0" width="73.41999999999999" height="22" relative="1">
-            <mxPoint as="offset" x="-36.710000000000036" y="-27.0" />
+          <mxGeometry as="geometry" x="-0.05812006696962457" y="0" width="73.41999999999999" height="22" relative="1">
+            <mxPoint as="offset" x="-79.42000000000007" y="-11.0" />
           </mxGeometry>
         </mxCell>
         <mxCell id="aurora-repl" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#875EAC;strokeWidth=1.6;exitX=1;exitY=0.5806451612903226;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=10 4;" edge="1" parent="1" source="db-a" target="db-b">
@@ -127,39 +123,42 @@
             <mxPoint as="offset" x="-55.85000000000002" y="-27.0" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="pull" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#4B6074;strokeWidth=1.6;exitX=1;exitY=0.33870967741935487;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;jumpStyle=arc;jumpSize=8;" edge="1" parent="1" source="eks-b" target="ecr">
+        <mxCell id="pull" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#4B6074;strokeWidth=1.6;exitX=1;exitY=0.25806451612903225;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;jumpStyle=arc;jumpSize=8;" edge="1" parent="1" source="eks-b" target="ecr">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="1324" y="644.5" />
+              <mxPoint x="1324" y="634.5" />
               <mxPoint x="1324" y="408.25" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_pull" value="Image pull" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="pull" connectable="0">
-          <mxGeometry as="geometry" x="0.2870246417769844" y="0" width="79.8" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.27406734312686143" y="0" width="79.8" height="22" relative="1">
             <mxPoint as="offset" x="-39.90000000000009" y="-27.0" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="jobs" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#D81B60;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=7 2;endArrow=open;endFill=0;" edge="1" parent="1" source="eks-b" target="queue">
+        <mxCell id="jobs" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#D81B60;strokeWidth=1.6;exitX=1;exitY=0.41935483870967744;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=7 2;endArrow=open;endFill=0;" edge="1" parent="1" source="eks-b" target="queue">
           <mxGeometry as="geometry" relative="1">
-            <Array as="points" />
+            <Array as="points">
+              <mxPoint x="1344" y="654.5" />
+              <mxPoint x="1344" y="664.5" />
+            </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_jobs" value="Jobs" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="jobs" connectable="0">
-          <mxGeometry as="geometry" x="0.0" y="0" width="44" height="22" relative="1">
+          <mxGeometry as="geometry" x="-0.005988023952095856" y="0" width="44" height="22" relative="1">
             <mxPoint as="offset" x="-22.0" y="-27.0" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="metrics" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#A06050;strokeWidth=1.6;exitX=1;exitY=0.6612903225806451;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=8 3 2 3 2 3;" edge="1" parent="1" source="eks-b" target="logs">
+        <mxCell id="metrics" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#A06050;strokeWidth=1.6;exitX=1;exitY=0.5806451612903226;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=8 3 2 3 2 3;" edge="1" parent="1" source="eks-b" target="logs">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="1334" y="684.5" />
+              <mxPoint x="1334" y="674.5" />
               <mxPoint x="1334" y="941.25" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_metrics" value="Metrics" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="metrics" connectable="0">
-          <mxGeometry as="geometry" x="0.3055632929021803" y="0" width="60.66" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.3173184635682458" y="0" width="60.66" height="22" relative="1">
             <mxPoint as="offset" x="-30.329999999999927" y="5.0" />
           </mxGeometry>
         </mxCell>

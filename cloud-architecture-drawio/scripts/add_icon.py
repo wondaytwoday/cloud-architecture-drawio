@@ -20,6 +20,8 @@ import sys
 import urllib.request
 import xml.etree.ElementTree as ET
 
+from model_validation import BUILTIN_ICONS
+
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT/'assets/icon-catalog.json'
 COMMIT = '82af434539c3449d99275b91a91b6b99998a7d58'
@@ -30,7 +32,8 @@ BLOB = f'https://github.com/jgraph/drawio/blob/{COMMIT}/src/main/webapp'
 STENCILS = {'aws4': 'aws', 'gcp2': 'gcp', 'networks': 'generic'}
 SVG_LIBRARY, SVG_PREFIX = 'azure2', 'azure'
 PLACEMENTS = ('any', 'managed', 'policy', 'network', 'subnet')
-UNSAFE_SVG = ('<script', '<foreignobject', 'href="http', "href='http", 'url(http', 'javascript:')
+ACTIVE_TAGS = ('script', 'foreignobject', 'iframe', 'embed', 'object', 'handler', 'listener')
+INLINE_IMAGE = re.compile(r'data:image/(png|jpeg|gif|webp);', re.I)
 
 
 def fetch(relative):
@@ -44,6 +47,38 @@ def fetch(relative):
         tmp.write_bytes(data)
         os.replace(tmp, target)
     return target.read_bytes()
+
+
+def unsafe(data):
+    """Why an icon file must not be embedded: anything that can run code or load
+    a resource from outside the file. Only fragment references (#id) and inline
+    raster images are allowed."""
+    text = data.decode('utf-8', errors='replace')
+    lower = text.lower()
+    problems = set()
+    if '<!doctype' in lower or '<!entity' in lower:
+        problems.add('a DOCTYPE or entity declaration')
+    if '@import' in lower:
+        problems.add('a stylesheet @import')
+    for ref in re.findall(r'url\(([^)]*)\)', lower):
+        ref = ref.strip().strip('\'"').strip()
+        if not (ref.startswith('#') or INLINE_IMAGE.match(ref)):
+            problems.add('a url() outside the file')
+    try:
+        root = ET.fromstring(data)
+    except ET.ParseError as exc:
+        return sorted(problems | {f'malformed XML ({exc})'})
+    for el in root.iter():
+        tag = el.tag.rsplit('}', 1)[-1].lower()
+        if tag in ACTIVE_TAGS:
+            problems.add(f'a <{tag}> element')
+        for name, value in el.attrib.items():
+            local = name.rsplit('}', 1)[-1].lower()
+            if local.startswith('on'):
+                problems.add(f'an event handler ({local})')
+            if local in ('href', 'src') and not (value.strip().startswith('#') or INLINE_IMAGE.match(value.strip())):
+                problems.add('a reference outside the file')
+    return sorted(problems)
 
 
 def stencil_library(name):
@@ -81,10 +116,9 @@ def extract(library, name):
         if name not in azure_index():
             raise ValueError(f'{name!r} is not in {library}; try: add_icon.py search {library} {Path(name).stem[:8]}')
         data = fetch(f'img/lib/azure2/{name}')
-        text = data.decode('utf-8').lower()
-        unsafe = [token for token in UNSAFE_SVG if token in text]
-        if unsafe:
-            raise ValueError(f'{name}: refusing an SVG with {", ".join(unsafe)}')
+        problems = unsafe(data)
+        if problems:
+            raise ValueError(f'{name}: refusing an SVG with {", ".join(problems)}')
         return 'svg', data, f'{RAW}/img/lib/azure2/{name}'
     shape = next((s for s in stencil_library(library).iter('shape') if s.get('name') == name), None)
     if shape is None:
@@ -93,7 +127,11 @@ def extract(library, name):
     # The bundled stencils use exactly this normalization.
     shape = ET.fromstring(ET.tostring(shape))
     ET.indent(shape, space='    ')
-    return 'stencil', (ET.tostring(shape, encoding='unicode')+'\n').encode('utf-8'), f'{BLOB}/stencils/{library}.xml'
+    data = (ET.tostring(shape, encoding='unicode')+'\n').encode('utf-8')
+    problems = unsafe(data)
+    if problems:
+        raise ValueError(f'{name}: refusing a stencil with {", ".join(problems)}')
+    return 'stencil', data, f'{BLOB}/stencils/{library}.xml'
 
 
 def add(key, source, color=None, stroke=None, placement='any', force=False, catalog_path=CATALOG):
@@ -103,6 +141,8 @@ def add(key, source, color=None, stroke=None, placement='any', force=False, cata
         raise ValueError('--from must be LIBRARY:NAME, e.g. aws4:dynamodb or azure2:databases/Azure_Cosmos_DB.svg')
     if not re.fullmatch(rf'{prefix}\.[a-z0-9-]+', key):
         raise ValueError(f'{key!r}: icons from {library} need a key like {prefix}.service-name')
+    if key in BUILTIN_ICONS:
+        raise ValueError(f'{key} is a built-in glyph the compiler draws itself; choose another key')
     if placement not in PLACEMENTS:
         raise ValueError(f'placement must be one of {", ".join(PLACEMENTS)}')
     catalog = json.loads(catalog_path.read_text(encoding='utf-8'))

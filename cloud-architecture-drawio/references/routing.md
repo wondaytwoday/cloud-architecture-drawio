@@ -24,6 +24,8 @@ Explicit route vertices are written to native draw.io XML with fixed entry/exit 
 
 ## Crossings and junctions
 
+Two connectors that end within 24 px of each other on one line, or on lines less than 10 px apart, read as one connector. The report lists them under `continuations` with a warning; the router first retries the mode avoiding them and keeps the retry only when it has fewer such joins and no more crossings or shared length. Unrelated connectors do not otherwise avoid each other's ends, so inspect any warning. A connector with a boundary as an end also stays out of every other VPC, VNet and subnet that is not around one of its ends, because a peering or attachment line through a third network reads as that network taking part.
+
 A crossing joins nothing. Keep perpendicular crossings away from labels and bends; inspect the actual draw.io render to confirm that its arc is visible. The style declaration alone is insufficient evidence. Use jump arcs for a small number of clear residual crossings after reasonable lane/port adjustments.
 
 A junction intentionally joins relationships. draw.io supports waypoint **shapes** that serve as connector terminals; these are different from bend waypoints on an edge. The bundled model does not currently represent junctions or shared buses. For a topology that needs them, author native XML with explicit junction cells and attachments, explain what the junction means, and preserve that manual source. Do not simulate a bus by placing independent edges on the same coordinates. A shared visual branch must not invent a load balancer, router, queue, or other resource.

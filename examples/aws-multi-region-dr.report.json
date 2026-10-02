@@ -6,7 +6,8 @@
     "reservedLeadIns": true,
     "borderClearance": true,
     "spreadParallels": false,
-    "stubLanes": false
+    "stubLanes": false,
+    "avoidJoins": true
   },
   "fallbackIcons": [],
   "routes": {
@@ -144,20 +145,12 @@
     ],
     "crr": [
       [
-        156.0,
-        1174.0
+        234,
+        1312.0
       ],
       [
-        156.0,
-        1190.0
-      ],
-      [
-        1536.0,
-        1190.0
-      ],
-      [
-        1536.0,
-        1174.0
+        1458,
+        1312.0
       ]
     ],
     "resolve": [
@@ -167,11 +160,11 @@
       ],
       [
         856.0,
-        294.0
+        264.0
       ],
       [
         846.0,
-        294.0
+        264.0
       ],
       [
         846.0,
@@ -232,7 +225,7 @@
     "crr": {
       "rect": [
         761.44,
-        1163.0,
+        1285.0,
         169.11999999999998,
         22
       ],
@@ -309,12 +302,12 @@
     },
     "resolve": {
       "rect": [
-        862.0,
-        258.55555555555554,
+        852.0,
+        269.1,
         44,
         22
       ],
-      "relativeX": 0.048218029350104885,
+      "relativeX": 0.4358490566037734,
       "offset": [
         6.0,
         -11.0
@@ -350,13 +343,13 @@
   "quality": {
     "crossingCount": 0,
     "overlapLength": 0,
-    "bendCount": 26,
-    "totalLength": 4814.08,
+    "bendCount": 24,
+    "totalLength": 4626.08,
     "continuationCount": 0,
     "crossings": [],
     "overlaps": [],
     "continuations": []
   },
-  "model_sha256": "1202d8668fadf81afe13a6bd4e06df3c72b32f239ae737e7459bb5508038822b",
-  "drawio_sha256": "1a440eb7d0ce285e4d0cb53e261a4428217a85e57b5d81bcc243cb6f9d18d06c"
+  "model_sha256": "e893d36a4b1b8c2395dd6acff64ec557371eec32e7d35725f9e148bed6d59745",
+  "drawio_sha256": "f3153e5546174aa7495c83c7bec820fa9c1583836ae0e2c1d81dbb11dbc0bd14"
 }

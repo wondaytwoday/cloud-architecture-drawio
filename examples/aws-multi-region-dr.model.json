@@ -170,7 +170,7 @@
       "icon": "aws.s3",
       "label": "Amazon S3",
       "col": 0,
-      "row": 4.8,
+      "row": 5.8,
       "parent": "region-a",
       "detail": "Documents"
     },
@@ -206,7 +206,7 @@
       "icon": "aws.s3",
       "label": "Amazon S3",
       "col": 6,
-      "row": 4.8,
+      "row": 5.8,
       "parent": "region-b",
       "detail": "Replica"
     }
@@ -277,8 +277,8 @@
       "target": "s3-b",
       "label": "Cross-Region replication",
       "kind": "replication",
-      "sourcePort": "bottom",
-      "targetPort": "bottom"
+      "sourcePort": "right",
+      "targetPort": "left"
     }
   ],
   "notes": [

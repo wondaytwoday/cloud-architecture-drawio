@@ -195,7 +195,9 @@
       "id": "sql-a",
       "source": "eks-a",
       "target": "db-a",
-      "label": "SQL"
+      "label": "SQL",
+      "sourcePort": "left",
+      "targetPort": "left"
     },
     {
       "id": "sql-b",
@@ -207,7 +209,9 @@
       "id": "reads",
       "source": "eks-b",
       "target": "db-b",
-      "label": "SQL reads"
+      "label": "SQL reads",
+      "sourcePort": "right",
+      "targetPort": "right"
     },
     {
       "id": "aurora-repl",

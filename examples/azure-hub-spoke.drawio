@@ -60,14 +60,14 @@
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="194.0" y="552.25" />
-              <mxPoint x="194.0" y="798.0" />
-              <mxPoint x="322.0" y="798.0" />
+              <mxPoint x="194.0" y="800.0" />
+              <mxPoint x="322.0" y="800.0" />
               <mxPoint x="322.0" y="950.0" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_peer-a" value="Peering" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="peer-a" connectable="0">
-          <mxGeometry as="geometry" x="0.06937010572942759" y="0" width="60.66" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.07654177762543846" y="0" width="60.66" height="22" relative="1">
             <mxPoint as="offset" x="-30.330000000000013" y="-27.0" />
           </mxGeometry>
         </mxCell>
@@ -75,41 +75,41 @@
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="998.0" y="552.25" />
-              <mxPoint x="998.0" y="798.0" />
-              <mxPoint x="870.0" y="798.0" />
+              <mxPoint x="998.0" y="800.0" />
+              <mxPoint x="870.0" y="800.0" />
               <mxPoint x="870.0" y="950.0" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_peer-b" value="Peering" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="peer-b" connectable="0">
-          <mxGeometry as="geometry" x="0.06937010572942759" y="0" width="60.66" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.07654177762543846" y="0" width="60.66" height="22" relative="1">
             <mxPoint as="offset" x="-30.33000000000004" y="-27.0" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="egress" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#1F7F8C;strokeWidth=1.6;exitX=1;exitY=0.41935483870967744;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=6 3 2 3;" edge="1" parent="1" source="aks" target="fw">
+        <mxCell id="egress" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#4B6074;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;jumpStyle=arc;jumpSize=8;" edge="1" parent="1" source="aks" target="fw">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="486.0" y="972.0" />
+              <mxPoint x="486.0" y="982.0" />
               <mxPoint x="486.0" y="584.25" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="__label_egress" value="0.0.0.0/0 via UDR" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="egress" connectable="0">
-          <mxGeometry as="geometry" x="0.0030876109610189495" y="0" width="124.46" height="22" relative="1">
-            <mxPoint as="offset" x="-130.45999999999998" y="-11.0" />
+        <mxCell id="__label_egress" value="UDR 0.0.0.0/0" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="egress" connectable="0">
+          <mxGeometry as="geometry" x="0.004708132563357559" y="0" width="98.94" height="22" relative="1">
+            <mxPoint as="offset" x="-104.94" y="-11.0" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="data" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#4B6074;strokeWidth=1.6;exitX=1;exitY=0.5806451612903226;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;jumpStyle=arc;jumpSize=8;" edge="1" parent="1" source="aks" target="pe">
+        <mxCell id="data" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#4B6074;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;jumpStyle=arc;jumpSize=8;" edge="1" parent="1" source="fw" target="pe">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="902.0" y="992.0" />
-              <mxPoint x="902.0" y="982.0" />
+              <mxPoint x="770.0" y="584.25" />
+              <mxPoint x="770.0" y="982.0" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_data" value="TCP 1433" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="data" connectable="0">
-          <mxGeometry as="geometry" x="0.00019813750743002956" y="0" width="67.03999999999999" height="22" relative="1">
-            <mxPoint as="offset" x="-33.51999999999998" y="-27.0" />
+          <mxGeometry as="geometry" x="0.006596289893453955" y="0" width="67.03999999999999" height="22" relative="1">
+            <mxPoint as="offset" x="-73.03999999999996" y="-11.0" />
           </mxGeometry>
         </mxCell>
         <mxCell id="link" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#4B6074;strokeWidth=1.6;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;jumpStyle=arc;jumpSize=8;" edge="1" parent="1" source="pe" target="sql">
@@ -165,7 +165,7 @@
         <mxCell id="__name_fw" value="Azure Firewall" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=center;verticalAlign=middle;fontSize=13;fontStyle=1;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="fw">
           <mxGeometry as="geometry" x="4" y="59" width="148" height="34" />
         </mxCell>
-        <mxCell id="__detail_fw" value="Forced tunnelling" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=center;verticalAlign=middle;fontSize=11;fontStyle=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="fw">
+        <mxCell id="__detail_fw" value="Central inspection" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=center;verticalAlign=middle;fontSize=11;fontStyle=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="fw">
           <mxGeometry as="geometry" x="4" y="95" width="148" height="28" />
         </mxCell>
         <mxCell id="bastion" value="" style="group;fillColor=none;strokeColor=none;container=1;collapsible=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="bas-sn">
@@ -234,25 +234,19 @@
         <mxCell id="__legend_text_traffic" value="Request / data" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;fontSize=11;align=left;verticalAlign=middle;fontColor=#4B6074;fontFamily=Arial;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="70" y="1386" width="160" height="24" />
         </mxCell>
-        <mxCell id="__legend_line_egress" value="" style="shape=line;strokeColor=#1F7F8C;strokeWidth=1.6;dashed=1;dashPattern=6 3 2 3;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
+        <mxCell id="__legend_line_management" value="" style="shape=line;strokeColor=#A06050;strokeWidth=1.6;dashed=1;dashPattern=8 3 2 3 2 3;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="235" y="1398" width="30" height="1" />
         </mxCell>
-        <mxCell id="__legend_text_egress" value="Outbound" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;fontSize=11;align=left;verticalAlign=middle;fontColor=#1F7F8C;fontFamily=Arial;" vertex="1" parent="1">
+        <mxCell id="__legend_text_management" value="Management" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;fontSize=11;align=left;verticalAlign=middle;fontColor=#A06050;fontFamily=Arial;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="275" y="1386" width="160" height="24" />
         </mxCell>
-        <mxCell id="__legend_line_management" value="" style="shape=line;strokeColor=#A06050;strokeWidth=1.6;dashed=1;dashPattern=8 3 2 3 2 3;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
+        <mxCell id="__legend_line_connectivity" value="" style="shape=line;strokeColor=#3E2723;strokeWidth=2.6;dashed=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="440" y="1398" width="30" height="1" />
         </mxCell>
-        <mxCell id="__legend_text_management" value="Management" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;fontSize=11;align=left;verticalAlign=middle;fontColor=#A06050;fontFamily=Arial;" vertex="1" parent="1">
+        <mxCell id="__legend_text_connectivity" value="Network link" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;fontSize=11;align=left;verticalAlign=middle;fontColor=#3E2723;fontFamily=Arial;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="480" y="1386" width="160" height="24" />
         </mxCell>
-        <mxCell id="__legend_line_connectivity" value="" style="shape=line;strokeColor=#3E2723;strokeWidth=2.6;dashed=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="645" y="1398" width="30" height="1" />
-        </mxCell>
-        <mxCell id="__legend_text_connectivity" value="Network link" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;fontSize=11;align=left;verticalAlign=middle;fontColor=#3E2723;fontFamily=Arial;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="685" y="1386" width="160" height="24" />
-        </mxCell>
-        <mxCell id="__notes" value="Spoke-to-spoke traffic routes through the firewall; DNS zones for Private Link are not drawn." style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=left;verticalAlign=middle;fontSize=11;fontStyle=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
+        <mxCell id="__notes" value="Spoke traffic, including SQL through the Private Endpoint, is routed to the firewall by UDR; DNS zones for Private Link are not drawn." style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=left;verticalAlign=middle;fontSize=11;fontStyle=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="30" y="1411" width="1132" height="36" />
         </mxCell>
       </root>

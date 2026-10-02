@@ -500,8 +500,7 @@
     "kind": "svg",
     "name": "Cache_Redis",
     "source": "https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/img/lib/azure2/databases/Cache_Redis.svg",
-    "sha256": "f5bce354870a22bfec08f44f5b5559b3aa276af73fc4ff9c29ead0979ddb8619",
-    "placement": "managed"
+    "sha256": "f5bce354870a22bfec08f44f5b5559b3aa276af73fc4ff9c29ead0979ddb8619"
   },
   "azure.keyvault": {
     "file": "icons/azure-keyvault.svg",
@@ -656,9 +655,9 @@
     "file": "icons/gcp-monitoring.xml",
     "kind": "stencil",
     "color": "#4285F4",
-    "name": "cloud monitoring",
+    "name": "Stackdriver",
     "source": "https://github.com/jgraph/drawio/blob/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/stencils/gcp2.xml",
-    "sha256": "029c7c76bee580860856970be663578d3f63b4ed0b1387382fff3cadccf5c39e",
+    "sha256": "79957adb96f5eacbbd8681c83f0205b0f1038349b02ca8cb7fc57d6fc2d82d8a",
     "placement": "managed"
   },
   "gcp.kms": {

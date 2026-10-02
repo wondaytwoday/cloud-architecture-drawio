@@ -791,7 +791,7 @@
       "id": "gcp-monitoring",
       "icon": "gcp.monitoring",
       "label": "gcp.monitoring",
-      "detail": "cloud monitoring",
+      "detail": "Stackdriver",
       "x": 1974,
       "y": 1094,
       "w": 176,

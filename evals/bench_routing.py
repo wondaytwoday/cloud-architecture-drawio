@@ -152,13 +152,13 @@ def jogs(routes, limit=12):
                if abs(a[0]-b[0])+abs(a[1]-b[1]) <= limit)
 
 
-def joins(routes, limit=24):
-    """Segment pairs of two connectors on one line whose ends are under limit px
-    apart, so the two connectors read as one line."""
+def joins(routes, limit=24, offset=10):
+    """Segment pairs of two connectors on (nearly) one line whose ends are under
+    limit px apart, so the two connectors read as one line."""
     def gap(a, b, c, d):
         for axis in (0, 1):
             other = 1-axis
-            if a[other] == b[other] == c[other] == d[other]:
+            if a[other] == b[other] and c[other] == d[other] and abs(a[other]-c[other]) < offset:
                 return max(min(a[axis], b[axis]), min(c[axis], d[axis]))-min(max(a[axis], b[axis]), max(c[axis], d[axis]))
         return None
     items = list(routes.values())

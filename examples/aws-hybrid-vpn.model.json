@@ -113,11 +113,11 @@
     {
       "id": "router",
       "icon": "generic.router",
-      "label": "Customer gateway",
+      "label": "Customer router",
       "col": 2,
       "row": 0.2,
       "parent": "dc",
-      "detail": "BGP · VPN device"
+      "detail": "BGP · VPN and DX"
     },
     {
       "id": "dx",
@@ -126,7 +126,7 @@
       "col": 4,
       "row": 1.6,
       "parent": "cloud",
-      "detail": "Dedicated 1 Gbps"
+      "detail": "DX gateway · 1 Gbps"
     },
     {
       "id": "tgw",
@@ -174,14 +174,14 @@
       "id": "dx-link",
       "source": "router",
       "target": "dx",
-      "label": "Private VIF",
+      "label": "Transit VIF",
       "kind": "connectivity"
     },
     {
       "id": "dx-tgw",
       "source": "dx",
       "target": "tgw",
-      "label": "Transit VIF",
+      "label": "DX gateway association",
       "kind": "connectivity"
     },
     {
@@ -206,6 +206,6 @@
     }
   ],
   "notes": [
-    "VPN backs up Direct Connect; route propagation and segmentation are illustrative."
+    "VPN backs up Direct Connect; VPC-to-VPC traffic such as LDAP/DNS passes through the Transit Gateway; routing is illustrative."
   ]
 }

@@ -320,6 +320,19 @@ class GeometryAndPlacementTests(unittest.TestCase):
         pe.update(parent='cloud', x=1100, y=1000)
         self.rejects(m, 'azure.privateendpoint takes an address in a subnet')
 
+    def test_azure_firewall_bastion_and_vpn_gateway_need_a_subnet_of_their_own(self):
+        for icon, name in (('azure.firewall', 'Azure Firewall'), ('azure.bastion', 'Azure Bastion'), ('azure.vpn-gateway', 'VPN gateway')):
+            with self.subTest(icon=icon):
+                m = {'provider': 'azure', 'title': 'Dedicated subnets', 'width': 800, 'height': 600,
+                     'containers': [{'id': 'vnet', 'kind': 'vnet', 'label': 'VNet', 'x': 40, 'y': 100, 'w': 700, 'h': 360},
+                                    {'id': 'sn', 'kind': 'subnet', 'label': 'app-subnet', 'parent': 'vnet', 'x': 70, 'y': 150, 'w': 600, 'h': 260}],
+                     'nodes': [{'id': 'gw', 'icon': icon, 'label': 'Gateway', 'parent': 'sn', 'x': 400, 'y': 220, 'w': 156, 'h': 124}],
+                     'edges': []}
+                self.assertEqual(self.errors(m), [])
+                m['nodes'].append({'id': 'vm', 'icon': 'azure.vm', 'label': 'VM', 'parent': 'sn', 'x': 100, 'y': 220, 'w': 156, 'h': 124})
+                self.rejects(m, 'vm: subnet sn hosts')
+                self.rejects(m, name)
+
     def test_application_gateway_subnet_is_dedicated_and_not_gatewaysubnet(self):
         m = self.model('azure-regional')
         subnet = self.box(m, 'gateway-subnet')

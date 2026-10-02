@@ -172,14 +172,18 @@
       "source": "app-a",
       "target": "nat-a",
       "label": "0.0.0.0/0",
-      "kind": "egress"
+      "kind": "egress",
+      "sourcePort": "left",
+      "targetPort": "left"
     },
     {
       "id": "out-b",
       "source": "app-b",
       "target": "nat-b",
       "label": "0.0.0.0/0",
-      "kind": "egress"
+      "kind": "egress",
+      "sourcePort": "right",
+      "targetPort": "right"
     },
     {
       "id": "nat-igw-a",

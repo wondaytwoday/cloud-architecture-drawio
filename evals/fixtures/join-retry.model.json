@@ -1,0 +1,79 @@
+{
+  "provider": "aws",
+  "title": "Join retry that would add crossings",
+  "width": "auto",
+  "height": "auto",
+  "containers": [],
+  "nodes": [
+    {
+      "id": "n0",
+      "icon": "aws.alb",
+      "label": "N0",
+      "col": 1.25,
+      "row": 1
+    },
+    {
+      "id": "n1",
+      "icon": "aws.ecs",
+      "label": "N1",
+      "col": 1,
+      "row": 0
+    },
+    {
+      "id": "n2",
+      "icon": "aws.lambda",
+      "label": "N2",
+      "col": -0.25,
+      "row": 0
+    },
+    {
+      "id": "n3",
+      "icon": "aws.ecs",
+      "label": "N3",
+      "col": -0.25,
+      "row": 1
+    }
+  ],
+  "edges": [
+    {
+      "id": "e0",
+      "source": "n1",
+      "target": "n0",
+      "kind": "replication",
+      "sourcePort": "right"
+    },
+    {
+      "id": "e1",
+      "source": "n0",
+      "target": "n3",
+      "kind": "event",
+      "sourcePort": "top"
+    },
+    {
+      "id": "e2",
+      "source": "n2",
+      "target": "n1",
+      "kind": "event"
+    },
+    {
+      "id": "e3",
+      "source": "n3",
+      "target": "n1",
+      "kind": "replication"
+    },
+    {
+      "id": "e4",
+      "source": "n1",
+      "target": "n3",
+      "kind": "traffic",
+      "sourcePort": "right",
+      "targetPort": "right"
+    },
+    {
+      "id": "e5",
+      "source": "n2",
+      "target": "n1",
+      "kind": "event"
+    }
+  ]
+}

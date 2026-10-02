@@ -6,11 +6,14 @@ Shorthands, all optional:
   * container `x`/`y`/`w`/`h` given as "fit": wrap its children (or, for an
     overlay group, its `members`) with room for the title, or "match:ID" to
     copy that dimension from another container;
-  * canvas `width`/`height` as "auto": fit the content, title band and legend.
+  * canvas `width`/`height` as "auto": fit the content, page texts and legend.
 The result is an ordinary absolute model; the source model is never modified.
+Text widths are estimated here as in the compiler, so a fitted box or an auto
+canvas is never narrower than its one-line title.
 """
 import copy
 import math
+import unicodedata
 
 CARD = {'w': 156, 'h': 124}
 # Room around fitted children: the title band leaves 52px above the first card,
@@ -18,10 +21,38 @@ CARD = {'w': 156, 'h': 124}
 PAD = {'left': 24, 'top': 56, 'right': 24, 'bottom': 24}
 GRID = {'left': 60, 'top': 140, 'column': 236, 'row': 204}
 LEGEND_ITEM, LEGEND_LAST, PAGE_SIDE, FOOTER, TITLE_BAND = 205, 200, 30, 90, 90
+# The validator keeps shapes inside x 10..width-10 and y 80..height-90.
+MARGIN_SIDE, MARGIN_TOP, STUB = 10, 80, 16
+
+
+def measure(text, font):
+    return sum(font*(1 if unicodedata.east_asian_width(c) in 'WF' else .58) for c in text)
+
+
+def wrapped(text, width, font):
+    """Conservative width estimate; browser inspection remains mandatory."""
+    lines = []
+    for paragraph in text.split('\n'):
+        line = ''
+        for word in paragraph.split():
+            trial = (line+' '+word).strip()
+            if measure(trial, font) <= width:
+                line = trial
+                continue
+            if line:
+                lines.append(line)
+                line = ''
+            for char in word:
+                if measure(line+char, font) > width and line:
+                    lines.append(line)
+                    line = ''
+                line += char
+        lines.append(line)
+    return lines
 
 
 def is_number(value):
-    return isinstance(value, (int, float)) and not isinstance(value, bool)
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
 
 
 def items(m, key):
@@ -40,13 +71,26 @@ def uses_shorthand(m):
 
 def normalize(m):
     """Return an absolute copy of the model; raise ValueError for bad shorthands."""
+    return resolve(m)[0]
+
+
+def resolve(m):
+    """Like normalize, and also return the (dx, dy) by which the whole layout was
+    moved to clear the page margins. Coordinates written in the model live
+    before that move, so an absolute position maps back by subtracting it."""
     if not uses_shorthand(m):
-        return m
+        return m, (0, 0)
     m = copy.deepcopy(m)
-    grid = dict(GRID, **(m.pop('grid') if isinstance(m.get('grid'), dict) else {}))
-    for key in ('left', 'top', 'column', 'row'):
+    grid = m.pop('grid', {})
+    if not isinstance(grid, dict):
+        raise ValueError('grid: must be an object with left, top, column and row')
+    for key in grid:
+        if key not in GRID:
+            raise ValueError(f'grid.{key}: unknown key; use left, top, column or row')
+    grid = dict(GRID, **grid)
+    for key in GRID:
         if not is_number(grid[key]):
-            raise ValueError(f'grid.{key}: must be a number')
+            raise ValueError(f'grid.{key}: must be a finite number')
     nodes, boxes = items(m, 'nodes'), items(m, 'containers')
     box_ids = {id(b) for b in boxes}
     for n in nodes:
@@ -57,8 +101,12 @@ def normalize(m):
                 if axis in n:
                     raise ValueError(f"{n.get('id')}: give either {axis} or {cell}, not both")
                 if not is_number(n[cell]):
-                    raise ValueError(f"{n.get('id')}: {cell} must be a number")
+                    raise ValueError(f"{n.get('id')}: {cell} must be a finite number")
                 n[axis] = grid[origin]+n.pop(cell)*grid[size]
+        for key in ('x', 'y', 'w', 'h'):
+            if not is_number(n.get(key)):
+                hint = f" (or give {'col' if key == 'x' else 'row'})" if key in ('x', 'y') else ''
+                raise ValueError(f"{n.get('id')}.{key}: must be a finite number{hint}")
     by_id = {b.get('id'): b for b in boxes}
     nodes_by_id = {n.get('id'): n for n in nodes}
 
@@ -73,26 +121,29 @@ def normalize(m):
 
     resolving = set()
 
-    def resolve(box):
+    def resolve_box(box):
         """Fit a container after its children; detect cycles through match/fit."""
         if all(is_number(box.get(k)) for k in ('x', 'y', 'w', 'h')):
             return box
         if box.get('id') in resolving:
             raise ValueError(f"{box.get('id')}: fit/match refers back to itself")
         resolving.add(box.get('id'))
+        fitted_width = box.get('w') == 'fit'
         for key in ('x', 'y', 'w', 'h'):
             value = box.get(key)
             if isinstance(value, str) and value.startswith('match:'):
                 other = by_id.get(value[6:])
                 if other is None:
                     raise ValueError(f"{box.get('id')}.{key}: {value!r} names no container")
-                box[key] = resolve(other)[key]
+                box[key] = resolve_box(other)[key]
         if any(box.get(k) == 'fit' for k in ('x', 'y', 'w', 'h')):
-            inner = [resolve(c) if id(c) in box_ids else c for c in children(box)]
+            # An overlay fits the cards of its members, so its left edge meets the
+            # first member's box; centre its title clear of that box's title.
+            if box.get('overlay'):
+                box.setdefault('labelAlign', 'center')
+            inner = [resolve_box(c) if id(c) in box_ids else c for c in children(box)]
             if not inner:
                 raise ValueError(f"{box.get('id')}: 'fit' needs at least one child inside it")
-            if any(not all(is_number(c.get(k)) for k in ('x', 'y', 'w', 'h')) for c in inner):
-                raise ValueError(f"{box.get('id')}: 'fit' children need resolved positions")
             left = min(c['x'] for c in inner)-PAD['left']
             top = min(c['y'] for c in inner)-PAD['top']
             if box.get('x') == 'fit':
@@ -108,29 +159,50 @@ def normalize(m):
                     raise ValueError(f"{box.get('id')}: fit height needs y")
                 box['h'] = max(c['y']+c['h'] for c in inner)+PAD['bottom']-box['y']
         for key in ('x', 'y', 'w', 'h'):
-            if isinstance(box.get(key), str):
-                raise ValueError(f"{box.get('id')}.{key}: use a number, 'fit' or 'match:ID'")
+            if not is_number(box.get(key)):
+                raise ValueError(f"{box.get('id')}.{key}: use a finite number, 'fit' or 'match:ID'")
+        # A fitted width also holds the one-line title the validator requires.
+        if fitted_width and isinstance(box.get('label'), str):
+            offset = box.get('labelOffset', 0) if is_number(box.get('labelOffset', 0)) else 0
+            box['w'] = max(box['w'], math.ceil(measure(box['label'], 14)+24+offset))
         resolving.discard(box.get('id'))
         return box
 
     for box in boxes:
-        resolve(box)
+        resolve_box(box)
     shapes = nodes+boxes
-    # Nested fits grow outwards; move everything clear of the page title band
-    # and side margin so the grid origin never has to anticipate nesting depth.
-    # An auto-sized canvas also closes any gap left above or beside the content.
+    dx = dy = 0
+    # Nested fits grow outwards; when they reach into the page margins, move
+    # everything clear of the title band and side margin. An auto-sized canvas
+    # also closes any gap above or beside the content. A card connected through
+    # its top side needs its lead-in below the title band.
     if shapes:
-        dx = PAGE_SIDE-min(s['x'] for s in shapes)
-        dy = TITLE_BAND-min(s['y'] for s in shapes)
-        dx = dx if m.get('width') == 'auto' else max(0, dx)
-        dy = dy if m.get('height') == 'auto' else max(0, dy)
+        stub = (m.get('routing') or {}).get('stub', STUB) if isinstance(m.get('routing'), dict) else STUB
+        stub = stub if is_number(stub) else STUB
+        top_ported = {e.get(end) for e in items(m, 'edges') for end, port in (('source', 'sourcePort'), ('target', 'targetPort')) if e.get(port) == 'top'}
+        allowed = {id(s): MARGIN_TOP+(stub if s.get('id') in top_ported else 0) for s in shapes}
+        wanted = {id(s): max(TITLE_BAND, allowed[id(s)]) for s in shapes}
+        left = min(s['x'] for s in shapes)
+        if m.get('width') == 'auto':
+            dx = PAGE_SIDE-left
+        elif left < MARGIN_SIDE:
+            dx = PAGE_SIDE-left
+        if m.get('height') == 'auto' or any(s['y'] < allowed[id(s)] for s in shapes):
+            dy = max(wanted[id(s)]-s['y'] for s in shapes)
+            if m.get('height') != 'auto':
+                dy = max(0, dy)
         for shape in shapes:
             shape['x'] += dx
             shape['y'] += dy
     if m.get('width') == 'auto':
         kinds = {e.get('kind', 'traffic') for e in items(m, 'edges')}
         legend = PAGE_SIDE+(len(kinds)-1)*LEGEND_ITEM+LEGEND_LAST+PAGE_SIDE if kinds else 0
-        m['width'] = math.ceil(max([legend]+[s['x']+s['w']+PAGE_SIDE for s in shapes]))
+        texts = [measure(str(m.get('title', 'Cloud architecture')), 24)+60, measure(str(m.get('subtitle', '')), 12)+60]
+        width = math.ceil(max([legend]+texts+[s['x']+s['w']+PAGE_SIDE for s in shapes]))
+        notes = ' · '.join(str(n) for n in m.get('notes', [])) if isinstance(m.get('notes'), list) else ''
+        while len(wrapped(notes, width-60, 11)) > 2 and width < 20000:
+            width += 10
+        m['width'] = width
     if m.get('height') == 'auto':
         m['height'] = math.ceil(max(s['y']+s['h'] for s in shapes)+FOOTER+20) if shapes else 400
-    return m
+    return m, (dx, dy)

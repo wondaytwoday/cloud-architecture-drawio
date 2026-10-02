@@ -10,6 +10,9 @@ import re
 
 
 PROVIDERS = {'aws', 'azure', 'gcp', 'multi'}
+# Azure services that must have a subnet to themselves.
+DEDICATED_SUBNETS = {'azure.appgateway': 'an Application Gateway', 'azure.firewall': 'an Azure Firewall (AzureFirewallSubnet)',
+                     'azure.bastion': 'Azure Bastion (AzureBastionSubnet)', 'azure.vpn-gateway': 'a VPN gateway (GatewaySubnet)'}
 # Drawn by the compiler itself rather than from the catalog.
 BUILTIN_ICONS = ('generic', 'generic.user')
 CSPS = ('aws', 'azure', 'gcp')
@@ -461,16 +464,26 @@ def validate_structure(m, catalog, wrapped, header_rect):
         if owner == 'aws' and n.get('zone') and any(p.get('zone') and n['zone'] != p['zone'] for p in lineage if p['kind'] in ('subnet', 'az')):
             errors.append(f"{n['id']}: zone differs from subnet/AZ")
 
-    # Azure Application Gateway needs a dedicated subnet that is not GatewaySubnet.
-    gateway_subnets = {subnet_of(n)['id'] for n in nodes if n.get('icon') == 'azure.appgateway' and subnet_of(n)}
+    # Azure gateways and firewalls each need a subnet of their own; Application
+    # Gateway's must not be GatewaySubnet.
+    dedicated = {}
     for n in nodes:
-        home = next((s for s in subnets_of(n) if s['id'] in gateway_subnets), None)
-        if home and n.get('icon') != 'azure.appgateway':
-            errors.append(f"{n['id']}: subnet {home['id']} hosts an Application Gateway and must be dedicated to it; move this resource to another subnet")
+        if n.get('icon') in DEDICATED_SUBNETS and subnet_of(n):
+            dedicated.setdefault(subnet_of(n)['id'], n['icon'])
+    for n in nodes:
+        home = next((s for s in subnets_of(n) if s['id'] in dedicated), None)
+        if home and n.get('icon') != dedicated[home['id']]:
+            errors.append(f"{n['id']}: subnet {home['id']} hosts {DEDICATED_SUBNETS[dedicated[home['id']]]} and must be dedicated to it; move this resource to another subnet")
+    gateway_subnets = {sid for sid, icon in dedicated.items() if icon == 'azure.appgateway'}
     for sid in sorted(gateway_subnets):
         if re.search(r'\bGatewaySubnet\b', box_by[sid]['label']):
             errors.append(f"{sid}: GatewaySubnet is reserved for VPN/ExpressRoute gateways; give the Application Gateway subnet another name")
 
+    # Two titles in one place print over each other.
+    for index, a in enumerate(boxes):
+        for b in boxes[index+1:]:
+            if _overlap(header_rect(a), header_rect(b)):
+                errors.append(f"{a['id']} / {b['id']}: container titles overlap; set labelAlign or labelOffset on one, or move it")
     for index, a in enumerate(nodes):
         for b in nodes[index+1:]:
             if _overlap(_rect(a), _rect(b)):

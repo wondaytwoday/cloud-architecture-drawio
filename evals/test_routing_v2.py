@@ -415,5 +415,68 @@ class RoutingTests(unittest.TestCase):
                 self.assertIn('jumpSize=8;', style)
 
 
+class JoinTests(unittest.TestCase):
+    """Two connectors meeting end to end on one line read as one connector."""
+
+    def count(self, a, b):
+        return routing.metrics({'a': a, 'b': b})['continuationCount']
+
+    def test_ends_on_nearly_one_line_with_a_short_gap_are_counted(self):
+        self.assertEqual(self.count([(0, 0), (0, 100)], [(0, 110), (0, 200)]), 1)
+        # Two pixels apart still reads as one line with a kink.
+        self.assertEqual(self.count([(0, 0), (0, 100)], [(2, 110), (2, 200)]), 1)
+        self.assertEqual(self.count([(0, 0), (100, 0)], [(110, 4), (200, 4)]), 1)
+        # A separate lane, a long gap or side-by-side lines are not joins.
+        self.assertEqual(self.count([(0, 0), (0, 100)], [(10, 110), (10, 200)]), 0)
+        self.assertEqual(self.count([(0, 0), (0, 100)], [(0, 124), (0, 200)]), 0)
+        self.assertEqual(self.count([(0, 0), (0, 100)], [(4, 50), (4, 200)]), 0)
+
+    def test_router_replans_a_join_and_reports_the_mode(self):
+        m = c.model_layout.normalize(json.loads((BASE/'examples/aws-three-tier.model.json').read_text(encoding='utf-8')))
+        mode = routing.ROUTING_MODES[0]
+        plain, _ = routing.plan(m, c.header_rect, mode['reservedLeadIns'], mode['borderClearance'], mode['spreadParallels'], mode['stubLanes'])
+        self.assertGreater(routing.metrics(plain)['continuationCount'], 0)
+        routes, _, _, used = routing.route_and_label(m, c.header_rect)
+        self.assertTrue(used.get('avoidJoins'))
+        self.assertEqual(routing.metrics(routes)['continuationCount'], 0)
+
+    def test_a_replan_that_adds_crossings_is_dropped_and_the_join_is_reported(self):
+        m = json.loads((BASE/'evals/fixtures/join-retry.model.json').read_text(encoding='utf-8'))
+        with tempfile.TemporaryDirectory() as d:
+            report = c.build(m, Path(d)/'join.drawio')
+        self.assertNotIn('avoidJoins', report['routing'])
+        self.assertEqual((report['quality']['crossingCount'], report['quality']['continuationCount']), (0, 1))
+        self.assertTrue(any('meet end to end' in w for w in report['warnings']), report['warnings'])
+
+
+class BoundaryLinkTests(unittest.TestCase):
+    def test_a_link_to_the_top_of_a_boundary_is_not_blocked_by_its_own_title(self):
+        m = {'provider': 'aws', 'title': 'Hybrid', 'width': 700, 'height': 700,
+             'containers': [{'id': 'cloud', 'kind': 'cloud', 'label': 'AWS Cloud', 'x': 40, 'y': 300, 'w': 500, 'h': 300},
+                            {'id': 'vpc', 'kind': 'vpc', 'label': 'Production VPC 10.0.0.0/16', 'x': 80, 'y': 350, 'w': 360, 'h': 200, 'parent': 'cloud'}],
+             'nodes': [{'id': 'onprem', 'icon': 'generic.onprem', 'label': 'Data center', 'x': 180, 'y': 100, 'w': 156, 'h': 124},
+                       {'id': 'ec2', 'icon': 'aws.ec2', 'label': 'App', 'x': 180, 'y': 400, 'w': 156, 'h': 124, 'parent': 'vpc'}],
+             'edges': [{'id': 'link', 'source': 'onprem', 'target': 'vpc', 'kind': 'connectivity', 'label': 'VPN'}]}
+        routes, _, _, _ = routing.route_and_label(m, c.header_rect)
+        self.assertEqual(routes['link'][-1][1], 350)
+
+    def test_a_link_between_two_networks_does_not_cross_a_third(self):
+        fit = {'x': 'fit', 'y': 'fit', 'w': 'fit', 'h': 'fit'}
+        m = {'provider': 'aws', 'title': 'Peering', 'width': 'auto', 'height': 'auto',
+             'containers': [dict(fit, id='region', kind='region', label='us-east-1'),
+                            dict(fit, id='vpc-a', kind='vpc', label='VPC A', parent='region'),
+                            dict(fit, id='vpc-c', kind='vpc', label='VPC C', parent='region'),
+                            dict(fit, id='vpc-b', kind='vpc', label='VPC B', parent='region')],
+             'nodes': [{'id': 'a', 'icon': 'aws.ec2', 'label': 'App A', 'col': 0, 'row': 0, 'parent': 'vpc-a'},
+                       {'id': 'c1', 'icon': 'aws.ec2', 'label': 'App C', 'col': 1.3, 'row': 0, 'parent': 'vpc-c'},
+                       {'id': 'b', 'icon': 'aws.ec2', 'label': 'App B', 'col': 2.6, 'row': 0, 'parent': 'vpc-b'}],
+             'edges': [{'id': 'peer', 'source': 'vpc-a', 'target': 'vpc-b', 'kind': 'connectivity', 'label': 'peering'}]}
+        resolved = c.model_layout.normalize(m)
+        routes, _, _, _ = routing.route_and_label(resolved, c.header_rect)
+        middle = next(b for b in resolved['containers'] if b['id'] == 'vpc-c')
+        rect = (middle['x'], middle['y'], middle['w'], middle['h'])
+        self.assertFalse([s for s in segments(routes['peer']) if intersects_interior(s, rect)], routes['peer'])
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

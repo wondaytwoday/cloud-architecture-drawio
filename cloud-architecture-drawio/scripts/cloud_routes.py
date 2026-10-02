@@ -65,9 +65,10 @@ def self_contact(points):
 
 
 def continuation(a,b,c,d):
-    """Gap between two segments on one line, or None when they are not collinear."""
-    if a[1]==b[1]==c[1]==d[1]:axis=0
-    elif a[0]==b[0]==c[0]==d[0]:axis=1
+    """Gap between two segments on one line, or None when they are not on one.
+    Lines a few pixels apart still read as one line with a kink."""
+    if a[1]==b[1] and c[1]==d[1] and abs(a[1]-c[1])<JOIN_OFFSET:axis=0
+    elif a[0]==b[0] and c[0]==d[0] and abs(a[0]-c[0])<JOIN_OFFSET:axis=1
     else:return None
     return max(min(a[axis],b[axis]),min(c[axis],d[axis]))-min(max(a[axis],b[axis]),max(c[axis],d[axis]))
 
@@ -159,6 +160,7 @@ PARALLEL_FACTOR=.3
 CAPTION_GAP=8
 # Collinear lines of different connectors closer end to end than this look joined.
 CONTINUATION_GAP=24
+JOIN_OFFSET=10
 # Search steps (A* expansions) all routing modes may use together.
 ROUTING_WORK_LIMIT=1_500_000
 
@@ -265,11 +267,10 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,p
             if amount>0:return None
             if point in (a,b):return None
             if point:cross.add(point)
+            # On request, keep lines from meeting another line end to end.
+            if joins and k<finished and 0<(continuation(p,q,a,b) or 0)<CONTINUATION_GAP:cost+=180
             # Prefer visible separation between parallel lines.
-            if p[1]==q[1]==a[1]==b[1] or p[0]==q[0]==a[0]==b[0]:
-                # On request, keep lines from meeting another line end to end.
-                if joins and k<finished and 0<(continuation(p,q,a,b) or 0)<CONTINUATION_GAP:cost+=180
-                continue
+            if p[1]==q[1]==a[1]==b[1] or p[0]==q[0]==a[0]==b[0]:continue
             if p[1]==q[1] and a[1]==b[1] and abs(p[1]-a[1])<10:
                 if max(min(p[0],q[0]),min(a[0],b[0]))<min(max(p[0],q[0]),max(a[0],b[0])):cost+=length(p,q)*3
             if p[0]==q[0] and a[0]==b[0] and 0<abs(p[0]-a[0])<10:
@@ -309,6 +310,18 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,p
     return simplify([start]+points+[goal])
 
 
+NETWORKS=('vpc','vnet','subnet')
+
+
+def lineage(m,ident):
+    """The ID and every enclosing container ID of a node or container."""
+    parents={x['id']:x.get('parent') for x in m['nodes']+m['containers']}
+    chain=[]
+    while ident is not None and ident not in chain:
+        chain.append(ident);ident=parents.get(ident)
+    return chain
+
+
 def plan(m,header_rect,reserve=True,clear_borders=True,spread=True,stub_lanes=True,work=None,joins=False):
     nodes=endpoints(m);ports=select_ports(m);routes={};segments=[];seg_owners=[]
     boxes={c['id'] for c in m['containers']}
@@ -335,11 +348,17 @@ def plan(m,header_rect,reserve=True,clear_borders=True,spread=True,stub_lanes=Tr
     for e in ordered:
         a,b=nodes[e['source']],nodes[e['target']]
         sa,fa=ports[(e['id'],'source')];sb,fb=ports[(e['id'],'target')]
-        margins=[0 if n['id'] in (a['id'],b['id']) else clearance for n in m['nodes']]+[title_pad]*len(m['containers'])
+        # A boundary's own title sits inside it, where its connector never goes.
+        margins=[0 if n['id'] in (a['id'],b['id']) else clearance for n in m['nodes']]+[0 if c['id'] in (a['id'],b['id']) else title_pad for c in m['containers']]
         obstacles=[pad(rect(n),margin) for n,margin in zip(m['nodes'],margins)]
-        obstacles += [pad(header_rect(c),title_pad) for c in m['containers']]
-        # A connector that ends on a boundary stays outside it.
+        obstacles += [pad(header_rect(c),margin) for c,margin in zip(m['containers'],margins[len(m['nodes']):])]
+        # A connector that ends on a boundary stays outside it, and a link between
+        # boundaries does not run through another network, which would read as
+        # that network taking part in the link.
         inside=[x for x in (a,b) if x['id'] in boxes]
+        if inside:
+            related={x for end in (a,b) for x in lineage(m,end['id'])}
+            inside+=[c for c in m['containers'] if c['kind'] in NETWORKS and not c.get('overlay') and c['id'] not in related]
         obstacles += [rect(x) for x in inside]
         start,goal=anchor(a,sa,fa),anchor(b,sb,fb)
         waiting=[(eid,seg) for (eid,_),seg in stubs.items() if eid!=e['id'] and eid not in routes]
@@ -398,7 +417,9 @@ def route_and_label(m,header_rect):
         if joined:
             try:
                 retry,retry_ports=plan(m,header_rect,mode['reservedLeadIns'],mode['borderClearance'],mode['spreadParallels'],mode['stubLanes'],work,True)
-                if len(metrics(retry)['continuations'])<joined:
+                before,after=metrics(routes),metrics(retry)
+                # Never trade a join for crossings or shared segments.
+                if after['continuationCount']<joined and after['crossingCount']<=before['crossingCount'] and after['overlapLength']<=before['overlapLength']:
                     return retry,retry_ports,place_labels(m,retry,header_rect),dict(mode,avoidJoins=True)
             except ValueError:
                 pass

@@ -74,27 +74,14 @@ def line_hits(a, b, r):
     raise ValueError('Non-orthogonal segment')
 
 
-def wrapped(text, width, font):
-    """Conservative width estimate; browser inspection remains mandatory."""
-    def measure(s): return sum(font*(1 if unicodedata.east_asian_width(c) in 'WF' else .58) for c in s)
-    lines=[]
-    for paragraph in text.split('\n'):
-        line=''
-        for word in paragraph.split():
-            trial=(line+' '+word).strip()
-            if measure(trial)<=width: line=trial; continue
-            if line: lines.append(line); line=''
-            for char in word:
-                if measure(line+char)>width and line: lines.append(line); line=''
-                line+=char
-        lines.append(line)
-    return lines
+# One text-width estimate for layout, validation, compilation and pull.
+wrapped=model_layout.wrapped
 
 
 def validate(m):
     """Check the model after resolving layout shorthands such as 'fit' and grid cells."""
     try: m=model_layout.normalize(m)
-    except (ValueError,TypeError) as e: return [f'layout: {e}'],[]
+    except (ValueError,TypeError,KeyError,OverflowError) as e: return [f'layout: {e}'],[]
     return validate_structure(m, CAT, wrapped, header_rect)
 
 

@@ -66,7 +66,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="__label_dx-link" value="Private VIF" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="dx-link" connectable="0">
+        <mxCell id="__label_dx-link" value="Transit VIF" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="dx-link" connectable="0">
           <mxGeometry as="geometry" x="-0.19916267942583732" y="0" width="86.17999999999999" height="22" relative="1">
             <mxPoint as="offset" x="-43.09000000000003" y="-27.0" />
           </mxGeometry>
@@ -79,9 +79,9 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="__label_dx-tgw" value="Transit VIF" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="dx-tgw" connectable="0">
-          <mxGeometry as="geometry" x="-0.01936197676562801" y="0" width="86.17999999999999" height="22" relative="1">
-            <mxPoint as="offset" x="-43.09000000000003" y="-27.0" />
+        <mxCell id="__label_dx-tgw" value="DX gateway association" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="dx-tgw" connectable="0">
+          <mxGeometry as="geometry" x="-0.14198782961460443" y="0" width="156.35999999999999" height="22" relative="1">
+            <mxPoint as="offset" x="-78.17999999999995" y="-27.0" />
           </mxGeometry>
         </mxCell>
         <mxCell id="attach-prod" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#3E2723;strokeWidth=1.6;exitX=0;exitY=0.5;exitPerimeter=0;entryX=1;entryY=0.5;entryPerimeter=0;jumpStyle=arc;jumpSize=8;endArrow=none;strokeWidth=2.6;" edge="1" parent="1" source="tgw" target="prod">
@@ -138,10 +138,10 @@
         <mxCell id="__icon_router" value="" style="shape=stencil(zVpNc5swEP01XD36AAzHjpscfWgPPXtsuWGKwQNOnfbXFyOIIyklwn5SlMmMR2v89q30tNIiRXzVPm2OImJk0x7F9hTxrxFj++JF7LrPzvwkLSyXzWpzENLyrX4+iUZa21NT/xLnYncaH5f2s2xRQi5t/hCRL531+s9X27qqOrdFXbXvfG882znaFNVJIbKWvo6iKQ7iQqm3Eml9GVqLRLb/KN9G7PFWr99v8Erv9vrDxqsa6cjhDq8PFl4p3OvaKtgF0Ub21XDP4Nq5puDRXdt0NFnkLiK2dG0fMV919unpzVf7uhE/m/q52n1IvH+quaSoLlc127b4O1AfSY6pJ3kv9/xvdth33L4oS5nnLH8wcB1oxQqrTJs8Kis2Yzxn07r8YFuXdZe6ifzsfUaM7/s/e9fHzSXdTz6k/uBQ/xbXoLkS89LWrwpZFtUbyNw15DhQ92Eu3WNaJ6MpzMQ9JiR2DsHclnVrN4mmVE2ptuhDVEiXXlAxw0ETT7AQQVLuCRbTCbq8PlftjOBVyVLnmJixGNd0p6AQMY71mFNQTPgkJHVnLrIuj72ggpZW5gkWIkluVNyOYDFa1+X1uWrnS7wqYweb/Biz3dNAqQdQjBhzD6CQ8DmmzsGoO9Z3jxAtJk52+wYqSI65J1iIJGOjOHEEi+kEVM2DUXsS41WZEueYmLFIMg+gmJchqQdQTPiYWgej7lTfPWK06GS3b6BixiNNPcFCJJkaxYkjWEwnoGoee7X3hyUW79Pl63tLSFGWxbEnMJxB0CEznNXmEPZ4JjEE/dq3tocKt7JST0ZihdNS3evz4BjRLDxKsw5fXZFKjfefAZBKwqMUGxk3AFI8C44SM6qMEEjR4ChRY/EKgFTsg9HbS0gdj+tlpBkXM+480s7UeQPZQGqY9gvOJFHjDQOzXzQm2Rp18M3AKuPceAcLYpwbm0gQ40ytw3IHYsDccCAInpOxjzvNIGbCZPS3MtXCNw9/g5teGrDBeMb+f6orcrOYAs1bZwnBYDyrFLIt5D64tNUDGdfjequ8sdsb/gE=);fillColor=#DCE3EA;strokeColor=#5A6B7B;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="router">
           <mxGeometry as="geometry" x="54.0" y="6" width="48" height="48" />
         </mxCell>
-        <mxCell id="__name_router" value="Customer gateway" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=center;verticalAlign=middle;fontSize=13;fontStyle=1;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="router">
+        <mxCell id="__name_router" value="Customer router" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=center;verticalAlign=middle;fontSize=13;fontStyle=1;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="router">
           <mxGeometry as="geometry" x="4" y="59" width="148" height="34" />
         </mxCell>
-        <mxCell id="__detail_router" value="BGP · VPN device" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=center;verticalAlign=middle;fontSize=11;fontStyle=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="router">
+        <mxCell id="__detail_router" value="BGP · VPN and DX" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=center;verticalAlign=middle;fontSize=11;fontStyle=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="router">
           <mxGeometry as="geometry" x="4" y="95" width="148" height="28" />
         </mxCell>
         <mxCell id="dx" value="" style="group;fillColor=none;strokeColor=none;container=1;collapsible=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="cloud">
@@ -153,7 +153,7 @@
         <mxCell id="__name_dx" value="Direct Connect" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=center;verticalAlign=middle;fontSize=13;fontStyle=1;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="dx">
           <mxGeometry as="geometry" x="4" y="59" width="148" height="34" />
         </mxCell>
-        <mxCell id="__detail_dx" value="Dedicated 1 Gbps" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=center;verticalAlign=middle;fontSize=11;fontStyle=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="dx">
+        <mxCell id="__detail_dx" value="DX gateway · 1 Gbps" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=center;verticalAlign=middle;fontSize=11;fontStyle=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="dx">
           <mxGeometry as="geometry" x="4" y="95" width="148" height="28" />
         </mxCell>
         <mxCell id="tgw" value="" style="group;fillColor=none;strokeColor=none;container=1;collapsible=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="region">
@@ -204,7 +204,7 @@
         <mxCell id="__legend_text_connectivity" value="Network link" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;fontSize=11;align=left;verticalAlign=middle;fontColor=#3E2723;fontFamily=Arial;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="275" y="1247" width="160" height="24" />
         </mxCell>
-        <mxCell id="__notes" value="VPN backs up Direct Connect; route propagation and segmentation are illustrative." style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=left;verticalAlign=middle;fontSize=11;fontStyle=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
+        <mxCell id="__notes" value="VPN backs up Direct Connect; VPC-to-VPC traffic such as LDAP/DNS passes through the Transit Gateway; routing is illustrative." style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=left;verticalAlign=middle;fontSize=11;fontStyle=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="30" y="1272" width="1356" height="36" />
         </mxCell>
       </root>

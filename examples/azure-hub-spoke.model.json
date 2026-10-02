@@ -136,7 +136,7 @@
       "col": 2,
       "row": 1.75,
       "parent": "fw-sn",
-      "detail": "Forced tunnelling"
+      "detail": "Central inspection"
     },
     {
       "id": "bastion",
@@ -210,12 +210,11 @@
       "id": "egress",
       "source": "aks",
       "target": "fw",
-      "label": "0.0.0.0/0 via UDR",
-      "kind": "egress"
+      "label": "UDR 0.0.0.0/0"
     },
     {
       "id": "data",
-      "source": "aks",
+      "source": "fw",
       "target": "pe",
       "label": "TCP 1433"
     },
@@ -234,6 +233,6 @@
     }
   ],
   "notes": [
-    "Spoke-to-spoke traffic routes through the firewall; DNS zones for Private Link are not drawn."
+    "Spoke traffic, including SQL through the Private Endpoint, is routed to the firewall by UDR; DNS zones for Private Link are not drawn."
   ]
 }
