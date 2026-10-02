@@ -6,12 +6,19 @@ import heapq
 import math
 import unicodedata
 
-from model_validation import EDGE_KINDS, MARGIN_BOTTOM, MARGIN_SIDE, MARGIN_TOP
+from model_validation import EDGE_KINDS, ENDPOINT_KINDS, MARGIN_BOTTOM, MARGIN_SIDE, MARGIN_TOP
 
 SIDES={'right':(1,0),'left':(-1,0),'bottom':(0,1),'top':(0,-1)}
 
 
 def rect(n): return tuple(n[k] for k in ('x','y','w','h'))
+
+
+def endpoints(m):
+    """Shapes a connector may attach to, by ID: nodes and network boundaries."""
+    shapes={c['id']:c for c in m.get('containers',[]) if c['kind'] in ENDPOINT_KINDS and not c.get('overlay')}
+    shapes.update({n['id']:n for n in m['nodes']})
+    return shapes
 def pad(r,n): return r[0]-n,r[1]-n,r[2]+2*n,r[3]+2*n
 def length(a,b): return abs(a[0]-b[0])+abs(a[1]-b[1])
 def overlap(a,b): return a[0]<b[0]+b[2] and b[0]<a[0]+a[2] and a[1]<b[1]+b[3] and b[1]<a[1]+a[3]
@@ -82,7 +89,7 @@ def anchor(node,side,fraction):
 
 
 def select_ports(m):
-    nodes={n['id']:n for n in m['nodes']}; ports={}; groups=defaultdict(list)
+    nodes=endpoints(m); ports={}; groups=defaultdict(list)
     for e in m['edges']:
         a,b=nodes[e['source']],nodes[e['target']]
         dx=(b['x']+b['w']/2)-(a['x']+a['w']/2);dy=(b['y']+b['h']/2)-(a['y']+a['h']/2)
@@ -282,7 +289,8 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,p
 
 
 def plan(m,header_rect,reserve=True,clear_borders=True,spread=True,stub_lanes=True,work=None):
-    nodes={n['id']:n for n in m['nodes']};ports=select_ports(m);routes={};segments=[];seg_owners=[]
+    nodes=endpoints(m);ports=select_ports(m);routes={};segments=[];seg_owners=[]
+    boxes={c['id'] for c in m['containers']}
     clearance=m.get('routing',{}).get('clearance',8);stub=m.get('routing',{}).get('stub',16)
     title_pad=4
     names=[f"card {n['id']!r}" for n in m['nodes']]+[f"the title of {c['id']!r}" for c in m['containers']]
@@ -309,10 +317,13 @@ def plan(m,header_rect,reserve=True,clear_borders=True,spread=True,stub_lanes=Tr
         margins=[0 if n['id'] in (a['id'],b['id']) else clearance for n in m['nodes']]+[title_pad]*len(m['containers'])
         obstacles=[pad(rect(n),margin) for n,margin in zip(m['nodes'],margins)]
         obstacles += [pad(header_rect(c),title_pad) for c in m['containers']]
+        # A connector that ends on a boundary stays outside it.
+        inside=[x for x in (a,b) if x['id'] in boxes]
+        obstacles += [rect(x) for x in inside]
         start,goal=anchor(a,sa,fa),anchor(b,sb,fb)
         waiting=[(eid,seg) for (eid,_),seg in stubs.items() if eid!=e['id'] and eid not in routes]
         try:pts=solve(start,goal,sa,sb,obstacles,m['width'],m['height'],segments,clearance,stub,[seg for _,seg in waiting],borders,spread,
-                      list(zip(names,margins)),seg_owners+[eid for eid,_ in waiting],stub_lanes,work)
+                      list(zip(names,margins))+[(f"the inside of {x['id']!r}",0) for x in inside],seg_owners+[eid for eid,_ in waiting],stub_lanes,work)
         except ValueError as exc:raise RouteError(f"{e['id']}: {exc}") from exc
         if any(self_contact(pts)):
             raise RouteError(f"{e['id']}: route doubles back on itself; choose other ports, widen the lane or lower routing.stub")

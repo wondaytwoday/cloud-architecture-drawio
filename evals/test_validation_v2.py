@@ -33,7 +33,7 @@ class ModelValidationTests(unittest.TestCase):
         self.assertGreaterEqual(len(models), 9)
         for path in models:
             with self.subTest(model=path.name):
-                self.assertEqual(self.validate(json.loads(path.read_text(encoding='utf-8'))), ([], []))
+                self.assertEqual(c.validate(json.loads(path.read_text(encoding='utf-8'))), ([], []))
 
     def test_rejects_reserved_drawio_ids(self):
         for reserved in ('0', '1', '__generated'):

@@ -338,6 +338,35 @@ class RoutingTests(unittest.TestCase):
         self.build_failure([('a', 200, 120), ('blocker', 200, 268), ('b', 600, 450)],
                            [{'id': 'e', 'source': 'a', 'target': 'b', 'sourcePort': 'bottom'}])
 
+    def test_boundaries_can_be_connection_endpoints_and_routes_stay_outside_them(self):
+        model = json.loads((BASE/'evals/fixtures/hub-spoke-peering.model.json').read_text(encoding='utf-8'))
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp)/'hub.drawio'
+            report = c.build(model, path)
+            cells = {cell.get('id'): cell for cell in ET.parse(path).findall('.//mxCell')}
+        resolved = c.model_layout.normalize(model)
+        boxes = {b['id']: b for b in resolved['containers']}
+        for edge in model['edges']:
+            self.assertEqual((cells[edge['id']].get('source'), cells[edge['id']].get('target')), (edge['source'], edge['target']))
+            for end in (edge['source'], edge['target']):
+                if end in boxes:
+                    rect = tuple(boxes[end][k] for k in ('x', 'y', 'w', 'h'))
+                    for segment in segments(report['routes'][edge['id']]):
+                        with self.subTest(edge=edge['id'], boundary=end):
+                            self.assertFalse(intersects_interior(segment, rect))
+        self.assertIn('endArrow=none;strokeWidth=2.6;', cells['peer-a'].get('style'))
+
+    def test_only_network_boundaries_outside_each_other_can_be_endpoints(self):
+        model = json.loads((BASE/'evals/fixtures/hub-spoke-peering.model.json').read_text(encoding='utf-8'))
+        model['edges'].append({'id': 'bad-group', 'source': 'gw-sn', 'target': 'hub', 'kind': 'connectivity'})
+        errors = c.validate(model)[0]
+        self.assertIn('bad-group: connects a boundary to something inside it; attach it to a node or to a sibling boundary', errors)
+        model = json.loads((BASE/'evals/fixtures/hub-spoke-peering.model.json').read_text(encoding='utf-8'))
+        model['containers'].append({'id': 'zone', 'kind': 'group', 'overlay': True, 'label': 'Zone', 'parent': 'sub',
+                                    'members': ['vm-a'], 'x': 'fit', 'y': 'fit', 'w': 'fit', 'h': 'fit'})
+        model['edges'].append({'id': 'to-overlay', 'source': 'vm-b', 'target': 'zone'})
+        self.assertTrue(any(e.startswith('to-overlay: target zone is a group') for e in c.validate(model)[0]))
+
     def test_routes_never_touch_their_own_lead_ins(self):
         # Three auto-port edges between diagonal neighbours 40px apart used to
         # loop back into their own arrowhead; the search now avoids that.

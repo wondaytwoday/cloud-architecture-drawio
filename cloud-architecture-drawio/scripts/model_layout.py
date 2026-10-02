@@ -117,9 +117,12 @@ def normalize(m):
     shapes = nodes+boxes
     # Nested fits grow outwards; move everything clear of the page title band
     # and side margin so the grid origin never has to anticipate nesting depth.
+    # An auto-sized canvas also closes any gap left above or beside the content.
     if shapes:
-        dx = max(0, PAGE_SIDE-min(s['x'] for s in shapes))
-        dy = max(0, TITLE_BAND-min(s['y'] for s in shapes))
+        dx = PAGE_SIDE-min(s['x'] for s in shapes)
+        dy = TITLE_BAND-min(s['y'] for s in shapes)
+        dx = dx if m.get('width') == 'auto' else max(0, dx)
+        dy = dy if m.get('height') == 'auto' else max(0, dy)
         for shape in shapes:
             shape['x'] += dx
             shape['y'] += dy

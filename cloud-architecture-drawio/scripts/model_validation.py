@@ -16,7 +16,9 @@ CSPS = ('aws', 'azure', 'gcp')
 KINDS = {'cloud', 'account', 'project', 'region', 'vpc', 'vnet', 'az', 'subnet', 'group'}
 NETWORK_KINDS = {'vpc', 'vnet', 'az', 'subnet'}
 # Also the routing order and the legend order.
-EDGE_KINDS = ('traffic', 'egress', 'replication', 'dns', 'association', 'management')
+EDGE_KINDS = ('traffic', 'egress', 'replication', 'dns', 'association', 'management', 'event', 'connectivity')
+# Boundaries a connector may start or end on: peering, attachments, VPN links.
+ENDPOINT_KINDS = {'vpc', 'vnet', 'subnet', 'region', 'cloud', 'account', 'project'}
 PORTS = {'auto', 'top', 'bottom', 'left', 'right'}
 # Page bands reserved for the title/subtitle and for the legend/notes footer.
 MARGIN_SIDE, MARGIN_TOP, MARGIN_BOTTOM = 10, 80, 90
@@ -25,9 +27,11 @@ LEGEND_TEXT_WIDTH = 160
 EDGE_LABEL_TEXT_WIDTH = 228
 LEGEND_NAMES = {
     'en': {'traffic': 'Request / data', 'egress': 'Outbound', 'replication': 'Replication',
-           'dns': 'DNS resolution', 'association': 'Policy association', 'management': 'Management'},
+           'dns': 'DNS resolution', 'association': 'Policy association', 'management': 'Management',
+           'event': 'Event / message', 'connectivity': 'Network link'},
     'ko': {'traffic': '요청 / 데이터', 'egress': '아웃바운드', 'replication': '복제',
-           'dns': 'DNS 조회', 'association': '정책 연결', 'management': '관리'},
+           'dns': 'DNS 조회', 'association': '정책 연결', 'management': '관리',
+           'event': '이벤트 / 메시지', 'connectivity': '네트워크 연결'},
 }
 
 # Placement rules come from each catalog entry's `placement`:
@@ -252,6 +256,7 @@ def validate_structure(m, catalog, wrapped, header_rect):
         return ['Duplicate IDs']+errors, warnings
     box_by = {b['id']: b for b in boxes}
     node_ids = {n['id'] for n in nodes}
+    nodes_by = {n['id']: n for n in nodes}
     solid = [b for b in boxes if not b.get('overlay')]
     width, height = m['width'], m['height']
     page = (0, 0, width, height)
@@ -473,10 +478,19 @@ def validate_structure(m, catalog, wrapped, header_rect):
         for b in boxes:
             if _overlap(_rect(a), header_rect(b)):
                 errors.append(f"{a['id']}: overlaps container title {b['id']}")
+    def inside(outer, inner):
+        return outer in ancestors(inner)
+
     for e in edges:
         for key in ('source', 'target'):
-            if e[key] not in node_ids:
+            box = box_by.get(e[key])
+            if box is not None and (box['kind'] not in ENDPOINT_KINDS or box.get('overlay')):
+                errors.append(f"{e['id']}: {key} {e[key]} is a {box['kind']}; connectors end on nodes or on {', '.join(sorted(ENDPOINT_KINDS))} boundaries")
+            elif box is None and e[key] not in node_ids:
                 errors.append(f"{e['id']}: missing {key} node")
+        ends = [box_by.get(e['source']) or nodes_by.get(e['source']), box_by.get(e['target']) or nodes_by.get(e['target'])]
+        if all(ends) and e['source'] != e['target'] and (inside(ends[0], ends[1]) or inside(ends[1], ends[0])):
+            errors.append(f"{e['id']}: connects a boundary to something inside it; attach it to a node or to a sibling boundary")
         if e['source'] == e['target']:
             errors.append(f"{e['id']}: self-loop is unsupported; describe the internal operation in a separate detail view")
         fits(f"{e['id']}: edge label", e.get('label', ''), EDGE_LABEL_TEXT_WIDTH, 11, 1, f'shorten label to about {EDGE_LABEL_TEXT_WIDTH}px of text (a {EDGE_LABEL_TEXT_WIDTH+16}px caption box) or move details to notes')

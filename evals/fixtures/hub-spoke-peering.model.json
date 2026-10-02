@@ -1,0 +1,177 @@
+{
+  "provider": "multi",
+  "title": "Hub and spoke · peering demo",
+  "width": "auto",
+  "height": "auto",
+  "grid": {
+    "left": 120,
+    "top": 260,
+    "column": 300,
+    "row": 220
+  },
+  "containers": [
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "onprem",
+      "kind": "cloud",
+      "label": "On-premises"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "sub",
+      "kind": "account",
+      "label": "Azure subscription",
+      "provider": "azure"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "hub",
+      "kind": "vnet",
+      "label": "Hub VNet",
+      "parent": "sub"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "gw-sn",
+      "kind": "subnet",
+      "label": "GatewaySubnet",
+      "parent": "hub"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "fw-sn",
+      "kind": "subnet",
+      "label": "AzureFirewallSubnet",
+      "parent": "hub"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "spoke-a",
+      "kind": "vnet",
+      "label": "Spoke A VNet",
+      "parent": "sub"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "app-a",
+      "kind": "subnet",
+      "label": "App subnet",
+      "parent": "spoke-a"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "spoke-b",
+      "kind": "vnet",
+      "label": "Spoke B VNet",
+      "parent": "sub"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "app-b",
+      "kind": "subnet",
+      "label": "App subnet",
+      "parent": "spoke-b"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "router",
+      "icon": "generic.router",
+      "label": "Edge router",
+      "parent": "onprem",
+      "col": 1,
+      "row": 0
+    },
+    {
+      "id": "vpngw",
+      "icon": "azure.vpn-gateway",
+      "label": "VPN Gateway",
+      "parent": "gw-sn",
+      "col": 1,
+      "row": 1.7
+    },
+    {
+      "id": "fw",
+      "icon": "azure.firewall",
+      "label": "Azure Firewall",
+      "parent": "fw-sn",
+      "col": 2,
+      "row": 1.7
+    },
+    {
+      "id": "vm-a",
+      "icon": "azure.vm",
+      "label": "App VMs A",
+      "parent": "app-a",
+      "col": 0,
+      "row": 3.4
+    },
+    {
+      "id": "vm-b",
+      "icon": "azure.vm",
+      "label": "App VMs B",
+      "parent": "app-b",
+      "col": 3,
+      "row": 3.4
+    }
+  ],
+  "edges": [
+    {
+      "id": "s2s",
+      "source": "router",
+      "target": "vpngw",
+      "kind": "connectivity",
+      "label": "Site-to-site VPN"
+    },
+    {
+      "id": "peer-a",
+      "source": "hub",
+      "target": "spoke-a",
+      "kind": "connectivity",
+      "label": "Peering"
+    },
+    {
+      "id": "peer-b",
+      "source": "hub",
+      "target": "spoke-b",
+      "kind": "connectivity",
+      "label": "Peering"
+    },
+    {
+      "id": "inspect-a",
+      "source": "vm-a",
+      "target": "fw",
+      "label": "0.0.0.0/0 via UDR"
+    }
+  ],
+  "notes": [
+    "Demo: VNet peering drawn between boundaries; gateway transit and UDRs are illustrative."
+  ]
+}

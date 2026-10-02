@@ -36,7 +36,11 @@ PALETTE = {
 # Color and dash pattern per relationship; each dashed kind has its own rhythm.
 EDGE = {'traffic': ('#4B6074', None), 'dns': ('#8C6A2F', '2 3'),
         'association': ('#B85B72', '4 3'), 'replication': ('#875EAC', '10 4'),
-        'egress': ('#1F7F8C', '6 3 2 3'), 'management': ('#A06050', '8 3 2 3 2 3')}
+        'egress': ('#1F7F8C', '6 3 2 3'), 'management': ('#A06050', '8 3 2 3 2 3'),
+        'event': ('#D81B60', '7 2'), 'connectivity': ('#3E2723', None)}
+# Network links have no direction and a heavier line; events use an open arrow.
+EDGE_EXTRA = {'association': 'endArrow=none;', 'connectivity': 'endArrow=none;strokeWidth=2.6;',
+              'event': 'endArrow=open;endFill=0;'}
 
 
 def rect(item):
@@ -212,7 +216,7 @@ def build(m, target, force=False):
         ex,ey=fraction(sa,fa);ix,iy=fraction(sb,fb)
         style=f'edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor={color};strokeWidth=1.6;exitX={ex};exitY={ey};exitPerimeter=0;entryX={ix};entryY={iy};entryPerimeter=0;jumpStyle=arc;jumpSize=8;'
         if dashes: style+=f'dashed=1;dashPattern={dashes};'
-        if e.get('kind')=='association': style+='endArrow=none;'
+        style+=EDGE_EXTRA.get(e.get('kind','traffic'),'')
         c=ET.SubElement(root,'mxCell',id=e['id'],style=style,edge='1',parent='1',source=e['source'],target=e['target'])
         geo=ET.SubElement(c,'mxGeometry',relative='1',attrib={'as':'geometry'})
         arr=ET.SubElement(geo,'Array',attrib={'as':'points'})
@@ -236,7 +240,8 @@ def build(m, target, force=False):
     for j,k in enumerate(kinds):
         color,dashes=EDGE[k]; lx=30+j*205
         dash=f'dashed=1;dashPattern={dashes};' if dashes else 'dashed=0;'
-        cell('__legend_line_'+k,'',f'shape=line;strokeColor={color};strokeWidth=1.6;{dash}',lx,y+12,30,1)
+        stroke=2.6 if k=='connectivity' else 1.6
+        cell('__legend_line_'+k,'',f'shape=line;strokeColor={color};strokeWidth={stroke};{dash}',lx,y+12,30,1)
         cell('__legend_text_'+k,captions[k],f'text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;fontSize=11;align=left;verticalAlign=middle;fontColor={color};',lx+40,y,160,24)
     text('__notes',' · '.join(m.get('notes',[])),30,y+25,width-60,36,11,'left')
     target=Path(target); target.parent.mkdir(parents=True,exist_ok=True)

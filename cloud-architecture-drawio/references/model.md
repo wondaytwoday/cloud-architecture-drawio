@@ -57,9 +57,9 @@ Managed services and their private access endpoints are different nodes. The lin
 
 ## Edges
 
-Required: `id`, `source`, `target` naming node IDs. Optional: `label`, `kind`, `sourcePort`, `targetPort`, `sourceOffset`, `targetOffset`, `priority`.
+Required: `id`, `source`, `target` naming node IDs, or network boundaries (`vpc`, `vnet`, `subnet`, `region`, `cloud`, `account`, `project`) for peering, attachments and VPN links. A boundary cannot connect to anything inside itself; the route stays outside every boundary it ends on. Optional: `label`, `kind`, `sourcePort`, `targetPort`, `sourceOffset`, `targetOffset`, `priority`.
 
-Kinds: `traffic` (default, solid), `dns`, `association`, `replication`, `egress`, and `management` (each dashed with its own color, dash rhythm, and legend entry). Association has no arrowhead. Arrows express the documented request/transfer direction, not every response packet. Keep each edge label to a short single line: about 228 px of text at 11 px, drawn in a box of up to 244 px.
+Kinds: `traffic` (default, solid), `dns`, `association`, `replication`, `egress`, `management` (each dashed with its own color, dash rhythm, and legend entry), `event` (an asynchronous message to a queue, topic or event bus: long dashes, open arrow), and `connectivity` (a network link such as peering, VPN, Direct Connect or a transit attachment: heavy solid line without arrows). Association has no arrowhead either. Arrows express the documented request/transfer direction, not every response packet. Keep each edge label to a short single line: about 228 px of text at 11 px, drawn in a box of up to 244 px.
 
 Ports accept `top`, `bottom`, `left`, `right`, or `auto` (the default). Offsets are fractions from `0.1` through `0.9` along the selected side: left-to-right on top/bottom, top-to-bottom on left/right. For example:
 
@@ -72,9 +72,9 @@ Ports accept `top`, `bottom`, `left`, `right`, or `auto` (the default). Offsets 
 }
 ```
 
-Automatic allocation separates incoming and outgoing connections on each card side and respects explicit offsets. Explicit offsets on one side must be at least the automatic spacing apart (10 px on a standard card); offsets that coincide or nearly coincide, or an overcrowded side, fail with a remedy. Connections attach to the entire resource card. `priority` is a finite number; smaller values route earlier. Default categories are traffic 0, egress 1, replication 2, DNS 3, association 4, management 5, followed by endpoint distance and stable edge ID. Changing the order of the edge array does not change routes. See [routing](routing.md) for algorithm limits and editing guidance.
+Automatic allocation separates incoming and outgoing connections on each card side and respects explicit offsets. Explicit offsets on one side must be at least the automatic spacing apart (10 px on a standard card); offsets that coincide or nearly coincide, or an overcrowded side, fail with a remedy. Connections attach to the entire resource card. `priority` is a finite number; smaller values route earlier. Default categories are traffic 0, egress 1, replication 2, DNS 3, association 4, management 5, event 6, connectivity 7, followed by endpoint distance and stable edge ID. Changing the order of the edge array does not change routes. See [routing](routing.md) for algorithm limits and editing guidance.
 
-The current compiler handles node-to-node edges, not self-loops, edge-to-edge junctions, shared buses, or user-specified waypoint arrays. Preserve those relationships with native XML when necessary; do not approximate them by overlapping unrelated lines.
+The current compiler handles edges between nodes and network boundaries, not self-loops, edge-to-edge junctions, shared buses, or user-specified waypoint arrays. Preserve those relationships with native XML when necessary; do not approximate them by overlapping unrelated lines.
 
 ## Validation and output
 
