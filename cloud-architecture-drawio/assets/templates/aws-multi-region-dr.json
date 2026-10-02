@@ -1,0 +1,287 @@
+{
+  "provider": "aws",
+  "title": "AWS · Multi-Region disaster recovery",
+  "subtitle": "Active-passive · Route 53 failover · Aurora global database · S3 replication",
+  "width": "auto",
+  "height": "auto",
+  "grid": {
+    "left": 80,
+    "top": 140,
+    "column": 230,
+    "row": 200
+  },
+  "containers": [
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "cloud",
+      "kind": "cloud",
+      "label": "AWS Cloud"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "region-a",
+      "kind": "region",
+      "label": "Primary · ap-northeast-2",
+      "parent": "cloud"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "vpc-a",
+      "kind": "vpc",
+      "label": "VPC",
+      "parent": "region-a"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "az-a",
+      "kind": "az",
+      "label": "AZ A",
+      "parent": "vpc-a"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "app-a-sn",
+      "kind": "subnet",
+      "label": "App subnet",
+      "parent": "az-a"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "db-a-sn",
+      "kind": "subnet",
+      "label": "Data subnet",
+      "parent": "az-a"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "match:region-a",
+      "id": "region-b",
+      "kind": "region",
+      "label": "Standby · ap-northeast-1",
+      "parent": "cloud"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "vpc-b",
+      "kind": "vpc",
+      "label": "VPC",
+      "parent": "region-b"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "az-b",
+      "kind": "az",
+      "label": "AZ A",
+      "parent": "vpc-b"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "app-b-sn",
+      "kind": "subnet",
+      "label": "App subnet",
+      "parent": "az-b"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "db-b-sn",
+      "kind": "subnet",
+      "label": "Data subnet",
+      "parent": "az-b"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "users",
+      "icon": "generic.user",
+      "label": "Clients",
+      "col": 3,
+      "row": 0
+    },
+    {
+      "id": "dns",
+      "icon": "aws.route53",
+      "label": "Amazon Route 53",
+      "col": 3,
+      "row": 1.1,
+      "parent": "cloud",
+      "detail": "Failover routing"
+    },
+    {
+      "id": "alb-a",
+      "icon": "aws.alb",
+      "label": "Application LB",
+      "col": 1,
+      "row": 2.3,
+      "parent": "vpc-a",
+      "detail": "Active"
+    },
+    {
+      "id": "app-a",
+      "icon": "aws.ec2",
+      "label": "Application",
+      "col": 1,
+      "row": 3.5,
+      "parent": "app-a-sn",
+      "detail": "Auto Scaling"
+    },
+    {
+      "id": "db-a",
+      "icon": "aws.aurora",
+      "label": "Aurora",
+      "col": 1,
+      "row": 4.8,
+      "parent": "db-a-sn",
+      "detail": "Writer · primary"
+    },
+    {
+      "id": "s3-a",
+      "icon": "aws.s3",
+      "label": "Amazon S3",
+      "col": 0,
+      "row": 4.8,
+      "parent": "region-a",
+      "detail": "Documents"
+    },
+    {
+      "id": "alb-b",
+      "icon": "aws.alb",
+      "label": "Application LB",
+      "col": 5,
+      "row": 2.3,
+      "parent": "vpc-b",
+      "detail": "Standby"
+    },
+    {
+      "id": "app-b",
+      "icon": "aws.ec2",
+      "label": "Application",
+      "col": 5,
+      "row": 3.5,
+      "parent": "app-b-sn",
+      "detail": "Scaled down"
+    },
+    {
+      "id": "db-b",
+      "icon": "aws.aurora",
+      "label": "Aurora",
+      "col": 5,
+      "row": 4.8,
+      "parent": "db-b-sn",
+      "detail": "Secondary · read-only"
+    },
+    {
+      "id": "s3-b",
+      "icon": "aws.s3",
+      "label": "Amazon S3",
+      "col": 6,
+      "row": 4.8,
+      "parent": "region-b",
+      "detail": "Replica"
+    }
+  ],
+  "edges": [
+    {
+      "id": "resolve",
+      "source": "users",
+      "target": "dns",
+      "label": "DNS",
+      "kind": "dns"
+    },
+    {
+      "id": "https",
+      "source": "users",
+      "target": "alb-a",
+      "label": "HTTPS",
+      "sourcePort": "bottom"
+    },
+    {
+      "id": "primary",
+      "source": "dns",
+      "target": "alb-a",
+      "label": "Primary record",
+      "kind": "association"
+    },
+    {
+      "id": "failover",
+      "source": "dns",
+      "target": "alb-b",
+      "label": "Failover record",
+      "kind": "association"
+    },
+    {
+      "id": "web-a",
+      "source": "alb-a",
+      "target": "app-a",
+      "label": "HTTPS"
+    },
+    {
+      "id": "web-b",
+      "source": "alb-b",
+      "target": "app-b",
+      "label": "HTTPS"
+    },
+    {
+      "id": "sql-a",
+      "source": "app-a",
+      "target": "db-a",
+      "label": "SQL"
+    },
+    {
+      "id": "sql-b",
+      "source": "app-b",
+      "target": "db-b",
+      "label": "SQL"
+    },
+    {
+      "id": "global-db",
+      "source": "db-a",
+      "target": "db-b",
+      "label": "Storage-level replication",
+      "kind": "replication"
+    },
+    {
+      "id": "crr",
+      "source": "s3-a",
+      "target": "s3-b",
+      "label": "Cross-Region replication",
+      "kind": "replication",
+      "sourcePort": "bottom",
+      "targetPort": "bottom"
+    }
+  ],
+  "notes": [
+    "Standby capacity and RTO/RPO targets are illustrative; one AZ per Region shown for clarity."
+  ]
+}

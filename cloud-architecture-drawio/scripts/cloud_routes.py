@@ -64,8 +64,16 @@ def self_contact(points):
     return shared,sorted(contacts)
 
 
+def continuation(a,b,c,d):
+    """Gap between two segments on one line, or None when they are not collinear."""
+    if a[1]==b[1]==c[1]==d[1]:axis=0
+    elif a[0]==b[0]==c[0]==d[0]:axis=1
+    else:return None
+    return max(min(a[axis],b[axis]),min(c[axis],d[axis]))-min(max(a[axis],b[axis]),max(c[axis],d[axis]))
+
+
 def metrics(routes):
-    crossings=[]; overlaps=[]; bends=0; total=0
+    crossings=[]; overlaps=[]; joins=[]; bends=0; total=0
     items=list(routes.items())
     for i,(aid,ap) in enumerate(items):
         bends+=max(0,len(ap)-2);total+=sum(length(a,b) for a,b in zip(ap,ap[1:]))
@@ -80,7 +88,14 @@ def metrics(routes):
                     if point and not(point in (tuple(ap[0]),tuple(ap[-1])) and point in (tuple(bp[0]),tuple(bp[-1]))):points.add(point)
             if shared:overlaps.append({'edges':[aid,bid],'length':round(shared,2)})
             for p in sorted(points):crossings.append({'edges':[aid,bid],'point':p})
-    return {'crossingCount':len(crossings),'overlapLength':round(sum(v['length'] for v in overlaps),2),'bendCount':bends,'totalLength':round(total,2),'crossings':crossings,'overlaps':overlaps}
+            # End-to-end on one line with a short gap, two connectors read as one.
+            for a,b in zip(ap,ap[1:]):
+                for c,d in zip(bp,bp[1:]):
+                    gap=continuation(a,b,c,d)
+                    if gap is not None and 0<gap<CONTINUATION_GAP:
+                        joins.append({'edges':[aid,bid],'gap':round(gap,2),'line':[list(a),list(b),list(c),list(d)]})
+    return {'crossingCount':len(crossings),'overlapLength':round(sum(v['length'] for v in overlaps),2),'bendCount':bends,'totalLength':round(total,2),
+            'continuationCount':len(joins),'crossings':crossings,'overlaps':overlaps,'continuations':joins}
 
 
 def anchor(node,side,fraction):
@@ -142,11 +157,13 @@ PARALLEL_V=60
 PARALLEL_FACTOR=.3
 # Captions prefer this much space from connectors other than their own.
 CAPTION_GAP=8
+# Collinear lines of different connectors closer end to end than this look joined.
+CONTINUATION_GAP=24
 # Search steps (A* expansions) all routing modes may use together.
 ROUTING_WORK_LIMIT=1_500_000
 
 
-def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,pending=(),borders=(),spread=True,names=None,owners=None,stub_lanes=True,work=None):
+def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,pending=(),borders=(),spread=True,names=None,owners=None,stub_lanes=True,work=None,joins=False):
     """Directed lead-ins, obstacle padding, exact overlap rejection and crossing cost."""
     vx,vy=SIDES[sa];wx,wy=SIDES[sb]
     begin=(start[0]+vx*stub,start[1]+vy*stub);end=(goal[0]+wx*stub,goal[1]+wy*stub)
@@ -158,7 +175,7 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,p
     if touch and begin!=end:
         raise ValueError('the source and target lead-ins cross each other; move the cards apart or choose other ports')
     # Lead-ins of connectors that are not routed yet block like finished lines.
-    blocking=list(segments)+list(pending)
+    blocking=list(segments)+list(pending);finished=len(segments)
     names=names or [('a card or title',0)]*len(obstacles);owners=owners or [None]*len(blocking)
     for end_name,port,(dx,dy),(a,b) in (('source',start,(vx,vy),(start,begin)),('target',goal,(wx,wy),(end,goal))):
         for r,(name,margin) in zip(obstacles,names):
@@ -242,13 +259,17 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,p
             amount,point=relation(p,q,a,b)
             if amount>0 or point not in (None,begin,end):return None
         cost=0;cross=set()
-        for a,b in (blocking[k] for k in nearby(p,q)):
+        for k in nearby(p,q):
+            a,b=blocking[k]
             amount,point=relation(p,q,a,b)
             if amount>0:return None
             if point in (a,b):return None
             if point:cross.add(point)
             # Prefer visible separation between parallel lines.
-            if p[1]==q[1]==a[1]==b[1]:continue
+            if p[1]==q[1]==a[1]==b[1] or p[0]==q[0]==a[0]==b[0]:
+                # On request, keep lines from meeting another line end to end.
+                if joins and k<finished and 0<(continuation(p,q,a,b) or 0)<CONTINUATION_GAP:cost+=180
+                continue
             if p[1]==q[1] and a[1]==b[1] and abs(p[1]-a[1])<10:
                 if max(min(p[0],q[0]),min(a[0],b[0]))<min(max(p[0],q[0]),max(a[0],b[0])):cost+=length(p,q)*3
             if p[0]==q[0] and a[0]==b[0] and 0<abs(p[0]-a[0])<10:
@@ -288,7 +309,7 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,p
     return simplify([start]+points+[goal])
 
 
-def plan(m,header_rect,reserve=True,clear_borders=True,spread=True,stub_lanes=True,work=None):
+def plan(m,header_rect,reserve=True,clear_borders=True,spread=True,stub_lanes=True,work=None,joins=False):
     nodes=endpoints(m);ports=select_ports(m);routes={};segments=[];seg_owners=[]
     boxes={c['id'] for c in m['containers']}
     clearance=m.get('routing',{}).get('clearance',8);stub=m.get('routing',{}).get('stub',16)
@@ -323,7 +344,7 @@ def plan(m,header_rect,reserve=True,clear_borders=True,spread=True,stub_lanes=Tr
         start,goal=anchor(a,sa,fa),anchor(b,sb,fb)
         waiting=[(eid,seg) for (eid,_),seg in stubs.items() if eid!=e['id'] and eid not in routes]
         try:pts=solve(start,goal,sa,sb,obstacles,m['width'],m['height'],segments,clearance,stub,[seg for _,seg in waiting],borders,spread,
-                      list(zip(names,margins))+[(f"the inside of {x['id']!r}",0) for x in inside],seg_owners+[eid for eid,_ in waiting],stub_lanes,work)
+                      list(zip(names,margins))+[(f"the inside of {x['id']!r}",0) for x in inside],seg_owners+[eid for eid,_ in waiting],stub_lanes,work,joins)
         except ValueError as exc:raise RouteError(f"{e['id']}: {exc}") from exc
         if any(self_contact(pts)):
             raise RouteError(f"{e['id']}: route doubles back on itself; choose other ports, widen the lane or lower routing.stub")
@@ -364,11 +385,24 @@ def route_and_label(m,header_rect):
             break
         try:
             routes,ports=plan(m,header_rect,mode['reservedLeadIns'],mode['borderClearance'],mode['spreadParallels'],mode['stubLanes'],work)
-            return routes,ports,place_labels(m,routes,header_rect),dict(mode)
+            labels=place_labels(m,routes,header_rect)
         except LabelError as exc:
             if not isinstance(best,LabelError) or len(exc.failures)<len(best.failures):best=exc
+            continue
         except ValueError as exc:
             best=best or exc
+            continue
+        # Lines meeting end to end read as one; retry this mode avoiding that,
+        # and keep the retry only when it succeeds with fewer such joins.
+        joined=len(metrics(routes)['continuations'])
+        if joined:
+            try:
+                retry,retry_ports=plan(m,header_rect,mode['reservedLeadIns'],mode['borderClearance'],mode['spreadParallels'],mode['stubLanes'],work,True)
+                if len(metrics(retry)['continuations'])<joined:
+                    return retry,retry_ports,place_labels(m,retry,header_rect),dict(mode,avoidJoins=True)
+            except ValueError:
+                pass
+        return routes,ports,labels,dict(mode)
     raise best
 
 

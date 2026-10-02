@@ -1,0 +1,37 @@
+{
+  "page": 1,
+  "pages": 1,
+  "width": 1312,
+  "height": 1292,
+  "background": "#FFFFFF",
+  "cells": 83,
+  "edges": 11,
+  "unknownIcons": [],
+  "offPage": [],
+  "brokenImages": [],
+  "textOverflow": [],
+  "geometry": {
+    "checkedRoutes": 11,
+    "checkedLabels": 11,
+    "jumpMarkers": 0,
+    "missingJumps": 0,
+    "mismatches": []
+  },
+  "editability": {
+    "movedResource": "auth",
+    "restored": true,
+    "roundTripEdges": 11,
+    "allEdgesConnected": true,
+    "roundTripLabels": 11,
+    "allLabelsAttached": true,
+    "labelFollow": true
+  },
+  "pageErrors": [],
+  "warnings": [],
+  "provenance": {
+    "input_sha256": "9c8debcf753dc7cafaf0cb3ca913ff1ef3572fda19c7fe8aab43f33b0fc706fc",
+    "report": "examples/aws-serverless.report.json",
+    "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
+    "playwright": "1.61.1"
+  }
+}

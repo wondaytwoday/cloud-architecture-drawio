@@ -1,0 +1,225 @@
+{
+  "provider": "aws",
+  "title": "AWS · Private egress through NAT and endpoints",
+  "subtitle": "Two AZs · outbound internet via NAT · S3 over a gateway endpoint",
+  "width": "auto",
+  "height": "auto",
+  "grid": {
+    "left": 80,
+    "top": 140,
+    "column": 240,
+    "row": 210
+  },
+  "containers": [
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "cloud",
+      "kind": "cloud",
+      "label": "AWS Cloud"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "vpc",
+      "kind": "vpc",
+      "label": "VPC · 10.30.0.0/16",
+      "parent": "cloud"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "az-a",
+      "kind": "az",
+      "label": "Availability Zone A",
+      "parent": "vpc"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "match:az-a",
+      "id": "az-b",
+      "kind": "az",
+      "label": "Availability Zone B",
+      "parent": "vpc"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "public-a",
+      "kind": "subnet",
+      "label": "Public subnet · NAT",
+      "public": true,
+      "parent": "az-a"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "private-a",
+      "kind": "subnet",
+      "label": "Private subnet · app",
+      "parent": "az-a"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "public-b",
+      "kind": "subnet",
+      "label": "Public subnet · NAT",
+      "public": true,
+      "parent": "az-b"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "private-b",
+      "kind": "subnet",
+      "label": "Private subnet · app",
+      "parent": "az-b"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "internet",
+      "icon": "generic.internet",
+      "label": "Internet",
+      "col": 2,
+      "row": 0,
+      "detail": "Package mirrors, APIs"
+    },
+    {
+      "id": "igw",
+      "icon": "aws.igw",
+      "label": "Internet gateway",
+      "col": 2,
+      "row": 1.45,
+      "parent": "vpc",
+      "detail": "Attached to the VPC"
+    },
+    {
+      "id": "nat-a",
+      "icon": "aws.nat",
+      "label": "NAT gateway",
+      "col": 0,
+      "row": 2.65,
+      "parent": "public-a",
+      "detail": "Zonal · AZ A"
+    },
+    {
+      "id": "nat-b",
+      "icon": "aws.nat",
+      "label": "NAT gateway",
+      "col": 4,
+      "row": 2.65,
+      "parent": "public-b",
+      "detail": "Zonal · AZ B"
+    },
+    {
+      "id": "app-a",
+      "icon": "aws.ec2",
+      "label": "Application",
+      "col": 0,
+      "row": 3.95,
+      "parent": "private-a",
+      "detail": "No public IP"
+    },
+    {
+      "id": "app-b",
+      "icon": "aws.ec2",
+      "label": "Application",
+      "col": 4,
+      "row": 3.95,
+      "parent": "private-b",
+      "detail": "No public IP"
+    },
+    {
+      "id": "endpoint",
+      "icon": "aws.vpc-endpoint",
+      "label": "S3 gateway endpoint",
+      "col": 2,
+      "row": 3.95,
+      "parent": "vpc",
+      "detail": "Route-table target"
+    },
+    {
+      "id": "bucket",
+      "icon": "aws.s3",
+      "label": "Amazon S3",
+      "col": 2,
+      "row": 5.4,
+      "parent": "cloud",
+      "detail": "Regional service"
+    }
+  ],
+  "edges": [
+    {
+      "id": "out-a",
+      "source": "app-a",
+      "target": "nat-a",
+      "label": "0.0.0.0/0",
+      "kind": "egress"
+    },
+    {
+      "id": "out-b",
+      "source": "app-b",
+      "target": "nat-b",
+      "label": "0.0.0.0/0",
+      "kind": "egress"
+    },
+    {
+      "id": "nat-igw-a",
+      "source": "nat-a",
+      "target": "igw",
+      "kind": "egress"
+    },
+    {
+      "id": "nat-igw-b",
+      "source": "nat-b",
+      "target": "igw",
+      "kind": "egress"
+    },
+    {
+      "id": "igw-out",
+      "source": "igw",
+      "target": "internet",
+      "label": "Public IPs of NAT",
+      "kind": "egress"
+    },
+    {
+      "id": "s3-a",
+      "source": "app-a",
+      "target": "endpoint",
+      "label": "S3 prefix list"
+    },
+    {
+      "id": "s3-b",
+      "source": "app-b",
+      "target": "endpoint",
+      "label": "S3 prefix list"
+    },
+    {
+      "id": "s3",
+      "source": "endpoint",
+      "target": "bucket",
+      "label": "Private path"
+    }
+  ],
+  "notes": [
+    "Route tables are summarised as edge labels; return traffic is not drawn."
+  ]
+}

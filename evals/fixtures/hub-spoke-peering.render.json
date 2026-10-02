@@ -1,0 +1,37 @@
+{
+  "page": 1,
+  "pages": 1,
+  "width": 1260,
+  "height": 1200,
+  "background": "#FFFFFF",
+  "cells": 46,
+  "edges": 4,
+  "unknownIcons": [],
+  "offPage": [],
+  "brokenImages": [],
+  "textOverflow": [],
+  "geometry": {
+    "checkedRoutes": 4,
+    "checkedLabels": 4,
+    "jumpMarkers": 0,
+    "missingJumps": 0,
+    "mismatches": []
+  },
+  "editability": {
+    "movedResource": "router",
+    "restored": true,
+    "roundTripEdges": 4,
+    "allEdgesConnected": true,
+    "roundTripLabels": 4,
+    "allLabelsAttached": true,
+    "labelFollow": true
+  },
+  "pageErrors": [],
+  "warnings": [],
+  "provenance": {
+    "input_sha256": "45b845f10da5184ecdcb890fe841f361788554b01131e962ebf69651477f7c50",
+    "report": "evals/fixtures/hub-spoke-peering.report.json",
+    "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
+    "playwright": "1.61.1"
+  }
+}

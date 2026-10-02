@@ -1,0 +1,210 @@
+{
+  "provider": "aws",
+  "title": "AWS · Serverless web API",
+  "subtitle": "Managed services only · no VPC · event-driven order processing",
+  "width": "auto",
+  "height": "auto",
+  "grid": {
+    "left": 80,
+    "top": 140,
+    "column": 250,
+    "row": 200
+  },
+  "containers": [
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "cloud",
+      "kind": "cloud",
+      "label": "AWS Cloud"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "region",
+      "kind": "region",
+      "label": "Region · ap-northeast-2",
+      "parent": "cloud"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "users",
+      "icon": "generic.user",
+      "label": "Clients",
+      "col": 2,
+      "row": 0,
+      "detail": "Browser / mobile"
+    },
+    {
+      "id": "dns",
+      "icon": "aws.route53",
+      "label": "Amazon Route 53",
+      "col": 0,
+      "row": 1,
+      "parent": "cloud",
+      "detail": "Public hosted zone"
+    },
+    {
+      "id": "cdn",
+      "icon": "aws.cloudfront",
+      "label": "Amazon CloudFront",
+      "col": 2,
+      "row": 1,
+      "parent": "cloud",
+      "detail": "HTTPS edge"
+    },
+    {
+      "id": "auth",
+      "icon": "aws.cognito",
+      "label": "Amazon Cognito",
+      "col": 0,
+      "row": 2.2,
+      "parent": "region",
+      "detail": "User pool"
+    },
+    {
+      "id": "api",
+      "icon": "aws.apigateway",
+      "label": "API Gateway",
+      "col": 2,
+      "row": 2.2,
+      "parent": "region",
+      "detail": "HTTP API"
+    },
+    {
+      "id": "site",
+      "icon": "aws.s3",
+      "label": "Amazon S3",
+      "col": 4,
+      "row": 2.2,
+      "parent": "region",
+      "detail": "Static site · OAC"
+    },
+    {
+      "id": "queue",
+      "icon": "aws.sqs",
+      "label": "Amazon SQS",
+      "col": 0,
+      "row": 3.4,
+      "parent": "region",
+      "detail": "Order queue"
+    },
+    {
+      "id": "fn",
+      "icon": "aws.lambda",
+      "label": "AWS Lambda",
+      "col": 2,
+      "row": 3.4,
+      "parent": "region",
+      "detail": "API handlers"
+    },
+    {
+      "id": "table",
+      "icon": "aws.dynamodb",
+      "label": "Amazon DynamoDB",
+      "col": 4,
+      "row": 3.4,
+      "parent": "region",
+      "detail": "Orders table"
+    },
+    {
+      "id": "worker",
+      "icon": "aws.lambda",
+      "label": "AWS Lambda",
+      "col": 0,
+      "row": 4.6,
+      "parent": "region",
+      "detail": "Order worker"
+    },
+    {
+      "id": "logs",
+      "icon": "aws.cloudwatch",
+      "label": "Amazon CloudWatch",
+      "col": 4,
+      "row": 4.6,
+      "parent": "region",
+      "detail": "Logs and metrics"
+    }
+  ],
+  "edges": [
+    {
+      "id": "dns-query",
+      "source": "users",
+      "target": "dns",
+      "label": "DNS",
+      "kind": "dns"
+    },
+    {
+      "id": "https",
+      "source": "users",
+      "target": "cdn",
+      "label": "HTTPS"
+    },
+    {
+      "id": "api-origin",
+      "source": "cdn",
+      "target": "api",
+      "label": "/api/*"
+    },
+    {
+      "id": "site-origin",
+      "source": "cdn",
+      "target": "site",
+      "label": "Static assets"
+    },
+    {
+      "id": "authorizer",
+      "source": "api",
+      "target": "auth",
+      "label": "JWT authorizer",
+      "kind": "association"
+    },
+    {
+      "id": "invoke",
+      "source": "api",
+      "target": "fn",
+      "label": "Invoke"
+    },
+    {
+      "id": "orders",
+      "source": "fn",
+      "target": "table",
+      "label": "Read / write"
+    },
+    {
+      "id": "enqueue",
+      "source": "fn",
+      "target": "queue",
+      "label": "Order placed",
+      "kind": "event"
+    },
+    {
+      "id": "poll",
+      "source": "queue",
+      "target": "worker",
+      "label": "Batch",
+      "kind": "event"
+    },
+    {
+      "id": "update",
+      "source": "worker",
+      "target": "table",
+      "label": "Update status"
+    },
+    {
+      "id": "telemetry",
+      "source": "worker",
+      "target": "logs",
+      "label": "Logs",
+      "kind": "management"
+    }
+  ],
+  "notes": [
+    "Illustrative routes and names; Lambda runs outside any VPC in this view."
+  ]
+}

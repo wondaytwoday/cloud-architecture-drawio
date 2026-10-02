@@ -208,6 +208,8 @@ def build(m, target, force=False):
     report={'version':3,'errors':[], 'warnings':warnings,'routing':mode,'fallbackIcons':fallbacks,'routes':routes,'labels':labels,'quality':quality,'model_sha256':sha256(json.dumps(source,sort_keys=True).encode())}
     if quality['crossingCount']:
         report['warnings'].append(f"{quality['crossingCount']} connector crossings: inspect jump markers or revise ports/lanes")
+    for join in quality['continuations']:
+        report['warnings'].append(f"connectors {join['edges'][0]} and {join['edges'][1]} meet end to end on one line with a {join['gap']:g}px gap and may read as one; change a port or offset")
     for e in m['edges']:
         pts=routes[e['id']]
         color,dashes=EDGE[e.get('kind','traffic')]

@@ -1,0 +1,37 @@
+{
+  "page": 1,
+  "pages": 1,
+  "width": 1416,
+  "height": 1319,
+  "background": "#FFFFFF",
+  "cells": 56,
+  "edges": 7,
+  "unknownIcons": [],
+  "offPage": [],
+  "brokenImages": [],
+  "textOverflow": [],
+  "geometry": {
+    "checkedRoutes": 7,
+    "checkedLabels": 7,
+    "jumpMarkers": 0,
+    "missingJumps": 0,
+    "mismatches": []
+  },
+  "editability": {
+    "movedResource": "servers",
+    "restored": true,
+    "roundTripEdges": 7,
+    "allEdgesConnected": true,
+    "roundTripLabels": 7,
+    "allLabelsAttached": true,
+    "labelFollow": true
+  },
+  "pageErrors": [],
+  "warnings": [],
+  "provenance": {
+    "input_sha256": "30e9af22e2aaad50a9bf8357e82c0b05d7f2799d1ed3e2728d4cc5b882c0e1d5",
+    "report": "examples/aws-hybrid-vpn.report.json",
+    "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
+    "playwright": "1.61.1"
+  }
+}

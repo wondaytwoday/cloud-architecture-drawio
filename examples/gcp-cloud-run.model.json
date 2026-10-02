@@ -1,0 +1,194 @@
+{
+  "provider": "gcp",
+  "title": "Google Cloud · Cloud Run service with private data",
+  "subtitle": "Global external ALB · Cloud Armor · Direct VPC egress · Pub/Sub events",
+  "width": "auto",
+  "height": "auto",
+  "grid": {
+    "left": 80,
+    "top": 140,
+    "column": 250,
+    "row": 210
+  },
+  "containers": [
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "project",
+      "kind": "project",
+      "label": "Google Cloud project"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "vpc",
+      "kind": "vpc",
+      "label": "VPC · global",
+      "parent": "project"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "region",
+      "kind": "region",
+      "label": "Region · asia-northeast3",
+      "parent": "vpc"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "subnet",
+      "kind": "subnet",
+      "label": "Egress subnet",
+      "parent": "region"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "users",
+      "icon": "generic.user",
+      "label": "Clients",
+      "col": 2,
+      "row": 0
+    },
+    {
+      "id": "lb",
+      "icon": "gcp.lb",
+      "label": "Cloud Load Balancing",
+      "col": 2,
+      "row": 1.15,
+      "parent": "project",
+      "detail": "Global external ALB"
+    },
+    {
+      "id": "armor",
+      "icon": "gcp.armor",
+      "label": "Cloud Armor",
+      "col": 4,
+      "row": 1.15,
+      "parent": "project",
+      "detail": "Security policy"
+    },
+    {
+      "id": "run",
+      "icon": "gcp.run",
+      "label": "Cloud Run",
+      "col": 2,
+      "row": 2.3,
+      "parent": "project",
+      "detail": "Service · serverless NEG"
+    },
+    {
+      "id": "topic",
+      "icon": "gcp.pubsub",
+      "label": "Pub/Sub",
+      "col": 0,
+      "row": 2.3,
+      "parent": "project",
+      "detail": "orders topic"
+    },
+    {
+      "id": "fn",
+      "icon": "gcp.functions",
+      "label": "Cloud Functions",
+      "col": 0,
+      "row": 3.6,
+      "parent": "project",
+      "detail": "Subscriber"
+    },
+    {
+      "id": "psc",
+      "icon": "generic",
+      "label": "PSC endpoint",
+      "col": 2.2,
+      "row": 4.0,
+      "parent": "subnet",
+      "detail": "Private IP · Cloud SQL"
+    },
+    {
+      "id": "nat",
+      "icon": "gcp.nat",
+      "label": "Cloud NAT",
+      "col": 4,
+      "row": 3.6,
+      "parent": "region",
+      "detail": "Regional egress"
+    },
+    {
+      "id": "sql",
+      "icon": "gcp.sql",
+      "label": "Cloud SQL",
+      "col": 2.2,
+      "row": 5.6,
+      "parent": "project",
+      "detail": "PostgreSQL · PSC"
+    }
+  ],
+  "edges": [
+    {
+      "id": "https",
+      "source": "users",
+      "target": "lb",
+      "label": "HTTPS"
+    },
+    {
+      "id": "policy",
+      "source": "lb",
+      "target": "armor",
+      "label": "Backend policy",
+      "kind": "association"
+    },
+    {
+      "id": "serve",
+      "source": "lb",
+      "target": "run",
+      "label": "Serverless NEG"
+    },
+    {
+      "id": "publish",
+      "source": "run",
+      "target": "topic",
+      "label": "Publish",
+      "kind": "event"
+    },
+    {
+      "id": "push",
+      "source": "topic",
+      "target": "fn",
+      "label": "Push",
+      "kind": "event"
+    },
+    {
+      "id": "egress-sql",
+      "source": "run",
+      "target": "psc",
+      "label": "Direct VPC egress",
+      "sourcePort": "left",
+      "targetPort": "left"
+    },
+    {
+      "id": "psc-sql",
+      "source": "psc",
+      "target": "sql",
+      "label": "PSC"
+    },
+    {
+      "id": "egress-net",
+      "source": "run",
+      "target": "nat",
+      "label": "Internet egress",
+      "kind": "egress"
+    }
+  ],
+  "notes": [
+    "PSC endpoint has no product icon in the gcp2 set and is drawn as a labelled box."
+  ]
+}

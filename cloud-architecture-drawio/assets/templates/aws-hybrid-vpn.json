@@ -1,0 +1,211 @@
+{
+  "provider": "aws",
+  "title": "AWS · Hybrid connectivity through Transit Gateway",
+  "subtitle": "Site-to-site VPN and Direct Connect · two VPC attachments",
+  "width": "auto",
+  "height": "auto",
+  "grid": {
+    "left": 80,
+    "top": 140,
+    "column": 240,
+    "row": 210
+  },
+  "containers": [
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "dc",
+      "kind": "cloud",
+      "label": "Corporate data center"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "cloud",
+      "kind": "cloud",
+      "label": "AWS Cloud"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "region",
+      "kind": "region",
+      "label": "Region · ap-northeast-2",
+      "parent": "cloud"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "prod",
+      "kind": "vpc",
+      "label": "Production VPC",
+      "parent": "region"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "prod-az",
+      "kind": "az",
+      "label": "AZ A",
+      "parent": "prod"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "prod-sn",
+      "kind": "subnet",
+      "label": "Private subnet",
+      "parent": "prod-az"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "shared",
+      "kind": "vpc",
+      "label": "Shared services VPC",
+      "parent": "region"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "shared-az",
+      "kind": "az",
+      "label": "AZ A",
+      "parent": "shared"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "shared-sn",
+      "kind": "subnet",
+      "label": "Private subnet",
+      "parent": "shared-az"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "servers",
+      "icon": "generic.server",
+      "label": "On-premises apps",
+      "col": 0,
+      "row": 0.2,
+      "parent": "dc",
+      "detail": "ERP and batch"
+    },
+    {
+      "id": "router",
+      "icon": "generic.router",
+      "label": "Customer gateway",
+      "col": 2,
+      "row": 0.2,
+      "parent": "dc",
+      "detail": "BGP · VPN device"
+    },
+    {
+      "id": "dx",
+      "icon": "aws.direct-connect",
+      "label": "Direct Connect",
+      "col": 4,
+      "row": 1.6,
+      "parent": "cloud",
+      "detail": "Dedicated 1 Gbps"
+    },
+    {
+      "id": "tgw",
+      "icon": "aws.transit-gateway",
+      "label": "Transit Gateway",
+      "col": 2,
+      "row": 2.5,
+      "parent": "region",
+      "detail": "Route tables per domain"
+    },
+    {
+      "id": "app",
+      "icon": "aws.ec2",
+      "label": "Application",
+      "col": 0,
+      "row": 4.1,
+      "parent": "prod-sn",
+      "detail": "Private"
+    },
+    {
+      "id": "dir",
+      "icon": "aws.ec2",
+      "label": "Directory / DNS",
+      "col": 4,
+      "row": 4.1,
+      "parent": "shared-sn",
+      "detail": "Shared services"
+    }
+  ],
+  "edges": [
+    {
+      "id": "erp",
+      "source": "servers",
+      "target": "router",
+      "label": "Corporate WAN"
+    },
+    {
+      "id": "vpn",
+      "source": "router",
+      "target": "tgw",
+      "label": "Site-to-site VPN",
+      "kind": "connectivity"
+    },
+    {
+      "id": "dx-link",
+      "source": "router",
+      "target": "dx",
+      "label": "Private VIF",
+      "kind": "connectivity"
+    },
+    {
+      "id": "dx-tgw",
+      "source": "dx",
+      "target": "tgw",
+      "label": "Transit VIF",
+      "kind": "connectivity"
+    },
+    {
+      "id": "attach-prod",
+      "source": "tgw",
+      "target": "prod",
+      "label": "Attachment",
+      "kind": "connectivity"
+    },
+    {
+      "id": "attach-shared",
+      "source": "tgw",
+      "target": "shared",
+      "label": "Attachment",
+      "kind": "connectivity"
+    },
+    {
+      "id": "app-dir",
+      "source": "app",
+      "target": "dir",
+      "label": "LDAP / DNS"
+    }
+  ],
+  "notes": [
+    "VPN backs up Direct Connect; route propagation and segmentation are illustrative."
+  ]
+}

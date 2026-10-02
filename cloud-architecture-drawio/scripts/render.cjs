@@ -77,8 +77,9 @@ if (reportPath !== null) {
       window.renderGraph=graph;
       // Without a page size, fall back to draw.io's default page grown to the content.
       const bounds=graph.getGraphBounds();
-      const width=Number(model.getAttribute('pageWidth'))||Math.max(850,Math.ceil(bounds.x+bounds.width+10));
-      const height=Number(model.getAttribute('pageHeight'))||Math.max(1100,Math.ceil(bounds.y+bounds.height+10));
+      // Browsers size viewports in whole pixels.
+      const width=Math.ceil(Number(model.getAttribute('pageWidth'))||Math.max(850,bounds.x+bounds.width+10));
+      const height=Math.ceil(Number(model.getAttribute('pageHeight'))||Math.max(1100,bounds.y+bounds.height+10));
       container.style.width=width+'px'; container.style.height=height+'px';
       graph.refresh();
       const cells=Object.values(graph.model.cells);

@@ -1,0 +1,37 @@
+{
+  "page": 1,
+  "pages": 1,
+  "width": 1192,
+  "height": 1458,
+  "background": "#FFFFFF",
+  "cells": 69,
+  "edges": 7,
+  "unknownIcons": [],
+  "offPage": [],
+  "brokenImages": [],
+  "textOverflow": [],
+  "geometry": {
+    "checkedRoutes": 7,
+    "checkedLabels": 7,
+    "jumpMarkers": 0,
+    "missingJumps": 0,
+    "mismatches": []
+  },
+  "editability": {
+    "movedResource": "router",
+    "restored": true,
+    "roundTripEdges": 7,
+    "allEdgesConnected": true,
+    "roundTripLabels": 7,
+    "allLabelsAttached": true,
+    "labelFollow": true
+  },
+  "pageErrors": [],
+  "warnings": [],
+  "provenance": {
+    "input_sha256": "15149c7d42692f490efb4ee5a258e009b07babc3963ad3f0fc11d280e532c837",
+    "report": "examples/azure-hub-spoke.report.json",
+    "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
+    "playwright": "1.61.1"
+  }
+}

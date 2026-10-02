@@ -27,6 +27,16 @@ Use bundled templates as complete starting models:
 - `assets/templates/azure-regional.json`: regional subnets, zonal compute, separate SQL private endpoint.
 - `assets/templates/gcp-regional.json`: global VPC, regional subnets, zonal compute, separate PSC endpoint.
 
+These templates use grid cells and fitted boxes (see Layout shorthands):
+
+- `assets/templates/aws-serverless.json`: CloudFront, API Gateway, Lambda, DynamoDB, SQS events, Cognito; no VPC.
+- `assets/templates/aws-egress.json`: two AZs, NAT gateways, internet gateway, S3 gateway endpoint.
+- `assets/templates/aws-multi-region-dr.json`: Route 53 failover, two Regions, Aurora global database, S3 replication.
+- `assets/templates/aws-eks.json`: ALB ingress, EKS node groups in two AZs, Aurora, ECR, SQS, CloudWatch.
+- `assets/templates/aws-hybrid-vpn.json`: on-premises site, site-to-site VPN and Direct Connect, Transit Gateway attached to two VPCs.
+- `assets/templates/azure-hub-spoke.json`: hub VNet with VPN gateway, Azure Firewall and Bastion, peered spokes, Private Endpoint to SQL.
+- `assets/templates/gcp-cloud-run.json`: global external ALB with Cloud Armor, Cloud Run, Pub/Sub and Functions, PSC to Cloud SQL, Cloud NAT.
+
 ## Layout shorthands
 
 Coordinates may be absolute numbers everywhere, as in the templates, or left to these shorthands, which `validate`, `build` and `check` resolve first. `cloud_drawio.py normalize model.json` prints the resolved absolute model.
@@ -35,7 +45,8 @@ Coordinates may be absolute numbers everywhere, as in the templates, or left to 
 - A top-level `"grid": {"left": 60, "top": 140, "column": 236, "row": 204}` (defaults shown) lets nodes give `col`/`row` instead of `x`/`y`; fractions such as `1.5` are allowed. A node gives either `x` or `col`, not both.
 - A container's `x`, `y`, `w` or `h` may be `"fit"`: it wraps its children with 24 px at the sides and bottom and 56 px for the title, enough for a card connected through its top side. An overlay group fits its `members` (node or container IDs) instead of its children. `"match:ID"` copies that dimension from another container, for example equal-height AZ columns.
 - `"width"`/`"height": "auto"` sizes the canvas to the content, the footer, and the legend.
-- When nested fits reach into the page margins, the whole layout shifts right and down to clear them.
+- When nested fits reach into the page margins, the whole layout shifts right and down to clear them; an `auto` canvas also pulls the layout up and left to the margins.
+- A fitted box's title sits just above its first row of cards. A connector that drops straight into the top of a card under the title has to detour around it, so connect such cards from the side, or move the card sideways with a fractional `col` so its top port clears the title.
 
 ## Containers
 

@@ -10,6 +10,7 @@ Shorthands, all optional:
 The result is an ordinary absolute model; the source model is never modified.
 """
 import copy
+import math
 
 CARD = {'w': 156, 'h': 124}
 # Room around fitted children: the title band leaves 52px above the first card,
@@ -129,7 +130,7 @@ def normalize(m):
     if m.get('width') == 'auto':
         kinds = {e.get('kind', 'traffic') for e in items(m, 'edges')}
         legend = PAGE_SIDE+(len(kinds)-1)*LEGEND_ITEM+LEGEND_LAST+PAGE_SIDE if kinds else 0
-        m['width'] = max([legend]+[s['x']+s['w']+PAGE_SIDE for s in shapes])
+        m['width'] = math.ceil(max([legend]+[s['x']+s['w']+PAGE_SIDE for s in shapes]))
     if m.get('height') == 'auto':
-        m['height'] = max(s['y']+s['h'] for s in shapes)+FOOTER+20 if shapes else 400
+        m['height'] = math.ceil(max(s['y']+s['h'] for s in shapes)+FOOTER+20) if shapes else 400
     return m

@@ -204,7 +204,8 @@ def run(scripts):
         overhang, crowded = label_quality(routes, labels) if status == 'ok' else (0, 0)
         results.append({'group': group, 'name': name, 'status': status, 'mode': mode, 'seconds': time.perf_counter()-started,
                         'crossings': q['crossingCount'], 'bends': q['bendCount'], 'length': q['totalLength'],
-                        'hug': hug_length(m, routes), 'jogs': jogs(routes), 'overhang': overhang, 'crowded': crowded})
+                        'hug': hug_length(m, routes), 'jogs': jogs(routes), 'overhang': overhang, 'crowded': crowded,
+                        'joins': q.get('continuationCount', 0)})
     return results
 
 
@@ -226,12 +227,12 @@ def summarize(results):
 def compare(old_path, new_path):
     old, new = (json.loads(Path(p).read_text(encoding='utf-8')) for p in (old_path, new_path))
     index = {(r['group'], str(r['name'])): r for r in old['results']}
-    print(f"{'group':28} {'ok old→new':>12} {'route-fail':>12} {'label-fail':>12}  common-ok: crossings, bends, length, hug, jogs, overhang, crowded (old→new)")
+    print(f"{'group':28} {'ok old→new':>12} {'route-fail':>12} {'label-fail':>12}  common-ok: crossings, bends, length, hug, jogs, overhang, crowded, joins (old→new)")
     for group in sorted(new['summary']):
         o, n = old['summary'].get(group, {}), new['summary'][group]
         common = [(index[(r['group'], str(r['name']))], r) for r in new['results']
                   if r['group'] == group and r['status'] == 'ok' and index.get((r['group'], str(r['name'])), {}).get('status') == 'ok']
-        sums = {k: (sum(a.get(k, 0) for a, _ in common), sum(b.get(k, 0) for _, b in common)) for k in ('crossings', 'bends', 'length', 'hug', 'jogs', 'overhang', 'crowded')}
+        sums = {k: (sum(a.get(k, 0) for a, _ in common), sum(b.get(k, 0) for _, b in common)) for k in ('crossings', 'bends', 'length', 'hug', 'jogs', 'overhang', 'crowded', 'joins')}
         regressed = sum(1 for r in new['results'] if r['group'] == group and r['status'] != 'ok'
                         and index.get((r['group'], str(r['name'])), {}).get('status') == 'ok')
         print(f"{group:28} {o.get('ok','-'):>5}→{n['ok']:<5} {o.get('route_fail','-'):>5}→{n['route_fail']:<5} {o.get('label_fail','-'):>5}→{n['label_fail']:<5}"

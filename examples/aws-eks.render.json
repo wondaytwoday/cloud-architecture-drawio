@@ -1,0 +1,37 @@
+{
+  "page": 1,
+  "pages": 1,
+  "width": 1776,
+  "height": 1210,
+  "background": "#FFFFFF",
+  "cells": 77,
+  "edges": 10,
+  "unknownIcons": [],
+  "offPage": [],
+  "brokenImages": [],
+  "textOverflow": [],
+  "geometry": {
+    "checkedRoutes": 10,
+    "checkedLabels": 10,
+    "jumpMarkers": 0,
+    "missingJumps": 0,
+    "mismatches": []
+  },
+  "editability": {
+    "movedResource": "eks-a",
+    "restored": true,
+    "roundTripEdges": 10,
+    "allEdgesConnected": true,
+    "roundTripLabels": 10,
+    "allLabelsAttached": true,
+    "labelFollow": true
+  },
+  "pageErrors": [],
+  "warnings": [],
+  "provenance": {
+    "input_sha256": "87983f58c7f6624c5646263e00f965261d7cbbdaecdb18dcc445e2acd5ed3646",
+    "report": "examples/aws-eks.report.json",
+    "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
+    "playwright": "1.61.1"
+  }
+}

@@ -1,0 +1,239 @@
+{
+  "provider": "azure",
+  "title": "Azure · Hub-and-spoke network",
+  "subtitle": "Hub VNet with VPN gateway, firewall and Bastion · peered spokes",
+  "width": "auto",
+  "height": "auto",
+  "grid": {
+    "left": 120,
+    "top": 140,
+    "column": 260,
+    "row": 215
+  },
+  "containers": [
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "dc",
+      "kind": "cloud",
+      "label": "On-premises"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "sub",
+      "kind": "account",
+      "label": "Azure subscription"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "hub",
+      "kind": "vnet",
+      "label": "Hub VNet · 10.0.0.0/16",
+      "parent": "sub"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "gw-sn",
+      "kind": "subnet",
+      "label": "GatewaySubnet",
+      "parent": "hub"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "fw-sn",
+      "kind": "subnet",
+      "label": "AzureFirewallSubnet",
+      "parent": "hub"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "bas-sn",
+      "kind": "subnet",
+      "label": "AzureBastionSubnet",
+      "parent": "hub"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "spoke-a",
+      "kind": "vnet",
+      "label": "Spoke VNet · apps",
+      "parent": "sub"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "aks-sn",
+      "kind": "subnet",
+      "label": "AKS subnet",
+      "parent": "spoke-a"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "spoke-b",
+      "kind": "vnet",
+      "label": "Spoke VNet · data",
+      "parent": "sub"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "pe-sn",
+      "kind": "subnet",
+      "label": "Endpoint subnet",
+      "parent": "spoke-b"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "router",
+      "icon": "generic.router",
+      "label": "Edge router",
+      "col": 1,
+      "row": 0,
+      "parent": "dc",
+      "detail": "VPN device"
+    },
+    {
+      "id": "vpngw",
+      "icon": "azure.vpn-gateway",
+      "label": "VPN Gateway",
+      "col": 1,
+      "row": 1.75,
+      "parent": "gw-sn",
+      "detail": "Route-based"
+    },
+    {
+      "id": "fw",
+      "icon": "azure.firewall",
+      "label": "Azure Firewall",
+      "col": 2,
+      "row": 1.75,
+      "parent": "fw-sn",
+      "detail": "Forced tunnelling"
+    },
+    {
+      "id": "bastion",
+      "icon": "azure.bastion",
+      "label": "Azure Bastion",
+      "col": 3,
+      "row": 1.75,
+      "parent": "bas-sn",
+      "detail": "Admin access"
+    },
+    {
+      "id": "aks",
+      "icon": "azure.aks",
+      "label": "AKS",
+      "col": 0.4,
+      "row": 3.6,
+      "parent": "aks-sn",
+      "detail": "Workloads"
+    },
+    {
+      "id": "pe",
+      "icon": "azure.privateendpoint",
+      "label": "Private Endpoint",
+      "col": 3.6,
+      "row": 3.6,
+      "parent": "pe-sn",
+      "detail": "Azure SQL"
+    },
+    {
+      "id": "sql",
+      "icon": "azure.sql",
+      "label": "Azure SQL Database",
+      "col": 3.6,
+      "row": 4.9,
+      "parent": "sub",
+      "detail": "Managed service"
+    },
+    {
+      "id": "logs",
+      "icon": "azure.log-analytics",
+      "label": "Log Analytics",
+      "col": 0.4,
+      "row": 4.9,
+      "parent": "sub",
+      "detail": "AKS and firewall logs"
+    }
+  ],
+  "edges": [
+    {
+      "id": "s2s",
+      "source": "router",
+      "target": "vpngw",
+      "label": "Site-to-site VPN",
+      "kind": "connectivity"
+    },
+    {
+      "id": "peer-a",
+      "source": "hub",
+      "target": "spoke-a",
+      "label": "Peering",
+      "kind": "connectivity"
+    },
+    {
+      "id": "peer-b",
+      "source": "hub",
+      "target": "spoke-b",
+      "label": "Peering",
+      "kind": "connectivity"
+    },
+    {
+      "id": "egress",
+      "source": "aks",
+      "target": "fw",
+      "label": "0.0.0.0/0 via UDR",
+      "kind": "egress"
+    },
+    {
+      "id": "data",
+      "source": "aks",
+      "target": "pe",
+      "label": "TCP 1433"
+    },
+    {
+      "id": "link",
+      "source": "pe",
+      "target": "sql",
+      "label": "Private Link"
+    },
+    {
+      "id": "diag",
+      "source": "aks",
+      "target": "logs",
+      "label": "Diagnostics",
+      "kind": "management"
+    }
+  ],
+  "notes": [
+    "Spoke-to-spoke traffic routes through the firewall; DNS zones for Private Link are not drawn."
+  ]
+}

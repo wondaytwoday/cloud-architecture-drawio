@@ -6,7 +6,8 @@
     "reservedLeadIns": true,
     "borderClearance": true,
     "spreadParallels": false,
-    "stubLanes": false
+    "stubLanes": false,
+    "avoidJoins": true
   },
   "fallbackIcons": [],
   "routes": {
@@ -171,11 +172,11 @@
       ],
       [
         1158.0,
-        1514
+        1460
       ],
       [
         528.0,
-        1514
+        1460
       ],
       [
         528.0,
@@ -385,12 +386,12 @@
     },
     "db-access-b": {
       "rect": [
-        866.48,
-        1487.0,
+        824.48,
+        1433.0,
         67.03999999999999,
         22
       ],
-      "relativeX": 0.032418952618453956,
+      "relativeX": 0.0024937655860348684,
       "offset": [
         -33.51999999999998,
         -27.0
@@ -428,9 +429,11 @@
     "overlapLength": 0,
     "bendCount": 22,
     "totalLength": 5573.0,
+    "continuationCount": 0,
     "crossings": [],
-    "overlaps": []
+    "overlaps": [],
+    "continuations": []
   },
   "model_sha256": "cf7f50b6523385c4f53bae20eefd3c671c5ed03bff67985e11fa2b0cf349806e",
-  "drawio_sha256": "46e9f5ba189796623d0331f34454a2466e207e80f4cac51cb0bd507c5a7f6548"
+  "drawio_sha256": "988799811ea13b46f3da8f4b80f8c4feb7cb94220ae1b5c6eaddf5e00b79d450"
 }

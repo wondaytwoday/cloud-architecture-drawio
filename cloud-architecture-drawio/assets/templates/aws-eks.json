@@ -1,0 +1,243 @@
+{
+  "provider": "aws",
+  "title": "AWS · EKS microservices",
+  "subtitle": "Two AZs · ALB ingress · EKS managed node groups · Aurora · async jobs",
+  "width": "auto",
+  "height": "auto",
+  "grid": {
+    "left": 80,
+    "top": 140,
+    "column": 240,
+    "row": 205
+  },
+  "containers": [
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "cloud",
+      "kind": "cloud",
+      "label": "AWS Cloud"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "vpc",
+      "kind": "vpc",
+      "label": "VPC · 10.40.0.0/16",
+      "parent": "cloud"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "az-a",
+      "kind": "az",
+      "label": "Availability Zone A",
+      "parent": "vpc"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "match:az-a",
+      "id": "az-b",
+      "kind": "az",
+      "label": "Availability Zone B",
+      "parent": "vpc"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "nodes-a",
+      "kind": "subnet",
+      "label": "Private subnet · nodes",
+      "parent": "az-a"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "data-a",
+      "kind": "subnet",
+      "label": "Private subnet · data",
+      "parent": "az-a"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "nodes-b",
+      "kind": "subnet",
+      "label": "Private subnet · nodes",
+      "parent": "az-b"
+    },
+    {
+      "x": "fit",
+      "y": "fit",
+      "w": "fit",
+      "h": "fit",
+      "id": "data-b",
+      "kind": "subnet",
+      "label": "Private subnet · data",
+      "parent": "az-b"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "users",
+      "icon": "generic.user",
+      "label": "Clients",
+      "col": 2,
+      "row": 0
+    },
+    {
+      "id": "alb",
+      "icon": "aws.alb",
+      "label": "Application LB",
+      "col": 2,
+      "row": 1.25,
+      "parent": "vpc",
+      "detail": "Ingress · AWS LB Controller"
+    },
+    {
+      "id": "eks-a",
+      "icon": "aws.eks",
+      "label": "EKS nodes",
+      "col": 0,
+      "row": 2.5,
+      "parent": "nodes-a",
+      "detail": "Managed node group"
+    },
+    {
+      "id": "eks-b",
+      "icon": "aws.eks",
+      "label": "EKS nodes",
+      "col": 4,
+      "row": 2.5,
+      "parent": "nodes-b",
+      "detail": "Managed node group"
+    },
+    {
+      "id": "db-a",
+      "icon": "aws.aurora",
+      "label": "Aurora",
+      "col": 0,
+      "row": 3.85,
+      "parent": "data-a",
+      "detail": "Writer"
+    },
+    {
+      "id": "db-b",
+      "icon": "aws.aurora",
+      "label": "Aurora",
+      "col": 4,
+      "row": 3.85,
+      "parent": "data-b",
+      "detail": "Reader"
+    },
+    {
+      "id": "ecr",
+      "icon": "aws.ecr",
+      "label": "Amazon ECR",
+      "col": 6,
+      "row": 1.25,
+      "parent": "cloud",
+      "detail": "Container images"
+    },
+    {
+      "id": "queue",
+      "icon": "aws.sqs",
+      "label": "Amazon SQS",
+      "col": 6,
+      "row": 2.5,
+      "parent": "cloud",
+      "detail": "Job queue"
+    },
+    {
+      "id": "logs",
+      "icon": "aws.cloudwatch",
+      "label": "CloudWatch",
+      "col": 6,
+      "row": 3.85,
+      "parent": "cloud",
+      "detail": "Container Insights"
+    }
+  ],
+  "edges": [
+    {
+      "id": "https",
+      "source": "users",
+      "target": "alb",
+      "label": "HTTPS"
+    },
+    {
+      "id": "ingress-a",
+      "source": "alb",
+      "target": "eks-a",
+      "label": "HTTP"
+    },
+    {
+      "id": "ingress-b",
+      "source": "alb",
+      "target": "eks-b",
+      "label": "HTTP"
+    },
+    {
+      "id": "sql-a",
+      "source": "eks-a",
+      "target": "db-a",
+      "label": "SQL"
+    },
+    {
+      "id": "sql-b",
+      "source": "eks-b",
+      "target": "db-a",
+      "label": "SQL writes"
+    },
+    {
+      "id": "reads",
+      "source": "eks-b",
+      "target": "db-b",
+      "label": "SQL reads"
+    },
+    {
+      "id": "aurora-repl",
+      "source": "db-a",
+      "target": "db-b",
+      "label": "Cluster storage",
+      "kind": "replication"
+    },
+    {
+      "id": "pull",
+      "source": "eks-b",
+      "target": "ecr",
+      "label": "Image pull"
+    },
+    {
+      "id": "jobs",
+      "source": "eks-b",
+      "target": "queue",
+      "label": "Jobs",
+      "kind": "event"
+    },
+    {
+      "id": "metrics",
+      "source": "eks-b",
+      "target": "logs",
+      "label": "Metrics",
+      "kind": "management"
+    }
+  ],
+  "notes": [
+    "ECR, SQS and CloudWatch are reached through NAT or interface endpoints, not drawn here."
+  ]
+}

@@ -235,8 +235,10 @@
     "overlapLength": 0,
     "bendCount": 14,
     "totalLength": 3654.0,
+    "continuationCount": 0,
     "crossings": [],
-    "overlaps": []
+    "overlaps": [],
+    "continuations": []
   },
   "model_sha256": "47d2b193b436fdd9cfaf7f3855ed189b8cde929a635522e2312facf13dc45f11",
   "drawio_sha256": "299a61740c29c7fceaff6749251bc50df7a7f2bce039a26cbbd96908028fb450"

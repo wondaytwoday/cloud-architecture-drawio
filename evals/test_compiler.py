@@ -26,7 +26,8 @@ class CompilerTests(unittest.TestCase):
         self.assertGreaterEqual(len(names),3)
         for name in names:
             with self.subTest(name=name),tempfile.TemporaryDirectory() as d:
-                m=self.model(name); out=Path(d)/'diagram.drawio'; report=c.build(m,out)
+                source=self.model(name); out=Path(d)/'diagram.drawio'; report=c.build(source,out)
+                m=c.model_layout.normalize(source)
                 self.assertEqual(report['warnings'],[])
                 obstacles=[c.rect(n) for n in m['nodes']]+[c.header_rect(b) for b in m['containers']]
                 for pts in report['routes'].values():
@@ -172,7 +173,7 @@ class CompilerTests(unittest.TestCase):
     def test_shipped_examples_match_a_fresh_build(self):
         """Golden check: examples/ must be what the current compiler produces."""
         names=sorted(p.name[:-len('.model.json')] for p in (BASE/'examples').glob('*.model.json'))
-        self.assertEqual(len(names),5)
+        self.assertGreaterEqual(len(names),12)
         for name in names:
             with self.subTest(name=name),tempfile.TemporaryDirectory() as d:
                 m=json.loads((BASE/'examples'/f'{name}.model.json').read_text(encoding='utf-8'))
