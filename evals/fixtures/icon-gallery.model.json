@@ -3,7 +3,7 @@
   "title": "Icon gallery · 93 catalog icons",
   "subtitle": "Every catalog icon and relationship kind, rebuilt from the catalog",
   "width": 2220,
-  "height": 2378,
+  "height": 2542,
   "containers": [
     {
       "id": "aws-net",
@@ -1160,6 +1160,42 @@
       "y": 2134,
       "w": 176,
       "h": 124
+    },
+    {
+      "id": "event-from",
+      "icon": "generic",
+      "label": "event from",
+      "x": 30,
+      "y": 2298,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "event-to",
+      "icon": "generic",
+      "label": "event to",
+      "x": 386,
+      "y": 2298,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "connectivity-from",
+      "icon": "generic",
+      "label": "connectivity from",
+      "x": 602,
+      "y": 2298,
+      "w": 176,
+      "h": 124
+    },
+    {
+      "id": "connectivity-to",
+      "icon": "generic",
+      "label": "connectivity to",
+      "x": 958,
+      "y": 2298,
+      "w": 176,
+      "h": 124
     }
   ],
   "edges": [
@@ -1204,6 +1240,20 @@
       "target": "management-to",
       "kind": "management",
       "label": "management"
+    },
+    {
+      "id": "kind-event",
+      "source": "event-from",
+      "target": "event-to",
+      "kind": "event",
+      "label": "event"
+    },
+    {
+      "id": "kind-connectivity",
+      "source": "connectivity-from",
+      "target": "connectivity-to",
+      "kind": "connectivity",
+      "label": "connectivity"
     }
   ],
   "routing": {

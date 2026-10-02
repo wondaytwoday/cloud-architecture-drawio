@@ -31,11 +31,30 @@ v3는 "검사를 통과하면 올바른 그림"이라는 약속을 지키도록 
   - 빌드가 실패하면 들어가지 않는 라벨을 모두, 막는 도형 이름과 필요한 간격과 함께 보여 줍니다.
   - `check` 명령 하나로 검증·빌드·렌더 판정까지 끝냅니다.
 
-회귀 테스트는 105개입니다(렌더 환경이 없으면 10개는 건너뜁니다). 라우팅 벤치마크는 `python3 evals/bench_routing.py`로 재현합니다.
+v3의 마지막 단계에서는 그릴 수 있는 범위와 편집 흐름을 넓혔습니다.
+
+- **아이콘**
+  - 36개에서 93개로 늘렸습니다. AWS 데이터·메시징·컨테이너·보안·하이브리드 네트워크, Azure AKS·Functions·Cosmos DB·Firewall·Bastion, GCP GKE·Pub/Sub·BigQuery, CSP 중립 `generic.*` 도형을 포함합니다.
+  - `scripts/add_icon.py`가 고정한 draw.io 커밋의 aws4·gcp2·networks·azure2 라이브러리를 검색해 아이콘을 추가하고, 출처와 SHA-256을 남깁니다. 기존 36개는 이 도구로 바이트 단위까지 똑같이 재현됩니다.
+  - 서브넷 안에 있어야 하는지 같은 배치 규칙은 카탈로그의 `placement` 필드에 둡니다. 아이콘이 없어 일반 상자로 그린 자원은 `fallbackIcons`에 나옵니다.
+- **배치 단축 표기**: 카드 크기 생략, `col`/`row` 격자, 자식을 감싸는 `"fit"` 박스, `"match:ID"`, `auto` 캔버스를 씁니다. 좌표를 손으로 계산하지 않아도 됩니다. `normalize`로 절대 좌표를 확인합니다.
+- **템플릿**
+  - 7개를 추가해 10개가 됐습니다: 서버리스, NAT egress, 멀티 리전 DR, EKS, 하이브리드 VPN과 Transit Gateway, Azure hub-spoke, GCP Cloud Run.
+  - 모두 경고·교차 없이 빌드되고 렌더 검사를 통과합니다.
+- **경계 연결**
+  - VPC·VNet·서브넷·리전 경계끼리 선을 이을 수 있어 피어링·TGW 연결·VPN을 그대로 그립니다.
+  - 관계 종류에 비동기 메시지 `event`와 네트워크 링크 `connectivity`를 추가했습니다.
+  - 두 선이 한 직선 위에서 24px 이내로 맞닿아 한 선처럼 보이면 감지하고, 피해서 다시 라우팅합니다. 벤치마크에서 이런 맞닿음이 782 → 194개로 줄었고, 새로 실패한 모델은 없습니다.
+- **편집 흐름**
+  - `pull`: draw.io에서 옮기거나 크기·소속·텍스트를 바꾼 내용을 모델로 되가져옵니다. 손으로 추가한 도형은 따로 알려 줍니다.
+  - `bundle`: 여러 모델을 한 `.drawio`의 여러 페이지로 묶습니다.
+  - `render.cjs --embed`: PNG·SVG 미리보기 안에 원본을 넣어 draw.io에서 바로 편집할 수 있게 합니다.
+
+회귀 테스트는 124개입니다(렌더 환경이 없으면 13개는 건너뜁니다). 라우팅 벤치마크는 `python3 evals/bench_routing.py`로 재현합니다.
 
 v2는 연결 지점 분산, 선 중첩 방지, 장애물 여백, 교차 점프 표시, 연결선에 붙는 라벨, CSP 경계 검사를 보강했습니다. 다섯 예제의 선 교차는 25 → 2, 중첩 길이는 236 → 0 px로 줄었습니다. 라우터와 예제 배치 개선을 함께 반영한 수치입니다.
 
-미리보기: [AWS 한글](examples/aws-three-tier-ko.png) · [AWS 3 AZ](examples/aws-three-az.png) · [Azure](examples/azure-regional.png) · [GCP](examples/gcp-regional.png)
+미리보기: [AWS 한글](examples/aws-three-tier-ko.png) · [AWS 3 AZ](examples/aws-three-az.png) · [Azure](examples/azure-regional.png) · [GCP](examples/gcp-regional.png) · [서버리스](examples/aws-serverless.png) · [NAT egress](examples/aws-egress.png) · [멀티 리전 DR](examples/aws-multi-region-dr.png) · [EKS](examples/aws-eks.png) · [하이브리드 VPN](examples/aws-hybrid-vpn.png) · [Azure hub-spoke](examples/azure-hub-spoke.png) · [GCP Cloud Run](examples/gcp-cloud-run.png)
 
 ## 설치
 
@@ -85,6 +104,16 @@ python3 -m unittest discover -s evals -v
 python3 cloud-architecture-drawio/scripts/cloud_drawio.py check \
   cloud-architecture-drawio/assets/templates/aws-three-tier.json \
   examples/aws-three-tier.drawio
+```
+
+draw.io에서 직접 고친 그림은 `pull`로 모델에 되가져온 뒤 다시 빌드합니다. 요약의 `unmodelled`가 비어 있지 않으면 손으로 추가한 도형이 있다는 뜻이므로 먼저 모델에 옮기세요.
+
+```sh
+python3 cloud-architecture-drawio/scripts/cloud_drawio.py pull \
+  examples/aws-three-tier.drawio examples/aws-three-tier.model.json --output pulled.json
+python3 cloud-architecture-drawio/scripts/cloud_drawio.py bundle views.drawio a.json b.json
+NODE_PATH=<playwright>/node_modules node cloud-architecture-drawio/scripts/render.cjs \
+  views.drawio views.drawio.png --page 2 --embed
 ```
 
 `build`는 draw.io에서 수정된 출력 파일을 덮어쓰지 않고 멈춥니다. 수정 내용을 버리려면 `--force`를 붙입니다. v3 이전에 만든 출력은 리포트에 파일 해시가 없어 이 보호를 받지 못합니다. 스킬 폴더를 바꾼 뒤에는 `python3 tools/build_dist.py`로 배포 ZIP을 다시 만드세요. ZIP과 폴더가 다르면 테스트가 실패합니다.

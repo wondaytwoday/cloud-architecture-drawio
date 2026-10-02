@@ -19,6 +19,7 @@ import zlib
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import cloud_routes
 import model_layout
+import model_pull
 from model_validation import EDGE_KINDS, legend_captions, validate_structure
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -170,13 +171,41 @@ def write_outputs(files):
 
 
 def build(m, target, force=False):
-    errors,warnings=validate(m)
+    errors,_=validate(m)
     if errors: raise ValueError('\n'.join(errors))
     if not force: check_overwrite(target)
+    rootfile=ET.Element('mxfile',host='cloud-architecture-drawio',version='1.0')
+    report=compile_page(m,rootfile,'architecture')
+    write_diagram(rootfile,target,report)
+    return report
+
+
+def bundle(models, target, force=False):
+    """Compile several models as the pages of one .drawio, in the given order."""
+    errors=[f'page {i}: {e}' for i,m in enumerate(models,1) for e in validate(m)[0]]
+    if errors: raise ValueError('\n'.join(errors))
+    if not force: check_overwrite(target)
+    rootfile=ET.Element('mxfile',host='cloud-architecture-drawio',version='1.0')
+    pages=[compile_page(m,rootfile,f'page-{i}') for i,m in enumerate(models,1)]
+    report={'version':3,'pages':pages,'warnings':[f'page {i}: {w}' for i,page in enumerate(pages,1) for w in page['warnings']]}
+    write_diagram(rootfile,target,report)
+    return report
+
+
+def write_diagram(rootfile, target, report):
+    target=Path(target); target.parent.mkdir(parents=True,exist_ok=True)
+    ET.indent(rootfile)
+    xml=ET.tostring(rootfile,encoding='utf-8',xml_declaration=True)+b'\n'
+    report['drawio_sha256']=sha256(xml)
+    write_outputs([(target,xml),(report_path(target),(json.dumps(report,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))])
+
+
+def compile_page(m, rootfile, page_id):
+    """Append one diagram page for a valid model to rootfile; return its report."""
+    _,warnings=validate(m)
     source,m=m,model_layout.normalize(m)
     width,height=m['width'],m['height']; by={i['id']:i for i in m['containers']+m['nodes']}
-    rootfile=ET.Element('mxfile',host='cloud-architecture-drawio',version='1.0')
-    dia=ET.SubElement(rootfile,'diagram',id='architecture',name=m.get('title','Architecture'))
+    dia=ET.SubElement(rootfile,'diagram',id=page_id,name=m.get('title','Architecture'))
     model=ET.SubElement(dia,'mxGraphModel',grid='1',gridSize='10',page='1',pageScale='1',pageWidth=str(width),pageHeight=str(height),background='#FFFFFF',connect='1',arrows='1')
     root=ET.SubElement(model,'root'); ET.SubElement(root,'mxCell',id='0'); ET.SubElement(root,'mxCell',id='1',parent='0')
     def cell(id,value,style,x,y,w,h,parent='1'):
@@ -246,11 +275,6 @@ def build(m, target, force=False):
         cell('__legend_line_'+k,'',f'shape=line;strokeColor={color};strokeWidth={stroke};{dash}',lx,y+12,30,1)
         cell('__legend_text_'+k,captions[k],f'text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;fontSize=11;align=left;verticalAlign=middle;fontColor={color};',lx+40,y,160,24)
     text('__notes',' · '.join(m.get('notes',[])),30,y+25,width-60,36,11,'left')
-    target=Path(target); target.parent.mkdir(parents=True,exist_ok=True)
-    ET.indent(rootfile)
-    xml=ET.tostring(rootfile,encoding='utf-8',xml_declaration=True)+b'\n'
-    report['drawio_sha256']=sha256(xml)
-    write_outputs([(target,xml),(report_path(target),(json.dumps(report,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))])
     return report
 
 
@@ -328,10 +352,28 @@ def main():
             s.add_argument('--force',action='store_true',help='replace an output that changed after it was built')
         if command=='check':
             s.add_argument('--viewer',help='draw.io viewer-static.min.js (default: $DRAWIO_VIEWER, then the cache)')
+    s=sub.add_parser('bundle',help='compile several models as pages of one .drawio')
+    s.add_argument('output'); s.add_argument('models',nargs='+')
+    s.add_argument('--force',action='store_true',help='replace an output that changed after it was built')
+    s=sub.add_parser('pull',help='bring manual draw.io edits back into the model')
+    s.add_argument('drawio'); s.add_argument('model')
+    s.add_argument('--output',help='write the updated model here (default: print it)')
+    s.add_argument('--page',type=int,default=1)
     sub.add_parser('icons')
     a=p.parse_args()
     try:
         if a.cmd=='icons': print('\n'.join(sorted(CAT))); return
+        if a.cmd=='bundle':
+            models=[json.loads(Path(f).read_text(encoding='utf-8-sig')) for f in a.models]
+            report=bundle(models,a.output,a.force); emit({'output':a.output,'pages':len(models),'warnings':report['warnings']}); return
+        if a.cmd=='pull':
+            source=json.loads(Path(a.model).read_text(encoding='utf-8-sig'))
+            updated,summary=model_pull.pull(source,a.drawio,a.page)
+            errors,_=validate(updated)
+            summary['errors']=errors
+            if a.output: write_outputs([(a.output,(json.dumps(updated,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))])
+            else: emit(updated,indent=2)
+            print(json.dumps(summary,ensure_ascii=True),file=sys.stderr); sys.exit(bool(errors))
         m=json.loads(Path(a.model).read_text(encoding='utf-8-sig'))
         if a.cmd=='normalize':
             emit(model_layout.normalize(m),indent=2); return

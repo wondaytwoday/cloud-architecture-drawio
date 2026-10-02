@@ -1,12 +1,12 @@
 {
-  "date": "2026-10-01",
+  "date": "2026-10-02",
   "version": 3,
   "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
-  "icons": 36,
+  "icons": 93,
   "tests": {
-    "passed": 105,
+    "passed": 124,
     "failed": 0,
-    "skipped_without_renderer": 10,
+    "skipped_without_renderer": 13,
     "command": "NODE_PATH=<playwright>/node_modules python3 -m unittest discover -s evals -v"
   },
   "skill_validation": "Skill is valid!",
@@ -1144,6 +1144,188 @@
       "crowded": [
         43,
         5
+      ]
+    }
+  },
+  "phase3": {
+    "templates": {
+      "aws-serverless": {
+        "nodes": 11,
+        "edges": 11,
+        "crossingCount": 0,
+        "bendCount": 10,
+        "continuationCount": 0,
+        "warnings": 0,
+        "fallbackIcons": [],
+        "render": {
+          "checkedRoutes": 11,
+          "mismatches": 0,
+          "textOverflow": 0,
+          "unknownIcons": 0
+        }
+      },
+      "aws-egress": {
+        "nodes": 8,
+        "edges": 8,
+        "crossingCount": 0,
+        "bendCount": 12,
+        "continuationCount": 0,
+        "warnings": 0,
+        "fallbackIcons": [],
+        "render": {
+          "checkedRoutes": 8,
+          "mismatches": 0,
+          "textOverflow": 0,
+          "unknownIcons": 0
+        }
+      },
+      "aws-multi-region-dr": {
+        "nodes": 10,
+        "edges": 10,
+        "crossingCount": 0,
+        "bendCount": 26,
+        "continuationCount": 0,
+        "warnings": 0,
+        "fallbackIcons": [],
+        "render": {
+          "checkedRoutes": 10,
+          "mismatches": 0,
+          "textOverflow": 0,
+          "unknownIcons": 0
+        }
+      },
+      "aws-eks": {
+        "nodes": 9,
+        "edges": 10,
+        "crossingCount": 0,
+        "bendCount": 20,
+        "continuationCount": 0,
+        "warnings": 0,
+        "fallbackIcons": [],
+        "render": {
+          "checkedRoutes": 10,
+          "mismatches": 0,
+          "textOverflow": 0,
+          "unknownIcons": 0
+        }
+      },
+      "aws-hybrid-vpn": {
+        "nodes": 6,
+        "edges": 7,
+        "crossingCount": 0,
+        "bendCount": 8,
+        "continuationCount": 0,
+        "warnings": 0,
+        "fallbackIcons": [],
+        "render": {
+          "checkedRoutes": 7,
+          "mismatches": 0,
+          "textOverflow": 0,
+          "unknownIcons": 0
+        }
+      },
+      "azure-hub-spoke": {
+        "nodes": 8,
+        "edges": 7,
+        "crossingCount": 0,
+        "bendCount": 16,
+        "continuationCount": 0,
+        "warnings": 0,
+        "fallbackIcons": [],
+        "render": {
+          "checkedRoutes": 7,
+          "mismatches": 0,
+          "textOverflow": 0,
+          "unknownIcons": 0
+        }
+      },
+      "gcp-cloud-run": {
+        "nodes": 9,
+        "edges": 8,
+        "crossingCount": 0,
+        "bendCount": 6,
+        "continuationCount": 0,
+        "warnings": 0,
+        "fallbackIcons": [
+          "psc"
+        ],
+        "render": {
+          "checkedRoutes": 8,
+          "mismatches": 0,
+          "textOverflow": 0,
+          "unknownIcons": 0
+        }
+      }
+    },
+    "icon_gallery": {
+      "icons": 93,
+      "kinds": 8,
+      "unknownIcons": 0,
+      "brokenImages": 0,
+      "textOverflow": 0
+    },
+    "pull": {
+      "examples_identity": "12/12 unedited builds pull back to the same model"
+    },
+    "embed": {
+      "png": "tEXt mxfile chunk read back by Editor.extractGraphModelFromPng",
+      "svg": "content attribute",
+      "exact_round_trip": true
+    },
+    "routing_benchmark": {
+      "baseline": "c614f45 (phase 2)",
+      "valid_cases": {
+        "phase2": 841,
+        "phase3": 855
+      },
+      "ok": {
+        "phase2": 785,
+        "phase3": 799
+      },
+      "label_fail": {
+        "phase2": 56,
+        "phase3": 56
+      },
+      "newly_failing": 0,
+      "new_example_cases": "14 cases use new icons and kinds: invalid for phase 2, ok for phase 3",
+      "common_ok": {
+        "cases": 785,
+        "joins": [
+          782,
+          194
+        ],
+        "crossings": [
+          1788,
+          1781
+        ],
+        "bends": [
+          12509,
+          12649
+        ],
+        "length": [
+          2644796.2,
+          2644096.2
+        ],
+        "jogs": [
+          996,
+          1059
+        ],
+        "overhang": [
+          36,
+          37
+        ],
+        "crowded": [
+          23,
+          27
+        ],
+        "hug": [
+          10222,
+          10270
+        ]
+      },
+      "seconds": [
+        68.3,
+        82.0
       ]
     }
   }

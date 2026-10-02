@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <mxfile host="cloud-architecture-drawio" version="1.0">
   <diagram id="architecture" name="Icon gallery · 93 catalog icons">
-    <mxGraphModel grid="1" gridSize="10" page="1" pageScale="1" pageWidth="2220" pageHeight="2378" background="#FFFFFF" connect="1" arrows="1">
+    <mxGraphModel grid="1" gridSize="10" page="1" pageScale="1" pageWidth="2220" pageHeight="2542" background="#FFFFFF" connect="1" arrows="1">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -96,6 +96,26 @@
         <mxCell id="__label_kind-management" value="management" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="kind-management" connectable="0">
           <mxGeometry as="geometry" x="0.0" y="0" width="79.8" height="22" relative="1">
             <mxPoint as="offset" x="-39.90000000000009" y="-27.0" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kind-event" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#D81B60;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;jumpStyle=arc;jumpSize=8;dashed=1;dashPattern=7 2;endArrow=open;endFill=0;" edge="1" parent="1" source="event-from" target="event-to">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="__label_kind-event" value="event" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="kind-event" connectable="0">
+          <mxGeometry as="geometry" x="0.0" y="0" width="47.9" height="22" relative="1">
+            <mxPoint as="offset" x="-23.94999999999999" y="-27.0" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kind-connectivity" style="edgeStyle=none;rounded=0;html=0;endArrow=block;endFill=1;strokeColor=#3E2723;strokeWidth=1.6;exitX=1;exitY=0.5;exitPerimeter=0;entryX=0;entryY=0.5;entryPerimeter=0;jumpStyle=arc;jumpSize=8;endArrow=none;strokeWidth=2.6;" edge="1" parent="1" source="connectivity-from" target="connectivity-to">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="__label_kind-connectivity" value="connectivity" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="kind-connectivity" connectable="0">
+          <mxGeometry as="geometry" x="0.0" y="0" width="92.55999999999999" height="22" relative="1">
+            <mxPoint as="offset" x="-46.27999999999997" y="-27.0" />
           </mxGeometry>
         </mxCell>
         <mxCell id="aws-alb" value="" style="group;fillColor=none;strokeColor=none;container=1;collapsible=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
@@ -1382,44 +1402,104 @@
         <mxCell id="__detail_management-to" value="" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=center;verticalAlign=middle;fontSize=11;fontStyle=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="management-to">
           <mxGeometry as="geometry" x="4" y="95" width="168" height="28" />
         </mxCell>
+        <mxCell id="event-from" value="" style="group;fillColor=none;strokeColor=none;container=1;collapsible=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="30" y="2298" width="176" height="124" />
+        </mxCell>
+        <mxCell id="__icon_event-from" value="" style="rounded=1;arcSize=15;fillColor=#EDF2F7;strokeColor=#536477;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="event-from">
+          <mxGeometry as="geometry" x="64.0" y="6" width="48" height="48" />
+        </mxCell>
+        <mxCell id="__name_event-from" value="event from" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=center;verticalAlign=middle;fontSize=13;fontStyle=1;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="event-from">
+          <mxGeometry as="geometry" x="4" y="59" width="168" height="34" />
+        </mxCell>
+        <mxCell id="__detail_event-from" value="" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=center;verticalAlign=middle;fontSize=11;fontStyle=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="event-from">
+          <mxGeometry as="geometry" x="4" y="95" width="168" height="28" />
+        </mxCell>
+        <mxCell id="event-to" value="" style="group;fillColor=none;strokeColor=none;container=1;collapsible=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="386" y="2298" width="176" height="124" />
+        </mxCell>
+        <mxCell id="__icon_event-to" value="" style="rounded=1;arcSize=15;fillColor=#EDF2F7;strokeColor=#536477;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="event-to">
+          <mxGeometry as="geometry" x="64.0" y="6" width="48" height="48" />
+        </mxCell>
+        <mxCell id="__name_event-to" value="event to" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=center;verticalAlign=middle;fontSize=13;fontStyle=1;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="event-to">
+          <mxGeometry as="geometry" x="4" y="59" width="168" height="34" />
+        </mxCell>
+        <mxCell id="__detail_event-to" value="" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=center;verticalAlign=middle;fontSize=11;fontStyle=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="event-to">
+          <mxGeometry as="geometry" x="4" y="95" width="168" height="28" />
+        </mxCell>
+        <mxCell id="connectivity-from" value="" style="group;fillColor=none;strokeColor=none;container=1;collapsible=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="602" y="2298" width="176" height="124" />
+        </mxCell>
+        <mxCell id="__icon_connectivity-from" value="" style="rounded=1;arcSize=15;fillColor=#EDF2F7;strokeColor=#536477;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="connectivity-from">
+          <mxGeometry as="geometry" x="64.0" y="6" width="48" height="48" />
+        </mxCell>
+        <mxCell id="__name_connectivity-from" value="connectivity from" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=center;verticalAlign=middle;fontSize=13;fontStyle=1;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="connectivity-from">
+          <mxGeometry as="geometry" x="4" y="59" width="168" height="34" />
+        </mxCell>
+        <mxCell id="__detail_connectivity-from" value="" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=center;verticalAlign=middle;fontSize=11;fontStyle=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="connectivity-from">
+          <mxGeometry as="geometry" x="4" y="95" width="168" height="28" />
+        </mxCell>
+        <mxCell id="connectivity-to" value="" style="group;fillColor=none;strokeColor=none;container=1;collapsible=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="958" y="2298" width="176" height="124" />
+        </mxCell>
+        <mxCell id="__icon_connectivity-to" value="" style="rounded=1;arcSize=15;fillColor=#EDF2F7;strokeColor=#536477;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="connectivity-to">
+          <mxGeometry as="geometry" x="64.0" y="6" width="48" height="48" />
+        </mxCell>
+        <mxCell id="__name_connectivity-to" value="connectivity to" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=center;verticalAlign=middle;fontSize=13;fontStyle=1;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="connectivity-to">
+          <mxGeometry as="geometry" x="4" y="59" width="168" height="34" />
+        </mxCell>
+        <mxCell id="__detail_connectivity-to" value="" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=center;verticalAlign=middle;fontSize=11;fontStyle=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="connectivity-to">
+          <mxGeometry as="geometry" x="4" y="95" width="168" height="28" />
+        </mxCell>
         <mxCell id="__legend_line_traffic" value="" style="shape=line;strokeColor=#4B6074;strokeWidth=1.6;dashed=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="30" y="2318" width="30" height="1" />
+          <mxGeometry as="geometry" x="30" y="2482" width="30" height="1" />
         </mxCell>
         <mxCell id="__legend_text_traffic" value="Request / data" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;fontSize=11;align=left;verticalAlign=middle;fontColor=#4B6074;fontFamily=Arial;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="70" y="2306" width="160" height="24" />
+          <mxGeometry as="geometry" x="70" y="2470" width="160" height="24" />
         </mxCell>
         <mxCell id="__legend_line_egress" value="" style="shape=line;strokeColor=#1F7F8C;strokeWidth=1.6;dashed=1;dashPattern=6 3 2 3;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="235" y="2318" width="30" height="1" />
+          <mxGeometry as="geometry" x="235" y="2482" width="30" height="1" />
         </mxCell>
         <mxCell id="__legend_text_egress" value="Outbound" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;fontSize=11;align=left;verticalAlign=middle;fontColor=#1F7F8C;fontFamily=Arial;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="275" y="2306" width="160" height="24" />
+          <mxGeometry as="geometry" x="275" y="2470" width="160" height="24" />
         </mxCell>
         <mxCell id="__legend_line_replication" value="" style="shape=line;strokeColor=#875EAC;strokeWidth=1.6;dashed=1;dashPattern=10 4;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="440" y="2318" width="30" height="1" />
+          <mxGeometry as="geometry" x="440" y="2482" width="30" height="1" />
         </mxCell>
         <mxCell id="__legend_text_replication" value="Replication" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;fontSize=11;align=left;verticalAlign=middle;fontColor=#875EAC;fontFamily=Arial;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="480" y="2306" width="160" height="24" />
+          <mxGeometry as="geometry" x="480" y="2470" width="160" height="24" />
         </mxCell>
         <mxCell id="__legend_line_dns" value="" style="shape=line;strokeColor=#8C6A2F;strokeWidth=1.6;dashed=1;dashPattern=2 3;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="645" y="2318" width="30" height="1" />
+          <mxGeometry as="geometry" x="645" y="2482" width="30" height="1" />
         </mxCell>
         <mxCell id="__legend_text_dns" value="DNS resolution" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;fontSize=11;align=left;verticalAlign=middle;fontColor=#8C6A2F;fontFamily=Arial;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="685" y="2306" width="160" height="24" />
+          <mxGeometry as="geometry" x="685" y="2470" width="160" height="24" />
         </mxCell>
         <mxCell id="__legend_line_association" value="" style="shape=line;strokeColor=#B85B72;strokeWidth=1.6;dashed=1;dashPattern=4 3;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="850" y="2318" width="30" height="1" />
+          <mxGeometry as="geometry" x="850" y="2482" width="30" height="1" />
         </mxCell>
         <mxCell id="__legend_text_association" value="Policy association" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;fontSize=11;align=left;verticalAlign=middle;fontColor=#B85B72;fontFamily=Arial;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="890" y="2306" width="160" height="24" />
+          <mxGeometry as="geometry" x="890" y="2470" width="160" height="24" />
         </mxCell>
         <mxCell id="__legend_line_management" value="" style="shape=line;strokeColor=#A06050;strokeWidth=1.6;dashed=1;dashPattern=8 3 2 3 2 3;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1055" y="2318" width="30" height="1" />
+          <mxGeometry as="geometry" x="1055" y="2482" width="30" height="1" />
         </mxCell>
         <mxCell id="__legend_text_management" value="Management" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;fontSize=11;align=left;verticalAlign=middle;fontColor=#A06050;fontFamily=Arial;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1095" y="2306" width="160" height="24" />
+          <mxGeometry as="geometry" x="1095" y="2470" width="160" height="24" />
+        </mxCell>
+        <mxCell id="__legend_line_event" value="" style="shape=line;strokeColor=#D81B60;strokeWidth=1.6;dashed=1;dashPattern=7 2;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1260" y="2482" width="30" height="1" />
+        </mxCell>
+        <mxCell id="__legend_text_event" value="Event / message" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;fontSize=11;align=left;verticalAlign=middle;fontColor=#D81B60;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1300" y="2470" width="160" height="24" />
+        </mxCell>
+        <mxCell id="__legend_line_connectivity" value="" style="shape=line;strokeColor=#3E2723;strokeWidth=2.6;dashed=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1465" y="2482" width="30" height="1" />
+        </mxCell>
+        <mxCell id="__legend_text_connectivity" value="Network link" style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;fontSize=11;align=left;verticalAlign=middle;fontColor=#3E2723;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1505" y="2470" width="160" height="24" />
         </mxCell>
         <mxCell id="__notes" value="Generated by evals/gallery.py; review icon shapes and line styles here." style="text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;align=left;verticalAlign=middle;fontSize=11;fontStyle=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="30" y="2331" width="2160" height="36" />
+          <mxGeometry as="geometry" x="30" y="2495" width="2160" height="36" />
         </mxCell>
       </root>
     </mxGraphModel>

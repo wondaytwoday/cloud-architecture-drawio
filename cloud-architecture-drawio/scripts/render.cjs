@@ -4,14 +4,15 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { chromium } = require('playwright');
-const USAGE = 'Usage: node render.cjs input.drawio output.png [viewer-static.min.js] [--report report.json | --no-report] [--page N]\n'
+const USAGE = 'Usage: node render.cjs input.drawio output.png [viewer-static.min.js] [--report report.json | --no-report] [--page N] [--embed]\n'
   + 'The viewer path may come from $DRAWIO_VIEWER. --no-report renders a manually edited file without comparing planned geometry.';
 const fail = message => { console.error(message); process.exit(1); };
-const positional = [], options = {page: 1, report: undefined};
+const positional = [], options = {page: 1, report: undefined, embed: false};
 for (let i = 2; i < process.argv.length; i++) {
   const arg = process.argv[i];
   const value = () => { const v = process.argv[++i]; if (v === undefined || v.startsWith('--')) fail(`${arg} needs a value\n${USAGE}`); return v; };
   if (arg === '--no-report') options.report = null;
+  else if (arg === '--embed') options.embed = true;
   else if (arg === '--report') options.report = value();
   else if (arg === '--page') options.page = Number(value());
   else if (arg.startsWith('--')) fail(`Unknown option ${arg}\n${USAGE}`);
@@ -27,6 +28,16 @@ const svgPath = path.join(out.dir, out.name+'.svg'), renderPath = path.join(out.
 const inp = path.parse(input);
 const reportPath = options.report === undefined ? path.join(inp.dir, inp.name+'.report.json') : options.report;
 const sha256 = data => crypto.createHash('sha256').update(data).digest('hex');
+const CRC = Array.from({length: 256}, (_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
+const crc32 = buf => { let c = 0xFFFFFFFF; for (const b of buf) c = CRC[(c ^ b) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+// draw.io reads an editable diagram from a tEXt chunk named mxfile before the image data.
+function embedInPng(png, xml) {
+  const type = Buffer.from('tEXt', 'latin1'), data = Buffer.from('mxfile\0'+encodeURIComponent(xml), 'latin1');
+  const length = Buffer.alloc(4), crc = Buffer.alloc(4);
+  length.writeUInt32BE(data.length); crc.writeUInt32BE(crc32(Buffer.concat([type, data])));
+  const afterHeader = 8+4+4+13+4;
+  return Buffer.concat([png.subarray(0, afterHeader), length, type, data, crc, png.subarray(afterHeader)]);
+}
 const source = fs.readFileSync(input);
 // An old .render.json must never sit beside a PNG from a run that failed.
 fs.rmSync(renderPath, {force: true});
@@ -35,6 +46,11 @@ if (reportPath !== null) {
   if (!fs.existsSync(reportPath)) fail(`${reportPath}: compiler report not found, so route and label geometry cannot be compared. Rebuild, pass --report PATH, or pass --no-report for a manually edited file.`);
   expected = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
   if (expected.drawio_sha256 && expected.drawio_sha256 !== sha256(source)) fail(`${reportPath}: stale report; ${input} changed after it was built (manual edit?). Rebuild from the model, or pass --no-report to check the edited file without planned geometry.`);
+  // A bundle report plans each page separately.
+  if (Array.isArray(expected.pages)) {
+    if (!expected.pages[options.page-1]) fail(`${reportPath}: plans ${expected.pages.length} page(s), not page ${options.page}`);
+    expected = expected.pages[options.page-1];
+  }
 }
 
 (async () => {
@@ -172,8 +188,9 @@ if (reportPath !== null) {
       return {checkedRoutes,checkedLabels,jumpMarkers:markers.length,missingJumps:missingJumps.length,mismatches};
     },expected);
     fs.mkdirSync(out.dir||'.',{recursive:true});
-    await page.screenshot({path:output,fullPage:true,type:'png'});
-    const svg=await page.evaluate(fill => {
+    const shot=await page.screenshot({fullPage:true,type:'png'});
+    fs.writeFileSync(output,options.embed?embedInPng(shot,xml):shot);
+    const svg=await page.evaluate(({fill,embed,xml}) => {
       const svg=document.querySelector('#graph svg').cloneNode(true);
       svg.setAttribute('xmlns','http://www.w3.org/2000/svg');
       svg.setAttribute('width',document.getElementById('graph').style.width);
@@ -182,9 +199,18 @@ if (reportPath !== null) {
       const bg=document.createElementNS('http://www.w3.org/2000/svg','rect');
       bg.setAttribute('width','100%'); bg.setAttribute('height','100%'); bg.setAttribute('fill',fill);
       svg.insertBefore(bg,svg.firstChild);
+      // draw.io opens an SVG with the diagram in its content attribute as editable.
+      if(embed) svg.setAttribute('content',xml);
       return new XMLSerializer().serializeToString(svg);
-    },result.background);
+    },{fill:result.background,embed:options.embed,xml});
     fs.writeFileSync(svgPath,svg);
+    if(options.embed) {
+      // Read both files back the way draw.io would, and require the exact source.
+      result.embedded=await page.evaluate(({png,svg,xml}) => ({
+        png: typeof Editor!=='undefined' && Editor.extractGraphModelFromPng('data:image/png;base64,'+png)===xml,
+        svg: new DOMParser().parseFromString(svg,'image/svg+xml').documentElement.getAttribute('content')===xml,
+      }),{png:fs.readFileSync(output).toString('base64'),svg,xml});
+    }
     result.editability=await page.evaluate(() => {
       const g=window.renderGraph;
       const all=Object.values(g.model.cells);
@@ -236,6 +262,7 @@ if (reportPath !== null) {
     result.provenance={input_sha256:sha256(source),report:reportPath,viewer_sha256:sha256(fs.readFileSync(viewer)),playwright:playwrightVersion};
     fs.writeFileSync(renderPath,JSON.stringify(result,null,2)+'\n');
     console.log(JSON.stringify(result));
-    if(errors.length||result.unknownIcons.length||result.offPage.length||result.brokenImages.length||result.textOverflow.length||result.geometry.mismatches.length||result.editability.error) process.exitCode=1;
+    const embedFailed=options.embed && !(result.embedded.png && result.embedded.svg);
+    if(errors.length||result.unknownIcons.length||result.offPage.length||result.brokenImages.length||result.textOverflow.length||result.geometry.mismatches.length||result.editability.error||embedFailed) process.exitCode=1;
   } finally {await browser.close();}
 })().catch(e=>{console.error(e?.stack||String(e));process.exitCode=1;});

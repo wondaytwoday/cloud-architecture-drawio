@@ -2,17 +2,17 @@
   "page": 1,
   "pages": 1,
   "width": 2220,
-  "height": 2378,
+  "height": 2542,
   "background": "#FFFFFF",
-  "cells": 466,
-  "edges": 6,
+  "cells": 490,
+  "edges": 8,
   "unknownIcons": [],
   "offPage": [],
   "brokenImages": [],
   "textOverflow": [],
   "geometry": {
-    "checkedRoutes": 6,
-    "checkedLabels": 6,
+    "checkedRoutes": 8,
+    "checkedLabels": 8,
     "jumpMarkers": 0,
     "missingJumps": 0,
     "mismatches": []
@@ -20,16 +20,16 @@
   "editability": {
     "movedResource": "traffic-from",
     "restored": true,
-    "roundTripEdges": 6,
+    "roundTripEdges": 8,
     "allEdgesConnected": true,
-    "roundTripLabels": 6,
+    "roundTripLabels": 8,
     "allLabelsAttached": true,
     "labelFollow": true
   },
   "pageErrors": [],
   "warnings": [],
   "provenance": {
-    "input_sha256": "9dc195343db7c17088d5ad2f4722adbddf070015e67783b999325cda7b7ded50",
+    "input_sha256": "ffc3160fc73b1713a64c07223160cfbd3d82b6fd31aec77f2f483306818b132d",
     "report": "evals/fixtures/icon-gallery.report.json",
     "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
     "playwright": "1.61.1"

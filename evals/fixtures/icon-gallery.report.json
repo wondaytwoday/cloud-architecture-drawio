@@ -21,7 +21,11 @@
     "association-from",
     "association-to",
     "management-from",
-    "management-to"
+    "management-to",
+    "event-from",
+    "event-to",
+    "connectivity-from",
+    "connectivity-to"
   ],
   "routes": {
     "kind-traffic": [
@@ -83,9 +87,42 @@
         1530,
         2196.0
       ]
+    ],
+    "kind-event": [
+      [
+        206,
+        2360.0
+      ],
+      [
+        386,
+        2360.0
+      ]
+    ],
+    "kind-connectivity": [
+      [
+        778,
+        2360.0
+      ],
+      [
+        958,
+        2360.0
+      ]
     ]
   },
   "labels": {
+    "kind-connectivity": {
+      "rect": [
+        821.72,
+        2333.0,
+        92.55999999999999,
+        22
+      ],
+      "relativeX": 0.0,
+      "offset": [
+        -46.27999999999997,
+        -27.0
+      ]
+    },
     "kind-association": {
       "rect": [
         824.91,
@@ -151,6 +188,19 @@
         -27.0
       ]
     },
+    "kind-event": {
+      "rect": [
+        272.05,
+        2333.0,
+        47.9,
+        22
+      ],
+      "relativeX": 0.0,
+      "offset": [
+        -23.94999999999999,
+        -27.0
+      ]
+    },
     "kind-dns": {
       "rect": [
         274.0,
@@ -169,12 +219,12 @@
     "crossingCount": 0,
     "overlapLength": 0,
     "bendCount": 0,
-    "totalLength": 1080.0,
+    "totalLength": 1440.0,
     "continuationCount": 0,
     "crossings": [],
     "overlaps": [],
     "continuations": []
   },
-  "model_sha256": "31db5493ca1c74d0f3dc66d75d5cbf27b872950ed1f6a39dc443418f864afa76",
-  "drawio_sha256": "9dc195343db7c17088d5ad2f4722adbddf070015e67783b999325cda7b7ded50"
+  "model_sha256": "512dab7d6a7f561ba8752bed034d5412b67c3ee60726a8962c5262e818100058",
+  "drawio_sha256": "ffc3160fc73b1713a64c07223160cfbd3d82b6fd31aec77f2f483306818b132d"
 }

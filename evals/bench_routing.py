@@ -7,9 +7,10 @@ Run one compiler version per process and compare the JSON summaries:
     python3 evals/bench_routing.py --scripts /path/to/old/scripts --out old.json
     python3 evals/bench_routing.py --compare old.json new.json
 
-The corpus is deterministic: the shipped examples, the same examples with every
-port set to auto, random grids with and without captions at several lane widths,
-labeled 1-to-N fan-outs, and grids wrapped in subnet boundaries. Metrics are
+The corpus is deterministic: the shipped examples with layout shorthands
+resolved, the same examples with every port set to auto, random grids with and
+without captions at several lane widths, labeled 1-to-N fan-outs, and grids
+wrapped in subnet boundaries. Metrics are
 computed here, independently of the compiler's own report.
 """
 import argparse
@@ -34,6 +35,14 @@ def load(scripts):
     spec.loader.exec_module(module)
     import cloud_routes
     return module, cloud_routes
+
+
+def absolute(m):
+    """Resolve layout shorthands with this checkout's resolver, so any compiler version can run the case."""
+    spec = importlib.util.spec_from_file_location('corpus_layout', BASE/'cloud-architecture-drawio/scripts/model_layout.py')
+    layout = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(layout)
+    return layout.normalize(m)
 
 
 def card(i, x, y):
@@ -94,7 +103,7 @@ def corpus():
     cases = []
     examples = sorted((BASE/'examples').glob('*.model.json'))
     for path in examples:
-        m = json.loads(path.read_text(encoding='utf-8'))
+        m = absolute(json.loads(path.read_text(encoding='utf-8')))
         cases.append(('examples', path.stem, m))
         auto = copy.deepcopy(m)
         for e in auto['edges']:
@@ -141,6 +150,24 @@ def jogs(routes, limit=12):
     """Interior segments shorter than limit px: staircases beside aligned cards."""
     return sum(1 for pts in routes.values() for a, b in list(zip(pts, pts[1:]))[1:-1]
                if abs(a[0]-b[0])+abs(a[1]-b[1]) <= limit)
+
+
+def joins(routes, limit=24):
+    """Segment pairs of two connectors on one line whose ends are under limit px
+    apart, so the two connectors read as one line."""
+    def gap(a, b, c, d):
+        for axis in (0, 1):
+            other = 1-axis
+            if a[other] == b[other] == c[other] == d[other]:
+                return max(min(a[axis], b[axis]), min(c[axis], d[axis]))-min(max(a[axis], b[axis]), max(c[axis], d[axis]))
+        return None
+    items = list(routes.values())
+    count = 0
+    for i, ap in enumerate(items):
+        for bp in items[i+1:]:
+            count += sum(1 for a, b in zip(ap, ap[1:]) for c, d in zip(bp, bp[1:])
+                         if 0 < (gap(a, b, c, d) or 0) < limit)
+    return count
 
 
 def label_quality(routes, labels, overhang_limit=4, near=6):
@@ -205,7 +232,7 @@ def run(scripts):
         results.append({'group': group, 'name': name, 'status': status, 'mode': mode, 'seconds': time.perf_counter()-started,
                         'crossings': q['crossingCount'], 'bends': q['bendCount'], 'length': q['totalLength'],
                         'hug': hug_length(m, routes), 'jogs': jogs(routes), 'overhang': overhang, 'crowded': crowded,
-                        'joins': q.get('continuationCount', 0)})
+                        'joins': joins(routes)})
     return results
 
 

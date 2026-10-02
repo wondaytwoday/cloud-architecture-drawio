@@ -4,7 +4,8 @@
     python3 evals/gallery.py evals/fixtures/icon-gallery.model.json
 
 Icons that must sit in a subnet are placed in a matching provider network.
-The fixture is rebuilt from the catalog, so a new icon shows up automatically.
+The fixture is rebuilt from the catalog and the validator's kinds, so a new
+icon or kind shows up automatically.
 """
 import json
 from pathlib import Path
@@ -13,7 +14,8 @@ import sys
 BASE = Path(__file__).resolve().parents[1]
 CATALOG = BASE/'cloud-architecture-drawio/assets/icon-catalog.json'
 CARD_W, CARD_H, GAP, COLUMNS, LEFT, TOP = 176, 124, 40, 10, 30, 110
-KINDS = ('traffic', 'egress', 'replication', 'dns', 'association', 'management')
+sys.path.insert(0, str(BASE/'cloud-architecture-drawio/scripts'))
+from model_validation import EDGE_KINDS as KINDS
 
 
 def model():

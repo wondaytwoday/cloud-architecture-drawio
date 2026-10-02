@@ -30,10 +30,12 @@ curl -L --fail https://viewer.diagrams.net/js/viewer-static.min.js -o ~/.cache/c
 `check` also honours `NODE_PATH` and `$DRAWIO_VIEWER`, and writes the PNG next to the `.drawio`. Use an existing available Playwright installation instead of installing again. The viewer path may also come from `$DRAWIO_VIEWER`, and `CHROME_PATH` can specify an existing browser executable. Follow host permission rules for installation/download. The renderer blocks all browser network requests after loading the local bundle; diagram content and embedded icons stay local. The viewer URL is mutable: `.render.json` records the viewer's SHA-256, the Playwright version, and the input's SHA-256 for reproducibility.
 
 ```
-node scripts/render.cjs INPUT.drawio OUTPUT.png [VIEWER.js] [--report REPORT.json | --no-report] [--page N]
+node scripts/render.cjs INPUT.drawio OUTPUT.png [VIEWER.js] [--report REPORT.json | --no-report] [--page N] [--embed]
 ```
 
-The output must end in `.png`; the SVG preview and `.render.json` are written beside it with the same base name. The SVG has an opaque white page background so it stays readable in dark viewers. The `.drawio` is the editable master; the SVG is a preview, not an alternative source model. `--page N` renders one page of a multi-page file (default 1); each page is decoded on its own. A compiler report describes one built single-page file, so a combined multi-page file needs `--no-report`. The page background follows the model's `background` (white when none), and a missing page size falls back to draw.io's 850 × 1100 page grown to the content. Any `.render.json` from an earlier run is deleted first, so the three outputs always come from the same run.
+The output must end in `.png`; the SVG preview and `.render.json` are written beside it with the same base name. The SVG has an opaque white page background so it stays readable in dark viewers. The `.drawio` is the editable master; the SVG is a preview, not an alternative source model. `--page N` renders one page of a multi-page file (default 1); each page is decoded on its own. A report written by `bundle` covers every page, and the renderer compares page N against its entry; any other multi-page file needs `--no-report`.
+
+`--embed` stores the `.drawio` XML inside both previews: a `tEXt` chunk named `mxfile` in the PNG and the `content` attribute of the SVG, the forms draw.io reads when such a file is opened or imported. Name the output `*.drawio.png` so draw.io and file browsers recognise it. The renderer reads both files back with draw.io's own PNG decoder and fails unless each yields the exact source; `.render.json` records the result as `embedded`. An embedded preview carries the full diagram text, so share it only where the source may go. The page background follows the model's `background` (white when none), and a missing page size falls back to draw.io's 850 × 1100 page grown to the content. Any `.render.json` from an earlier run is deleted first, so the three outputs always come from the same run.
 
 ## What fails a render
 
@@ -45,7 +47,8 @@ The process exits 1 when any of these holds:
 - text is clipped: a card title or detail, the page title, subtitle, notes or a legend caption overflow their box, or a connector caption, legend caption or boundary title wraps beyond its explicit lines;
 - a shape or connector lies outside the page, where the PNG and SVG would cut it off;
 - an icon does not resolve offline: compiler icons and embedded `stencil(...)` shapes must draw, and draw.io library shapes such as `shape=mxgraph.aws4.*` or `resIcon=` fail because their libraries are not loaded (embed the stencil instead);
-- an embedded image fails to load, the page throws a JavaScript error, or the editability round trip fails.
+- an embedded image fails to load, the page throws a JavaScript error, or the editability round trip fails;
+- with `--embed`, either preview does not give back the exact `.drawio` source.
 
 The report is found next to the input with the compiler's naming (`a.drawio` → `a.report.json`); `--report PATH` points elsewhere. For a manually patched `.drawio`, pass `--no-report`: the planned geometry no longer applies, so routes, labels and jump arcs are not compared, but icons, page bounds, images, text clipping and JavaScript errors are still checked. Editability is checked when the page has compiler-built resources; otherwise `.render.json` records a warning that it was skipped. Caption anchors may differ by 0.51 px, which mxGraph rounds to screen pixels.
 
