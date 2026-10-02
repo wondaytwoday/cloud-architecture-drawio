@@ -846,13 +846,15 @@
     }
   },
   "installation": {
-    "version": 2,
-    "date": "2026-09-29",
+    "version": 3,
+    "date": "2026-10-03",
+    "commit": "c2d28e9",
     "path": "~/.codex/skills/cloud-architecture-drawio",
-    "matching_files": 55,
-    "installed_template_build": "azure-regional: passed, no warnings",
+    "matching_files": 122,
+    "installed_template_build": "azure-hub-spoke: built, no warnings",
+    "installed_check": "aws-eks: ok, rendered, no problems or warnings",
     "skill_validation": "Skill is valid!",
-    "note": "v3 is not installed yet; the installed copy still holds v2"
+    "backup": "~/.codex/cloud-architecture-drawio.backup-20261003 (the copy installed after phase 2)"
   },
   "routing_benchmark": {
     "command": "python3 evals/bench_routing.py --compare OLD NEW",
