@@ -95,7 +95,7 @@ def resolve(m):
     box_ids = {id(b) for b in boxes}
     for n in nodes:
         for key in ('w', 'h'):
-            n.setdefault(key, CARD[key])
+            n.setdefault(key, 12 if n.get('icon')=='generic.junction' else CARD[key])
         for axis, cell, origin, size in (('x', 'col', 'left', 'column'), ('y', 'row', 'top', 'row')):
             if cell in n:
                 if axis in n:
@@ -194,6 +194,8 @@ def resolve(m):
         for shape in shapes:
             shape['x'] += dx
             shape['y'] += dy
+        for lock in m.get('lockedRoutes',{}).values():
+            lock['points']=[[x+dx,y+dy] for x,y in lock['points']]
     if m.get('width') == 'auto':
         kinds = {e.get('kind', 'traffic') for e in items(m, 'edges')}
         legend = PAGE_SIDE+(len(kinds)-1)*LEGEND_ITEM+LEGEND_LAST+PAGE_SIDE if kinds else 0

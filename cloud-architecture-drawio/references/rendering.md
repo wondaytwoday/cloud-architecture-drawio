@@ -57,3 +57,9 @@ The render report also records actual jump markers and an editability check: mov
 ## Visual inspection
 
 Visual judgment is still required even when the render report is clean. Inspect the PNG with the environment's image-view tool, both the whole page and dense crops, and open the `.drawio` in a compatible editor for an editability check when available. Jump markers clarify independent crossing paths; they are not branch junctions. Shape/label collision checks and rendering do not prove network reachability.
+
+## Environment diagnosis and bounded rendering
+
+`python3 scripts/doctor.py` prints JSON for Python, Node, Playwright/browser availability and the viewer hash. `--smoke` renders the Azure template in a temporary directory. `--setup` downloads Playwright 1.61.1, Chromium and the draw.io viewer to the user cache (no repository icon bundle expansion); Node/npm must already exist. Linux may need `playwright install-deps chromium` through the system package manager. Windows users can use WSL or the manual setup above. The viewer URL is mutable, so `renderer-provenance.json` records the downloaded SHA-256 for reproducibility investigations; it is not an upstream integrity signature.
+
+`check --timeout 120` limits the renderer subprocess. Standalone `render.cjs --timeout 120` also has a watchdog. `check` failures, including malformed model JSON, I/O failures and timeouts, produce a JSON verdict. A completed build with unavailable rendering remains exit 2 and is not visual approval.

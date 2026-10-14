@@ -1,5 +1,414 @@
 {
-  "version": 3,
+  "version": 4,
+  "snapshot": {
+    "provider": "aws",
+    "title": "AWS · Hybrid connectivity through Transit Gateway",
+    "subtitle": "Site-to-site VPN and Direct Connect · two VPC attachments",
+    "width": 1416,
+    "height": 1319,
+    "containers": [
+      {
+        "x": 126,
+        "y": 90.0,
+        "w": 684,
+        "h": 204.0,
+        "id": "dc",
+        "kind": "cloud",
+        "label": "Corporate data center"
+      },
+      {
+        "x": 30,
+        "y": 384.0,
+        "w": 1356,
+        "h": 825.0,
+        "id": "cloud",
+        "kind": "cloud",
+        "label": "AWS Cloud"
+      },
+      {
+        "x": 54,
+        "y": 573.0,
+        "w": 1308,
+        "h": 612.0,
+        "id": "region",
+        "kind": "region",
+        "label": "Region · ap-northeast-2",
+        "parent": "cloud"
+      },
+      {
+        "x": 78,
+        "y": 796.9999999999999,
+        "w": 300,
+        "h": 364.0000000000001,
+        "id": "prod",
+        "kind": "vpc",
+        "label": "Production VPC",
+        "parent": "region"
+      },
+      {
+        "x": 102,
+        "y": 852.9999999999999,
+        "w": 252,
+        "h": 284.0000000000001,
+        "id": "prod-az",
+        "kind": "az",
+        "label": "AZ A",
+        "parent": "prod"
+      },
+      {
+        "x": 126,
+        "y": 908.9999999999999,
+        "w": 204,
+        "h": 204.0000000000001,
+        "id": "prod-sn",
+        "kind": "subnet",
+        "label": "Private subnet",
+        "parent": "prod-az"
+      },
+      {
+        "x": 1038,
+        "y": 796.9999999999999,
+        "w": 300,
+        "h": 364.0000000000001,
+        "id": "shared",
+        "kind": "vpc",
+        "label": "Shared services VPC",
+        "parent": "region"
+      },
+      {
+        "x": 1062,
+        "y": 852.9999999999999,
+        "w": 252,
+        "h": 284.0000000000001,
+        "id": "shared-az",
+        "kind": "az",
+        "label": "AZ A",
+        "parent": "shared"
+      },
+      {
+        "x": 1086,
+        "y": 908.9999999999999,
+        "w": 204,
+        "h": 204.0000000000001,
+        "id": "shared-sn",
+        "kind": "subnet",
+        "label": "Private subnet",
+        "parent": "shared-az"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "servers",
+        "icon": "generic.server",
+        "label": "On-premises apps",
+        "parent": "dc",
+        "detail": "ERP and batch",
+        "w": 156,
+        "h": 124,
+        "x": 150,
+        "y": 146.0
+      },
+      {
+        "id": "router",
+        "icon": "generic.router",
+        "label": "Customer router",
+        "parent": "dc",
+        "detail": "BGP · VPN and DX",
+        "w": 156,
+        "h": 124,
+        "x": 630,
+        "y": 146.0
+      },
+      {
+        "id": "dx",
+        "icon": "aws.direct-connect",
+        "label": "Direct Connect",
+        "parent": "cloud",
+        "detail": "DX gateway · 1 Gbps",
+        "w": 156,
+        "h": 124,
+        "x": 1110,
+        "y": 440.0
+      },
+      {
+        "id": "tgw",
+        "icon": "aws.transit-gateway",
+        "label": "Transit Gateway",
+        "parent": "region",
+        "detail": "Route tables per domain",
+        "w": 156,
+        "h": 124,
+        "x": 630,
+        "y": 629.0
+      },
+      {
+        "id": "app",
+        "icon": "aws.ec2",
+        "label": "Application",
+        "parent": "prod-sn",
+        "detail": "Private",
+        "w": 156,
+        "h": 124,
+        "x": 150,
+        "y": 964.9999999999999
+      },
+      {
+        "id": "dir",
+        "icon": "aws.ec2",
+        "label": "Directory / DNS",
+        "parent": "shared-sn",
+        "detail": "Shared services",
+        "w": 156,
+        "h": 124,
+        "x": 1110,
+        "y": 964.9999999999999
+      }
+    ],
+    "edges": [
+      {
+        "id": "erp",
+        "source": "servers",
+        "target": "router",
+        "label": "Corporate WAN"
+      },
+      {
+        "id": "vpn",
+        "source": "router",
+        "target": "tgw",
+        "label": "Site-to-site VPN",
+        "kind": "connectivity"
+      },
+      {
+        "id": "dx-link",
+        "source": "router",
+        "target": "dx",
+        "label": "Transit VIF",
+        "kind": "connectivity"
+      },
+      {
+        "id": "dx-tgw",
+        "source": "dx",
+        "target": "tgw",
+        "label": "DX gateway association",
+        "kind": "connectivity"
+      },
+      {
+        "id": "attach-prod",
+        "source": "tgw",
+        "target": "prod",
+        "label": "Attachment",
+        "kind": "connectivity"
+      },
+      {
+        "id": "attach-shared",
+        "source": "tgw",
+        "target": "shared",
+        "label": "Attachment",
+        "kind": "connectivity"
+      },
+      {
+        "id": "app-dir",
+        "source": "app",
+        "target": "dir",
+        "label": "LDAP / DNS"
+      }
+    ],
+    "notes": [
+      "VPN backs up Direct Connect; VPC-to-VPC traffic such as LDAP/DNS passes through the Transit Gateway; routing is illustrative."
+    ]
+  },
+  "provenance": {
+    "items": [
+      {
+        "id": "$model",
+        "category": "model",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "dc",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "cloud",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "region",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "prod",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "prod-az",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "prod-sn",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "shared",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "shared-az",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "shared-sn",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "servers",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "router",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "dx",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "tgw",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "app",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "dir",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "erp",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "vpn",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "dx-link",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "dx-tgw",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "attach-prod",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "attach-shared",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "app-dir",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      }
+    ],
+    "errors": [],
+    "unconfirmed": [
+      "$model",
+      "dc",
+      "cloud",
+      "region",
+      "prod",
+      "prod-az",
+      "prod-sn",
+      "shared",
+      "shared-az",
+      "shared-sn",
+      "servers",
+      "router",
+      "dx",
+      "tgw",
+      "app",
+      "dir",
+      "erp",
+      "vpn",
+      "dx-link",
+      "dx-tgw",
+      "attach-prod",
+      "attach-shared",
+      "app-dir"
+    ],
+    "note": "Provenance is supplied by the author; this report does not verify deployment or runtime traffic."
+  },
   "errors": [],
   "warnings": [],
   "routing": {

@@ -1,0 +1,60 @@
+name: Verify and package
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.11', '3.14']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '${{ matrix.python }}'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install renderer
+        run: |
+          python cloud-architecture-drawio/scripts/doctor.py --setup
+          node ~/.cache/cloud-architecture-drawio/node_modules/playwright/cli.js install-deps chromium
+      - name: Test with actual draw.io rendering
+        env:
+          DRAWIO_VIEWER: /home/runner/.cache/cloud-architecture-drawio/viewer-static.min.js
+          NODE_PATH: /home/runner/.cache/cloud-architecture-drawio/node_modules
+        run: |
+          python cloud-architecture-drawio/scripts/doctor.py --smoke
+          python -m unittest discover -s evals -p 'test_*.py' -v
+          python tools/build_dist.py --check
+      - uses: actions/upload-artifact@v4
+        with:
+          name: skill-python-${{ matrix.python }}
+          path: |
+            dist/cloud-architecture-drawio.zip
+            ~/.cache/cloud-architecture-drawio/renderer-provenance.json
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: skill-python-3.14
+          path: release
+      - name: Publish verified archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          archive=$(find release -name cloud-architecture-drawio.zip -print -quit)
+          gh release create "$RELEASE_TAG" "$archive" --verify-tag --generate-notes

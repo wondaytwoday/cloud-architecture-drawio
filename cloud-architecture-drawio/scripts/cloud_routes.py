@@ -73,9 +73,18 @@ def continuation(a,b,c,d):
     return max(min(a[axis],b[axis]),min(c[axis],d[axis]))-min(max(a[axis],b[axis]),max(c[axis],d[axis]))
 
 
-def metrics(routes):
+def metrics(routes,model=None):
     crossings=[]; overlaps=[]; joins=[]; bends=0; total=0
     items=list(routes.items())
+    junctions={n['id']:n for n in (model or {}).get('nodes',[]) if n.get('icon')=='generic.junction'}
+    edge_map={e['id']:e for e in (model or {}).get('edges',[])}
+    def intentional(aid,bid,line):
+        if aid not in edge_map or bid not in edge_map:return False
+        ends=lambda e:{e['source'],e['target']}
+        for jid in ends(edge_map[aid]) & ends(edge_map[bid]) & junctions.keys():
+            j=junctions[jid];inside=lambda p:j['x']<=p[0]<=j['x']+j['w'] and j['y']<=p[1]<=j['y']+j['h']
+            if any(inside(p) for p in line[:2]) and any(inside(p) for p in line[2:]):return True
+        return False
     for i,(aid,ap) in enumerate(items):
         bends+=max(0,len(ap)-2);total+=sum(length(a,b) for a,b in zip(ap,ap[1:]))
         shared,contacts=self_contact(ap)
@@ -93,7 +102,7 @@ def metrics(routes):
             for a,b in zip(ap,ap[1:]):
                 for c,d in zip(bp,bp[1:]):
                     gap=continuation(a,b,c,d)
-                    if gap is not None and 0<gap<CONTINUATION_GAP:
+                    if gap is not None and 0<gap<CONTINUATION_GAP and not intentional(aid,bid,(a,b,c,d)):
                         joins.append({'edges':[aid,bid],'gap':round(gap,2),'line':[list(a),list(b),list(c),list(d)]})
     return {'crossingCount':len(crossings),'overlapLength':round(sum(v['length'] for v in overlaps),2),'bendCount':bends,'totalLength':round(total,2),
             'continuationCount':len(joins),'crossings':crossings,'overlaps':overlaps,'continuations':joins}
@@ -211,6 +220,7 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,p
         ys.update((a[1]-10,a[1],a[1]+10,b[1]-10,b[1],b[1]+10))
     xs=sorted(x for x in xs if MARGIN_SIDE<=x<=width-MARGIN_SIDE and (x in (begin[0],end[0]) or all(abs(x-v)>=10 for v in (begin[0],end[0]))))
     ys=sorted(y for y in ys if MARGIN_TOP<=y<=height-MARGIN_BOTTOM and (y in (begin[1],end[1]) or all(abs(y-v)>=10 for v in (begin[1],end[1]))))
+    if len(xs)*len(ys)>2_000_000:raise BudgetError('routing grid exceeds 2 million cells; split the view')
     if begin[0] not in xs or end[0] not in xs or begin[1] not in ys or end[1] not in ys:raise ValueError('Connector enters title/footer margin')
     sx,sy=xs.index(begin[0]),ys.index(begin[1]);gx,gy=xs.index(end[0]),ys.index(end[1])
     dirs=list(SIDES.values());first=dirs.index((vx,vy));last=dirs.index((-wx,-wy))
@@ -288,6 +298,8 @@ def solve(start,goal,sa,sb,obstacles,width,height,segments,clearance=8,stub=16,p
         return cost+len(cross)*180
     work=work if work is not None else {}
     while heap:
+        if work.get('steps',0)>=ROUTING_WORK_LIMIT:
+            raise BudgetError('routing search budget exhausted; split the view or widen the lanes')
         _,cost,x,y,d=heapq.heappop(heap);state=(x,y,d);work['steps']=work.get('steps',0)+1
         if cost!=costs[state]:continue
         if (x,y)==(gx,gy):finish=state;break
@@ -334,7 +346,7 @@ def plan(m,header_rect,reserve=True,clear_borders=True,spread=True,stub_lanes=Tr
         a,b=nodes[e['source']],nodes[e['target']]
         distance=length((a['x']+a['w']/2,a['y']+a['h']/2),(b['x']+b['w']/2,b['y']+b['h']/2))
         return e.get('priority',rank[e.get('kind','traffic')]),distance,e['id']
-    ordered=sorted(m['edges'],key=order)
+    ordered=sorted(m['edges'],key=lambda e:(e['id'] not in m.get('lockedRoutes',{}),order(e)))
     borders=[] if not clear_borders else sorted(seg for c in m['containers'] if not c.get('overlay') for seg in (((c['x'],c['y']),(c['x']+c['w'],c['y'])),((c['x'],c['y']+c['h']),(c['x']+c['w'],c['y']+c['h'])),((c['x'],c['y']),(c['x'],c['y']+c['h'])),((c['x']+c['w'],c['y']),(c['x']+c['w'],c['y']+c['h']))))
     # Every port's lead-in is known before routing starts. Reserving the ones not
     # routed yet stops an early connector from blocking or crossing them.
@@ -362,8 +374,18 @@ def plan(m,header_rect,reserve=True,clear_borders=True,spread=True,stub_lanes=Tr
         obstacles += [rect(x) for x in inside]
         start,goal=anchor(a,sa,fa),anchor(b,sb,fb)
         waiting=[(eid,seg) for (eid,_),seg in stubs.items() if eid!=e['id'] and eid not in routes]
-        try:pts=solve(start,goal,sa,sb,obstacles,m['width'],m['height'],segments,clearance,stub,[seg for _,seg in waiting],borders,spread,
+        try:
+            lock=m.get('lockedRoutes',{}).get(e['id'])
+            if lock:
+                pts=[tuple(p) for p in lock['points']]
+                if pts[0]!=start or pts[-1]!=goal: raise ValueError('locked endpoints differ from assigned ports')
+                if any(not (MARGIN_SIDE<=x<=m['width']-MARGIN_SIDE and MARGIN_TOP<=y<=m['height']-MARGIN_BOTTOM) for x,y in pts):raise ValueError('locked route leaves drawable page')
+                if any(hits(p,q,o) for p,q in zip(pts,pts[1:]) for o in obstacles):raise ValueError('locked route hits a resource or boundary title; revise or unlock explicitly')
+                if any(relation(p,q,u,v)[0]>0 for p,q in zip(pts,pts[1:]) for u,v in segments):raise ValueError('locked routes share a segment; use explicit junctions')
+            else:
+                pts=solve(start,goal,sa,sb,obstacles,m['width'],m['height'],segments,clearance,stub,[seg for _,seg in waiting],borders,spread,
                       list(zip(names,margins))+[(f"the inside of {x['id']!r}",0) for x in inside],seg_owners+[eid for eid,_ in waiting],stub_lanes,work,joins)
+        except BudgetError:raise
         except ValueError as exc:raise RouteError(f"{e['id']}: {exc}") from exc
         if any(self_contact(pts)):
             raise RouteError(f"{e['id']}: route doubles back on itself; choose other ports, widen the lane or lower routing.stub")
@@ -381,6 +403,10 @@ ROUTING_MODES=tuple({'reservedLeadIns':r,'borderClearance':b,'spreadParallels':p
 
 class RouteError(ValueError):
     """A connector could not be routed."""
+
+
+class BudgetError(ValueError):
+    """Stop all retries when the shared search budget is exhausted."""
 
 
 class LabelError(ValueError):
@@ -405,6 +431,8 @@ def route_and_label(m,header_rect):
         try:
             routes,ports=plan(m,header_rect,mode['reservedLeadIns'],mode['borderClearance'],mode['spreadParallels'],mode['stubLanes'],work)
             labels=place_labels(m,routes,header_rect)
+        except BudgetError as exc:
+            raise BudgetError(f'{exc} (stopped after {tried+1} of {len(ROUTING_MODES)} routing modes: this diagram is large)') from exc
         except LabelError as exc:
             if not isinstance(best,LabelError) or len(exc.failures)<len(best.failures):best=exc
             continue
@@ -413,14 +441,16 @@ def route_and_label(m,header_rect):
             continue
         # Lines meeting end to end read as one; retry this mode avoiding that,
         # and keep the retry only when it succeeds with fewer such joins.
-        joined=len(metrics(routes)['continuations'])
+        joined=len(metrics(routes,m)['continuations'])
         if joined:
             try:
                 retry,retry_ports=plan(m,header_rect,mode['reservedLeadIns'],mode['borderClearance'],mode['spreadParallels'],mode['stubLanes'],work,True)
-                before,after=metrics(routes),metrics(retry)
+                before,after=metrics(routes,m),metrics(retry,m)
                 # Never trade a join for crossings or shared segments.
                 if after['continuationCount']<joined and after['crossingCount']<=before['crossingCount'] and after['overlapLength']<=before['overlapLength']:
                     return retry,retry_ports,place_labels(m,retry,header_rect),dict(mode,avoidJoins=True)
+            except BudgetError:
+                return routes,ports,labels,dict(mode,budgetLimited=True)
             except ValueError:
                 pass
         return routes,ports,labels,dict(mode)

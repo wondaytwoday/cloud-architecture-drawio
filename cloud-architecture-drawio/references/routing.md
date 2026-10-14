@@ -28,7 +28,7 @@ Two connectors that end within 24 px of each other on one line, or on lines less
 
 A crossing joins nothing. Keep perpendicular crossings away from labels and bends; inspect the actual draw.io render to confirm that its arc is visible. The style declaration alone is insufficient evidence. Use jump arcs for a small number of clear residual crossings after reasonable lane/port adjustments.
 
-A junction intentionally joins relationships. draw.io supports waypoint **shapes** that serve as connector terminals; these are different from bend waypoints on an edge. The bundled model does not currently represent junctions or shared buses. For a topology that needs them, author native XML with explicit junction cells and attachments, explain what the junction means, and preserve that manual source. Do not simulate a bus by placing independent edges on the same coordinates. A shared visual branch must not invent a load balancer, router, queue, or other resource.
+A junction intentionally joins relationships. draw.io supports waypoint **shapes** that serve as connector terminals; these are different from bend waypoints on an edge. Use `generic.junction` nodes for explicit dots and connect a single trunk plus branches as described in [workflows](workflows.md). Explain what each junction means in the model and a visible caption or note. Do not simulate a bus by placing independent edges on the same coordinates. A shared visual branch must not invent a load balancer, router, queue, or other resource.
 
 ## Review and repair
 
@@ -41,7 +41,7 @@ Read `.report.json` together with the rendered image:
 | `bendCount` | Total direction changes. Long detours or many short bends may justify different ports. |
 | `totalLength` | Total Manhattan path length. Compare revisions of the same topology; shorter alone is not better. |
 
-Repair in this order: choose a better card side; reorder explicit port offsets; widen the corridor or move a shared service; relocate an overlay title; adjust edge priority; split overview and detailed traffic into separate diagrams. The compiler writes one page per file. If one file is required, first render each built file with its own report, then combine the pages in draw.io and render each page of the combined file with `--page N --no-report`; the combined file matches no compiler report. Rebuild and render after meaningful changes. Never remove requested edges just to reach zero crossings, and never claim that zero crossings proves architectural correctness.
+Repair in this order: choose a better card side; reorder explicit port offsets; widen the corridor or move a shared service; relocate an overlay title; adjust edge priority; split overview and detailed traffic into separate diagrams. Use `bundle out.drawio a.json b.json` or `views model.json directory` to compile multiple pages with a shared report. Render each page with `--page N`; use `--no-report` only for manually edited XML whose planned geometry no longer applies. Rebuild and render after meaningful changes. Never remove requested edges just to reach zero crossings, and never claim that zero crossings proves architectural correctness.
 
 The reported geometry uses underlying polylines. Rendered arrowheads, jump arcs, font metrics, and edit behavior still need actual draw.io inspection. The bundled renderer compares actual route/label positions with the report, checks relative-label parents, and temporarily translates a labeled edge with its endpoints/waypoints to verify label movement before restoring it. Keep source/target and label associations intact through save/reopen. See [rendering](rendering.md) for verification details and limitations.
 
@@ -52,3 +52,7 @@ The reported geometry uses underlying polylines. Rendered arrowheads, jump arcs,
 - [Connector styles](https://www.drawio.com/docs/manual/styles/connector-styles/) documents orthogonal paths, arrowheads, and line jumps.
 - [Diagram style reference](https://www.drawio.com/docs/reference/diagram-generation/style-reference/) is the native XML style reference for manual extensions.
 - [draw.io routing implementation notes](https://raw.githubusercontent.com/jgraph/drawio/dev/docs/claude/libavoid-routing.md) informed fixed-port constraints, outward stubs, obstacle buffers, and treatment of enclosing containers. The bundled Python router uses its own implementation; upstream libavoid features are not automatically available here.
+
+## Bounded work and preserved paths
+
+The A* step budget is enforced inside each search and shared across fallback modes; a grid over two million cells is rejected before its obstacle index is allocated. A budget error asks for wider lanes or a smaller view. `repair` offers bounded spacing proposals. `lockedRoutes` reserve manual paths before automatic edges; `build --reuse` tries eligible paths from an earlier report. See [editing](editing.md).

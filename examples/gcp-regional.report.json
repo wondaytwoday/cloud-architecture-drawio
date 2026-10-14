@@ -1,5 +1,338 @@
 {
-  "version": 3,
+  "version": 4,
+  "snapshot": {
+    "provider": "gcp",
+    "title": "Google Cloud · Regional network and private data access",
+    "subtitle": "Regional subnets span zones · private access endpoints are separate from managed services",
+    "width": 1320,
+    "height": 1140,
+    "containers": [
+      {
+        "id": "cloud",
+        "label": "Google Cloud project",
+        "kind": "project",
+        "x": 20,
+        "y": 225,
+        "w": 1280,
+        "h": 815
+      },
+      {
+        "id": "network",
+        "label": "VPC · global network",
+        "kind": "vpc",
+        "x": 230,
+        "y": 320,
+        "w": 850,
+        "h": 690,
+        "parent": "cloud"
+      },
+      {
+        "id": "region",
+        "label": "Region · asia-northeast3",
+        "kind": "region",
+        "x": 250,
+        "y": 360,
+        "w": 810,
+        "h": 630,
+        "parent": "network"
+      },
+      {
+        "id": "frontend",
+        "label": "Application subnet · regional",
+        "kind": "subnet",
+        "x": 280,
+        "y": 420,
+        "w": 730,
+        "h": 250,
+        "parent": "region"
+      },
+      {
+        "id": "data",
+        "label": "Backend subnet · regional",
+        "kind": "subnet",
+        "x": 280,
+        "y": 740,
+        "w": 730,
+        "h": 220,
+        "parent": "region"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "users",
+        "icon": "generic.user",
+        "label": "Clients",
+        "detail": "HTTPS",
+        "x": 580,
+        "y": 100,
+        "w": 156,
+        "h": 124
+      },
+      {
+        "id": "edge",
+        "icon": "gcp.lb",
+        "label": "Cloud Load Balancing",
+        "detail": "Global external ALB",
+        "x": 1120,
+        "y": 270,
+        "w": 156,
+        "h": 124,
+        "parent": "cloud"
+      },
+      {
+        "id": "app-a",
+        "icon": "gcp.compute",
+        "label": "Application\nZone A",
+        "detail": "Private address",
+        "x": 330,
+        "y": 490,
+        "w": 156,
+        "h": 124,
+        "parent": "frontend"
+      },
+      {
+        "id": "app-b",
+        "icon": "gcp.compute",
+        "label": "Application\nZone B",
+        "detail": "Private address",
+        "x": 790,
+        "y": 490,
+        "w": 156,
+        "h": 124,
+        "parent": "frontend"
+      },
+      {
+        "id": "database",
+        "icon": "gcp.sql",
+        "label": "Cloud SQL",
+        "detail": "Managed service",
+        "x": 1100,
+        "y": 780,
+        "w": 156,
+        "h": 124,
+        "parent": "cloud"
+      },
+      {
+        "id": "psc",
+        "icon": "generic",
+        "label": "PSC endpoint",
+        "detail": "Private IP · Cloud SQL",
+        "x": 550,
+        "y": 800,
+        "w": 156,
+        "h": 124,
+        "parent": "data"
+      }
+    ],
+    "edges": [
+      {
+        "id": "ingress",
+        "source": "users",
+        "target": "edge",
+        "label": "HTTPS 443",
+        "kind": "traffic",
+        "sourcePort": "right",
+        "targetPort": "left"
+      },
+      {
+        "id": "lb-a",
+        "source": "edge",
+        "target": "app-a",
+        "label": "HTTPS",
+        "kind": "traffic",
+        "sourcePort": "bottom",
+        "targetPort": "top"
+      },
+      {
+        "id": "lb-b",
+        "source": "edge",
+        "target": "app-b",
+        "label": "HTTPS",
+        "kind": "traffic",
+        "sourcePort": "bottom",
+        "targetPort": "top"
+      },
+      {
+        "id": "sql-a",
+        "source": "app-a",
+        "target": "psc",
+        "label": "TCP 5432",
+        "kind": "traffic"
+      },
+      {
+        "id": "sql-b",
+        "source": "app-b",
+        "target": "psc",
+        "label": "TCP 5432",
+        "kind": "traffic"
+      },
+      {
+        "id": "psc-service",
+        "source": "psc",
+        "target": "database",
+        "label": "Private Service Connect",
+        "kind": "traffic",
+        "sourcePort": "right",
+        "targetPort": "left"
+      }
+    ],
+    "notes": [
+      "PSC endpoint uses a neutral symbol.",
+      "Illustrative topology; validate service mode, endpoint, firewall and application settings."
+    ]
+  },
+  "provenance": {
+    "items": [
+      {
+        "id": "$model",
+        "category": "model",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "cloud",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "network",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "region",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "frontend",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "data",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "users",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "edge",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "app-a",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "app-b",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "database",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "psc",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "ingress",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "lb-a",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "lb-b",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "sql-a",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "sql-b",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "psc-service",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      }
+    ],
+    "errors": [],
+    "unconfirmed": [
+      "$model",
+      "cloud",
+      "network",
+      "region",
+      "frontend",
+      "data",
+      "users",
+      "edge",
+      "app-a",
+      "app-b",
+      "database",
+      "psc",
+      "ingress",
+      "lb-a",
+      "lb-b",
+      "sql-a",
+      "sql-b",
+      "psc-service"
+    ],
+    "note": "Provenance is supplied by the author; this report does not verify deployment or runtime traffic."
+  },
   "errors": [],
   "warnings": [],
   "routing": {

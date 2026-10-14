@@ -1,5 +1,452 @@
 {
-  "version": 3,
+  "version": 4,
+  "snapshot": {
+    "provider": "aws",
+    "title": "AWS · Private egress through NAT and endpoints",
+    "subtitle": "Two AZs · outbound internet via NAT · S3 over a gateway endpoint",
+    "width": 1368,
+    "height": 1482,
+    "containers": [
+      {
+        "x": 30,
+        "y": 282.5,
+        "w": 1308,
+        "h": 1089.5,
+        "id": "cloud",
+        "kind": "cloud",
+        "label": "AWS Cloud"
+      },
+      {
+        "x": 54,
+        "y": 338.5,
+        "w": 1260,
+        "h": 777.0,
+        "id": "vpc",
+        "kind": "vpc",
+        "label": "VPC · 10.30.0.0/16",
+        "parent": "cloud"
+      },
+      {
+        "x": 78,
+        "y": 534.5,
+        "w": 252,
+        "h": 557.0,
+        "id": "az-a",
+        "kind": "az",
+        "label": "Availability Zone A",
+        "parent": "vpc"
+      },
+      {
+        "x": 1038,
+        "y": 534.5,
+        "w": 252,
+        "h": 557.0,
+        "id": "az-b",
+        "kind": "az",
+        "label": "Availability Zone B",
+        "parent": "vpc"
+      },
+      {
+        "x": 102,
+        "y": 590.5,
+        "w": 204,
+        "h": 204.0,
+        "id": "public-a",
+        "kind": "subnet",
+        "label": "Public subnet · NAT",
+        "public": true,
+        "parent": "az-a"
+      },
+      {
+        "x": 102,
+        "y": 863.5,
+        "w": 204,
+        "h": 204.0,
+        "id": "private-a",
+        "kind": "subnet",
+        "label": "Private subnet · app",
+        "parent": "az-a"
+      },
+      {
+        "x": 1062,
+        "y": 590.5,
+        "w": 204,
+        "h": 204.0,
+        "id": "public-b",
+        "kind": "subnet",
+        "label": "Public subnet · NAT",
+        "public": true,
+        "parent": "az-b"
+      },
+      {
+        "x": 1062,
+        "y": 863.5,
+        "w": 204,
+        "h": 204.0,
+        "id": "private-b",
+        "kind": "subnet",
+        "label": "Private subnet · app",
+        "parent": "az-b"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "internet",
+        "icon": "generic.internet",
+        "label": "Internet",
+        "detail": "Package mirrors, APIs",
+        "w": 156,
+        "h": 124,
+        "x": 606,
+        "y": 90
+      },
+      {
+        "id": "igw",
+        "icon": "aws.igw",
+        "label": "Internet gateway",
+        "parent": "vpc",
+        "detail": "Attached to the VPC",
+        "w": 156,
+        "h": 124,
+        "x": 606,
+        "y": 394.5
+      },
+      {
+        "id": "nat-a",
+        "icon": "aws.nat",
+        "label": "NAT gateway",
+        "parent": "public-a",
+        "detail": "Zonal · AZ A",
+        "w": 156,
+        "h": 124,
+        "x": 126,
+        "y": 646.5
+      },
+      {
+        "id": "nat-b",
+        "icon": "aws.nat",
+        "label": "NAT gateway",
+        "parent": "public-b",
+        "detail": "Zonal · AZ B",
+        "w": 156,
+        "h": 124,
+        "x": 1086,
+        "y": 646.5
+      },
+      {
+        "id": "app-a",
+        "icon": "aws.ec2",
+        "label": "Application",
+        "parent": "private-a",
+        "detail": "No public IP",
+        "w": 156,
+        "h": 124,
+        "x": 126,
+        "y": 919.5
+      },
+      {
+        "id": "app-b",
+        "icon": "aws.ec2",
+        "label": "Application",
+        "parent": "private-b",
+        "detail": "No public IP",
+        "w": 156,
+        "h": 124,
+        "x": 1086,
+        "y": 919.5
+      },
+      {
+        "id": "endpoint",
+        "icon": "aws.vpc-endpoint",
+        "label": "S3 gateway endpoint",
+        "parent": "vpc",
+        "detail": "Route-table target",
+        "w": 156,
+        "h": 124,
+        "x": 606,
+        "y": 919.5
+      },
+      {
+        "id": "bucket",
+        "icon": "aws.s3",
+        "label": "Amazon S3",
+        "parent": "cloud",
+        "detail": "Regional service",
+        "w": 156,
+        "h": 124,
+        "x": 606,
+        "y": 1224.0
+      }
+    ],
+    "edges": [
+      {
+        "id": "out-a",
+        "source": "app-a",
+        "target": "nat-a",
+        "label": "0.0.0.0/0",
+        "kind": "egress",
+        "sourcePort": "left",
+        "targetPort": "left"
+      },
+      {
+        "id": "out-b",
+        "source": "app-b",
+        "target": "nat-b",
+        "label": "0.0.0.0/0",
+        "kind": "egress",
+        "sourcePort": "right",
+        "targetPort": "right"
+      },
+      {
+        "id": "nat-igw-a",
+        "source": "nat-a",
+        "target": "igw",
+        "kind": "egress"
+      },
+      {
+        "id": "nat-igw-b",
+        "source": "nat-b",
+        "target": "igw",
+        "kind": "egress"
+      },
+      {
+        "id": "igw-out",
+        "source": "igw",
+        "target": "internet",
+        "label": "Public IPs of NAT",
+        "kind": "egress"
+      },
+      {
+        "id": "s3-a",
+        "source": "app-a",
+        "target": "endpoint",
+        "label": "S3 prefix list"
+      },
+      {
+        "id": "s3-b",
+        "source": "app-b",
+        "target": "endpoint",
+        "label": "S3 prefix list"
+      },
+      {
+        "id": "s3",
+        "source": "endpoint",
+        "target": "bucket",
+        "label": "Private path"
+      }
+    ],
+    "notes": [
+      "Route tables are summarised as edge labels; return traffic is not drawn."
+    ]
+  },
+  "provenance": {
+    "items": [
+      {
+        "id": "$model",
+        "category": "model",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "cloud",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "vpc",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "az-a",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "az-b",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "public-a",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "private-a",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "public-b",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "private-b",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "internet",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "igw",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "nat-a",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "nat-b",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "app-a",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "app-b",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "endpoint",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "bucket",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "out-a",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "out-b",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "nat-igw-a",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "nat-igw-b",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "igw-out",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "s3-a",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "s3-b",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "s3",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      }
+    ],
+    "errors": [],
+    "unconfirmed": [
+      "$model",
+      "cloud",
+      "vpc",
+      "az-a",
+      "az-b",
+      "public-a",
+      "private-a",
+      "public-b",
+      "private-b",
+      "internet",
+      "igw",
+      "nat-a",
+      "nat-b",
+      "app-a",
+      "app-b",
+      "endpoint",
+      "bucket",
+      "out-a",
+      "out-b",
+      "nat-igw-a",
+      "nat-igw-b",
+      "igw-out",
+      "s3-a",
+      "s3-b",
+      "s3"
+    ],
+    "note": "Provenance is supplied by the author; this report does not verify deployment or runtime traffic."
+  },
   "errors": [],
   "warnings": [],
   "routing": {

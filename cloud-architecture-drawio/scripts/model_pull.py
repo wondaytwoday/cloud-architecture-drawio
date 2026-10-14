@@ -3,8 +3,8 @@
 Only what the compiler can rebuild is pulled: shape positions and sizes, the
 container a shape was dropped into, connector ends moved to another modelled
 shape, and the text of titles, details, boundary titles, connector captions,
-the page title, subtitle, notes and legend. Styles and hand-bent connector
-paths are not pulled; the router plans paths again.
+the page title, subtitle, notes and legend. Supported presentation and explicit orthogonal connector paths are captured by
+model_edit; unsupported edits are listed in the summary.
 
 Items whose geometry did not change keep their layout shorthands (grid cells,
 "fit"). The pulled model is resolved again and compared with the drawing: a
@@ -317,6 +317,8 @@ def pull(source, drawio, page=1):
     if model_layout.uses_shorthand(model):
         touched = {resolved_by[i].get('parent') for i in summary['reparented']} | {model_item(model, i).get('parent') for i in summary['reparented']}
         model = settle(model, shapes, resolved, (dx, dy), touched, summary)
+    import model_edit
+    model=model_edit.capture(source,model,page_model(drawio,page),summary)
     return model, summary
 
 

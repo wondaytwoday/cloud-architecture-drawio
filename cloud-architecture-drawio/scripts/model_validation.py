@@ -14,7 +14,7 @@ PROVIDERS = {'aws', 'azure', 'gcp', 'multi'}
 DEDICATED_SUBNETS = {'azure.appgateway': 'an Application Gateway', 'azure.firewall': 'an Azure Firewall (AzureFirewallSubnet)',
                      'azure.bastion': 'Azure Bastion (AzureBastionSubnet)', 'azure.vpn-gateway': 'a VPN gateway (GatewaySubnet)'}
 # Drawn by the compiler itself rather than from the catalog.
-BUILTIN_ICONS = ('generic', 'generic.user')
+BUILTIN_ICONS = ('generic', 'generic.user', 'generic.junction')
 CSPS = ('aws', 'azure', 'gcp')
 KINDS = {'cloud', 'account', 'project', 'region', 'vpc', 'vnet', 'az', 'subnet', 'group'}
 NETWORK_KINDS = {'vpc', 'vnet', 'az', 'subnet'}
@@ -46,7 +46,7 @@ LEGEND_NAMES = {
 PLACEMENTS = ('any', 'managed', 'policy', 'network', 'subnet')
 
 TOP_KEYS = {'provider', 'title', 'subtitle', 'width', 'height', 'routing', 'containers',
-            'nodes', 'edges', 'notes', 'locale', 'legend'}
+            'nodes', 'edges', 'notes', 'locale', 'legend', 'presentation', 'lockedRoutes'}
 ITEM_KEYS = {
     'containers': {'id', 'kind', 'label', 'x', 'y', 'w', 'h', 'parent', 'provider', 'zone',
                    'public', 'overlay', 'labelAlign', 'labelOffset'},
@@ -441,12 +441,14 @@ def validate_structure(m, catalog, wrapped, header_rect):
         # generic.* glyphs are provider-neutral and fit any diagram.
         if not icon.startswith('generic') and owner != 'multi' and not icon.startswith(owner+'.'):
             errors.append(f"{n['id']}: provider/icon mismatch")
-        if n['w'] < 100 or n['h'] < 124:
+        junction=icon=='generic.junction'
+        if junction and (n['w']<8 or n['h']<8): errors.append(f"{n['id']}: junction needs >=8x8")
+        if not junction and (n['w'] < 100 or n['h'] < 124):
             errors.append(f"{n['id']}: resource card needs >=100x124")
         # Keep the original messages consumed by existing regression tests.
-        if len(wrapped(n['label'], n['w']-8, 13)) > 2:
+        if not junction and len(wrapped(n['label'], n['w']-8, 13)) > 2:
             errors.append(f"{n['id']}: title exceeds 2 lines; widen card or shorten label")
-        if len(wrapped(n.get('detail', ''), n['w']-8, 11)) > 2:
+        if not junction and len(wrapped(n.get('detail', ''), n['w']-8, 11)) > 2:
             errors.append(f"{n['id']}: detail exceeds 2 lines; widen card or shorten detail")
         # A wrongly declared parent must not hide a placement drawn on the page.
         lineage = ancestors(n)

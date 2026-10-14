@@ -7,17 +7,21 @@ const { chromium } = require('playwright');
 const USAGE = 'Usage: node render.cjs input.drawio output.png [viewer-static.min.js] [--report report.json | --no-report] [--page N] [--embed]\n'
   + 'The viewer path may come from $DRAWIO_VIEWER. --no-report renders a manually edited file without comparing planned geometry.';
 const fail = message => { console.error(message); process.exit(1); };
-const positional = [], options = {page: 1, report: undefined, embed: false};
+const positional = [], options = {page: 1, report: undefined, embed: false, timeout: 120};
 for (let i = 2; i < process.argv.length; i++) {
   const arg = process.argv[i];
   const value = () => { const v = process.argv[++i]; if (v === undefined || v.startsWith('--')) fail(`${arg} needs a value\n${USAGE}`); return v; };
   if (arg === '--no-report') options.report = null;
   else if (arg === '--embed') options.embed = true;
   else if (arg === '--report') options.report = value();
+  else if (arg === '--timeout') options.timeout = Number(value());
   else if (arg === '--page') options.page = Number(value());
   else if (arg.startsWith('--')) fail(`Unknown option ${arg}\n${USAGE}`);
   else positional.push(arg);
 }
+if (!Number.isFinite(options.timeout) || options.timeout <= 0) fail('timeout must be positive and finite');
+const watchdog = setTimeout(() => fail(`renderer timed out after ${options.timeout} seconds`), options.timeout * 1000);
+watchdog.unref();
 const [input, output, viewer = process.env.DRAWIO_VIEWER] = positional;
 if (!input || !output || !viewer || !Number.isInteger(options.page) || options.page < 1) fail(USAGE);
 // Sibling outputs share the PNG's base name, so no extension can overwrite another output.

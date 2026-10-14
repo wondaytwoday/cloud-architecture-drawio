@@ -150,7 +150,7 @@ class CompilerTests(unittest.TestCase):
     def test_report_records_the_file_it_describes(self):
         with tempfile.TemporaryDirectory() as d:
             p=Path(d)/'diagram.drawio';report=c.build(self.model(),p)
-            self.assertEqual(report['version'],3)
+            self.assertEqual(report['version'],4)
             self.assertEqual(report['drawio_sha256'],hashlib.sha256(p.read_bytes()).hexdigest())
             saved=json.loads(p.with_suffix('.report.json').read_text(encoding='utf-8'))
             self.assertEqual(saved['drawio_sha256'],report['drawio_sha256'])

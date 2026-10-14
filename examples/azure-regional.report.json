@@ -1,5 +1,375 @@
 {
-  "version": 3,
+  "version": 4,
+  "snapshot": {
+    "provider": "azure",
+    "title": "Azure · Regional network and private data access",
+    "subtitle": "Regional subnets span zones · private access endpoints are separate from managed services",
+    "width": 1320,
+    "height": 1140,
+    "containers": [
+      {
+        "id": "cloud",
+        "label": "Azure subscription",
+        "kind": "account",
+        "x": 20,
+        "y": 225,
+        "w": 1280,
+        "h": 815
+      },
+      {
+        "id": "network",
+        "label": "VNet · Korea Central",
+        "kind": "vnet",
+        "x": 40,
+        "y": 320,
+        "w": 1040,
+        "h": 690,
+        "parent": "cloud"
+      },
+      {
+        "id": "frontend",
+        "label": "Application subnet · regional",
+        "kind": "subnet",
+        "x": 280,
+        "y": 420,
+        "w": 730,
+        "h": 300,
+        "parent": "network"
+      },
+      {
+        "id": "data",
+        "label": "Private endpoint subnet · regional",
+        "kind": "subnet",
+        "x": 280,
+        "y": 740,
+        "w": 730,
+        "h": 220,
+        "parent": "network"
+      },
+      {
+        "id": "gateway-subnet",
+        "label": "App Gateway subnet",
+        "kind": "subnet",
+        "x": 55,
+        "y": 385,
+        "w": 190,
+        "h": 260,
+        "parent": "network"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "users",
+        "icon": "generic.user",
+        "label": "Clients",
+        "detail": "HTTPS",
+        "x": 580,
+        "y": 100,
+        "w": 156,
+        "h": 124
+      },
+      {
+        "id": "edge",
+        "icon": "azure.frontdoor",
+        "label": "Azure Front Door",
+        "detail": "External entry point",
+        "x": 1120,
+        "y": 270,
+        "w": 156,
+        "h": 124,
+        "parent": "cloud"
+      },
+      {
+        "id": "app-a",
+        "icon": "azure.vm",
+        "label": "Application\nZone A",
+        "detail": "Private address",
+        "x": 330,
+        "y": 570,
+        "w": 156,
+        "h": 124,
+        "parent": "frontend"
+      },
+      {
+        "id": "app-b",
+        "icon": "azure.vm",
+        "label": "Application\nZone B",
+        "detail": "Private address",
+        "x": 790,
+        "y": 570,
+        "w": 156,
+        "h": 124,
+        "parent": "frontend"
+      },
+      {
+        "id": "database",
+        "icon": "azure.sql",
+        "label": "Azure SQL Database",
+        "detail": "Managed service",
+        "x": 1100,
+        "y": 780,
+        "w": 156,
+        "h": 124,
+        "parent": "cloud"
+      },
+      {
+        "id": "gateway",
+        "icon": "azure.appgateway",
+        "label": "Application Gateway",
+        "detail": "Public HTTPS listener",
+        "x": 70,
+        "y": 450,
+        "w": 156,
+        "h": 124,
+        "parent": "gateway-subnet"
+      },
+      {
+        "id": "pe",
+        "icon": "azure.privateendpoint",
+        "label": "Private Endpoint",
+        "detail": "Private IP · SQL",
+        "x": 550,
+        "y": 800,
+        "w": 156,
+        "h": 124,
+        "parent": "data"
+      }
+    ],
+    "edges": [
+      {
+        "id": "ingress",
+        "source": "users",
+        "target": "edge",
+        "label": "HTTPS 443",
+        "kind": "traffic",
+        "sourcePort": "right",
+        "targetPort": "left"
+      },
+      {
+        "id": "edge-gateway",
+        "source": "edge",
+        "target": "gateway",
+        "label": "HTTPS",
+        "kind": "traffic",
+        "sourcePort": "bottom",
+        "targetPort": "top"
+      },
+      {
+        "id": "gateway-a",
+        "source": "gateway",
+        "target": "app-a",
+        "label": "HTTPS",
+        "kind": "traffic",
+        "sourcePort": "right",
+        "targetPort": "top",
+        "sourceOffset": 0.65
+      },
+      {
+        "id": "gateway-b",
+        "source": "gateway",
+        "target": "app-b",
+        "label": "HTTPS",
+        "kind": "traffic",
+        "sourcePort": "right",
+        "targetPort": "top",
+        "sourceOffset": 0.35
+      },
+      {
+        "id": "sql-a",
+        "source": "app-a",
+        "target": "pe",
+        "label": "TCP 1433",
+        "kind": "traffic"
+      },
+      {
+        "id": "sql-b",
+        "source": "app-b",
+        "target": "pe",
+        "label": "TCP 1433",
+        "kind": "traffic"
+      },
+      {
+        "id": "private-link",
+        "source": "pe",
+        "target": "database",
+        "label": "Private Link",
+        "kind": "traffic",
+        "sourcePort": "right",
+        "targetPort": "left"
+      }
+    ],
+    "notes": [
+      "Illustrative topology; endpoint and application settings must be checked against the deployment."
+    ]
+  },
+  "provenance": {
+    "items": [
+      {
+        "id": "$model",
+        "category": "model",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "cloud",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "network",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "frontend",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "data",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "gateway-subnet",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "users",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "edge",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "app-a",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "app-b",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "database",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "gateway",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "pe",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "ingress",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "edge-gateway",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "gateway-a",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "gateway-b",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "sql-a",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "sql-b",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "private-link",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      }
+    ],
+    "errors": [],
+    "unconfirmed": [
+      "$model",
+      "cloud",
+      "network",
+      "frontend",
+      "data",
+      "gateway-subnet",
+      "users",
+      "edge",
+      "app-a",
+      "app-b",
+      "database",
+      "gateway",
+      "pe",
+      "ingress",
+      "edge-gateway",
+      "gateway-a",
+      "gateway-b",
+      "sql-a",
+      "sql-b",
+      "private-link"
+    ],
+    "note": "Provenance is supplied by the author; this report does not verify deployment or runtime traffic."
+  },
   "errors": [],
   "warnings": [],
   "routing": {

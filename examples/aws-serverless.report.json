@@ -1,5 +1,439 @@
 {
-  "version": 3,
+  "version": 4,
+  "snapshot": {
+    "provider": "aws",
+    "title": "AWS · Serverless web API",
+    "subtitle": "Managed services only · no VPC · event-driven order processing",
+    "width": 1312,
+    "height": 1292,
+    "containers": [
+      {
+        "x": 30,
+        "y": 234,
+        "w": 1252,
+        "h": 948.0,
+        "id": "cloud",
+        "kind": "cloud",
+        "label": "AWS Cloud"
+      },
+      {
+        "x": 54,
+        "y": 474.0,
+        "w": 1204,
+        "h": 684.0,
+        "id": "region",
+        "kind": "region",
+        "label": "Region · ap-northeast-2",
+        "parent": "cloud"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "users",
+        "icon": "generic.user",
+        "label": "Clients",
+        "detail": "Browser / mobile",
+        "w": 156,
+        "h": 124,
+        "x": 578,
+        "y": 90
+      },
+      {
+        "id": "dns",
+        "icon": "aws.route53",
+        "label": "Amazon Route 53",
+        "parent": "cloud",
+        "detail": "Public hosted zone",
+        "w": 156,
+        "h": 124,
+        "x": 78,
+        "y": 290
+      },
+      {
+        "id": "cdn",
+        "icon": "aws.cloudfront",
+        "label": "Amazon CloudFront",
+        "parent": "cloud",
+        "detail": "HTTPS edge",
+        "w": 156,
+        "h": 124,
+        "x": 578,
+        "y": 290
+      },
+      {
+        "id": "auth",
+        "icon": "aws.cognito",
+        "label": "Amazon Cognito",
+        "parent": "region",
+        "detail": "User pool",
+        "w": 156,
+        "h": 124,
+        "x": 78,
+        "y": 530.0
+      },
+      {
+        "id": "api",
+        "icon": "aws.apigateway",
+        "label": "API Gateway",
+        "parent": "region",
+        "detail": "HTTP API",
+        "w": 156,
+        "h": 124,
+        "x": 578,
+        "y": 530.0
+      },
+      {
+        "id": "site",
+        "icon": "aws.s3",
+        "label": "Amazon S3",
+        "parent": "region",
+        "detail": "Static site · OAC",
+        "w": 156,
+        "h": 124,
+        "x": 1078,
+        "y": 530.0
+      },
+      {
+        "id": "queue",
+        "icon": "aws.sqs",
+        "label": "Amazon SQS",
+        "parent": "region",
+        "detail": "Order queue",
+        "w": 156,
+        "h": 124,
+        "x": 78,
+        "y": 770.0
+      },
+      {
+        "id": "fn",
+        "icon": "aws.lambda",
+        "label": "AWS Lambda",
+        "parent": "region",
+        "detail": "API handlers",
+        "w": 156,
+        "h": 124,
+        "x": 578,
+        "y": 770.0
+      },
+      {
+        "id": "table",
+        "icon": "aws.dynamodb",
+        "label": "Amazon DynamoDB",
+        "parent": "region",
+        "detail": "Orders table",
+        "w": 156,
+        "h": 124,
+        "x": 1078,
+        "y": 770.0
+      },
+      {
+        "id": "worker",
+        "icon": "aws.lambda",
+        "label": "AWS Lambda",
+        "parent": "region",
+        "detail": "Order worker",
+        "w": 156,
+        "h": 124,
+        "x": 78,
+        "y": 1010.0
+      },
+      {
+        "id": "logs",
+        "icon": "aws.cloudwatch",
+        "label": "Amazon CloudWatch",
+        "parent": "region",
+        "detail": "Logs and metrics",
+        "w": 156,
+        "h": 124,
+        "x": 1078,
+        "y": 1010.0
+      }
+    ],
+    "edges": [
+      {
+        "id": "dns-query",
+        "source": "users",
+        "target": "dns",
+        "label": "DNS",
+        "kind": "dns"
+      },
+      {
+        "id": "https",
+        "source": "users",
+        "target": "cdn",
+        "label": "HTTPS"
+      },
+      {
+        "id": "api-origin",
+        "source": "cdn",
+        "target": "api",
+        "label": "/api/*"
+      },
+      {
+        "id": "site-origin",
+        "source": "cdn",
+        "target": "site",
+        "label": "Static assets"
+      },
+      {
+        "id": "authorizer",
+        "source": "api",
+        "target": "auth",
+        "label": "JWT authorizer",
+        "kind": "association"
+      },
+      {
+        "id": "invoke",
+        "source": "api",
+        "target": "fn",
+        "label": "Invoke"
+      },
+      {
+        "id": "orders",
+        "source": "fn",
+        "target": "table",
+        "label": "Read / write"
+      },
+      {
+        "id": "enqueue",
+        "source": "fn",
+        "target": "queue",
+        "label": "Order placed",
+        "kind": "event"
+      },
+      {
+        "id": "poll",
+        "source": "queue",
+        "target": "worker",
+        "label": "Batch",
+        "kind": "event"
+      },
+      {
+        "id": "update",
+        "source": "worker",
+        "target": "table",
+        "label": "Update status"
+      },
+      {
+        "id": "telemetry",
+        "source": "worker",
+        "target": "logs",
+        "label": "Logs",
+        "kind": "management"
+      }
+    ],
+    "notes": [
+      "Illustrative routes and names; Lambda runs outside any VPC in this view."
+    ]
+  },
+  "provenance": {
+    "items": [
+      {
+        "id": "$model",
+        "category": "model",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "cloud",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "region",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "users",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "dns",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "cdn",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "auth",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "api",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "site",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "queue",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "fn",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "table",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "worker",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "logs",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "dns-query",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "https",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "api-origin",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "site-origin",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "authorizer",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "invoke",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "orders",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "enqueue",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "poll",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "update",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "telemetry",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      }
+    ],
+    "errors": [],
+    "unconfirmed": [
+      "$model",
+      "cloud",
+      "region",
+      "users",
+      "dns",
+      "cdn",
+      "auth",
+      "api",
+      "site",
+      "queue",
+      "fn",
+      "table",
+      "worker",
+      "logs",
+      "dns-query",
+      "https",
+      "api-origin",
+      "site-origin",
+      "authorizer",
+      "invoke",
+      "orders",
+      "enqueue",
+      "poll",
+      "update",
+      "telemetry"
+    ],
+    "note": "Provenance is supplied by the author; this report does not verify deployment or runtime traffic."
+  },
   "errors": [],
   "warnings": [],
   "routing": {

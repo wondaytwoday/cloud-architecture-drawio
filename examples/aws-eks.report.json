@@ -1,5 +1,496 @@
 {
-  "version": 3,
+  "version": 4,
+  "snapshot": {
+    "provider": "aws",
+    "title": "AWS · EKS microservices",
+    "subtitle": "Two AZs · ALB ingress · EKS managed node groups · Aurora · async jobs",
+    "width": 1776,
+    "height": 1210,
+    "containers": [
+      {
+        "x": 30,
+        "y": 234.25,
+        "w": 1716,
+        "h": 865.0,
+        "id": "cloud",
+        "kind": "cloud",
+        "label": "AWS Cloud"
+      },
+      {
+        "x": 54,
+        "y": 290.25,
+        "w": 1260,
+        "h": 785.0,
+        "id": "vpc",
+        "kind": "vpc",
+        "label": "VPC · 10.40.0.0/16",
+        "parent": "cloud"
+      },
+      {
+        "x": 78,
+        "y": 490.5,
+        "w": 252,
+        "h": 560.75,
+        "id": "az-a",
+        "kind": "az",
+        "label": "Availability Zone A",
+        "parent": "vpc"
+      },
+      {
+        "x": 1038,
+        "y": 490.5,
+        "w": 252,
+        "h": 560.75,
+        "id": "az-b",
+        "kind": "az",
+        "label": "Availability Zone B",
+        "parent": "vpc"
+      },
+      {
+        "x": 102,
+        "y": 546.5,
+        "w": 204,
+        "h": 204.0,
+        "id": "nodes-a",
+        "kind": "subnet",
+        "label": "Private subnet · nodes",
+        "parent": "az-a"
+      },
+      {
+        "x": 102,
+        "y": 823.25,
+        "w": 204,
+        "h": 204.0,
+        "id": "data-a",
+        "kind": "subnet",
+        "label": "Private subnet · data",
+        "parent": "az-a"
+      },
+      {
+        "x": 1062,
+        "y": 546.5,
+        "w": 204,
+        "h": 204.0,
+        "id": "nodes-b",
+        "kind": "subnet",
+        "label": "Private subnet · nodes",
+        "parent": "az-b"
+      },
+      {
+        "x": 1062,
+        "y": 823.25,
+        "w": 204,
+        "h": 204.0,
+        "id": "data-b",
+        "kind": "subnet",
+        "label": "Private subnet · data",
+        "parent": "az-b"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "users",
+        "icon": "generic.user",
+        "label": "Clients",
+        "w": 156,
+        "h": 124,
+        "x": 606,
+        "y": 90
+      },
+      {
+        "id": "alb",
+        "icon": "aws.alb",
+        "label": "Application LB",
+        "parent": "vpc",
+        "detail": "Ingress · AWS LB Controller",
+        "w": 156,
+        "h": 124,
+        "x": 606,
+        "y": 346.25
+      },
+      {
+        "id": "eks-a",
+        "icon": "aws.eks",
+        "label": "EKS nodes",
+        "parent": "nodes-a",
+        "detail": "Managed node group",
+        "w": 156,
+        "h": 124,
+        "x": 126,
+        "y": 602.5
+      },
+      {
+        "id": "eks-b",
+        "icon": "aws.eks",
+        "label": "EKS nodes",
+        "parent": "nodes-b",
+        "detail": "Managed node group",
+        "w": 156,
+        "h": 124,
+        "x": 1086,
+        "y": 602.5
+      },
+      {
+        "id": "db-a",
+        "icon": "aws.aurora",
+        "label": "Aurora",
+        "parent": "data-a",
+        "detail": "Writer",
+        "w": 156,
+        "h": 124,
+        "x": 126,
+        "y": 879.25
+      },
+      {
+        "id": "db-b",
+        "icon": "aws.aurora",
+        "label": "Aurora",
+        "parent": "data-b",
+        "detail": "Reader",
+        "w": 156,
+        "h": 124,
+        "x": 1086,
+        "y": 879.25
+      },
+      {
+        "id": "ecr",
+        "icon": "aws.ecr",
+        "label": "Amazon ECR",
+        "parent": "cloud",
+        "detail": "Container images",
+        "w": 156,
+        "h": 124,
+        "x": 1566,
+        "y": 346.25
+      },
+      {
+        "id": "queue",
+        "icon": "aws.sqs",
+        "label": "Amazon SQS",
+        "parent": "cloud",
+        "detail": "Job queue",
+        "w": 156,
+        "h": 124,
+        "x": 1566,
+        "y": 602.5
+      },
+      {
+        "id": "logs",
+        "icon": "aws.cloudwatch",
+        "label": "CloudWatch",
+        "parent": "cloud",
+        "detail": "Container Insights",
+        "w": 156,
+        "h": 124,
+        "x": 1566,
+        "y": 879.25
+      }
+    ],
+    "edges": [
+      {
+        "id": "https",
+        "source": "users",
+        "target": "alb",
+        "label": "HTTPS"
+      },
+      {
+        "id": "ingress-a",
+        "source": "alb",
+        "target": "eks-a",
+        "label": "HTTP"
+      },
+      {
+        "id": "ingress-b",
+        "source": "alb",
+        "target": "eks-b",
+        "label": "HTTP"
+      },
+      {
+        "id": "sql-a",
+        "source": "eks-a",
+        "target": "db-a",
+        "label": "SQL",
+        "sourcePort": "left",
+        "targetPort": "left"
+      },
+      {
+        "id": "sql-b",
+        "source": "eks-b",
+        "target": "db-a",
+        "label": "SQL writes"
+      },
+      {
+        "id": "reads",
+        "source": "eks-b",
+        "target": "db-b",
+        "label": "SQL reads",
+        "sourcePort": "right",
+        "targetPort": "right"
+      },
+      {
+        "id": "aurora-repl",
+        "source": "db-a",
+        "target": "db-b",
+        "label": "Cluster storage",
+        "kind": "replication"
+      },
+      {
+        "id": "pull",
+        "source": "eks-b",
+        "target": "ecr",
+        "label": "Image pull"
+      },
+      {
+        "id": "jobs",
+        "source": "eks-b",
+        "target": "queue",
+        "label": "Jobs",
+        "kind": "event"
+      },
+      {
+        "id": "metrics",
+        "source": "eks-b",
+        "target": "logs",
+        "label": "Metrics",
+        "kind": "management"
+      }
+    ],
+    "notes": [
+      "ECR, SQS and CloudWatch are reached through NAT or interface endpoints, not drawn here."
+    ]
+  },
+  "provenance": {
+    "items": [
+      {
+        "id": "$model",
+        "category": "model",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "cloud",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "vpc",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "az-a",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "az-b",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "nodes-a",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "data-a",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "nodes-b",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "data-b",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "users",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "alb",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "eks-a",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "eks-b",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "db-a",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "db-b",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "ecr",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "queue",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "logs",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "https",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "ingress-a",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "ingress-b",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "sql-a",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "sql-b",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "reads",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "aurora-repl",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "pull",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "jobs",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "metrics",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      }
+    ],
+    "errors": [],
+    "unconfirmed": [
+      "$model",
+      "cloud",
+      "vpc",
+      "az-a",
+      "az-b",
+      "nodes-a",
+      "data-a",
+      "nodes-b",
+      "data-b",
+      "users",
+      "alb",
+      "eks-a",
+      "eks-b",
+      "db-a",
+      "db-b",
+      "ecr",
+      "queue",
+      "logs",
+      "https",
+      "ingress-a",
+      "ingress-b",
+      "sql-a",
+      "sql-b",
+      "reads",
+      "aurora-repl",
+      "pull",
+      "jobs",
+      "metrics"
+    ],
+    "note": "Provenance is supplied by the author; this report does not verify deployment or runtime traffic."
+  },
   "errors": [],
   "warnings": [],
   "routing": {

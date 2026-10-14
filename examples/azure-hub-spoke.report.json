@@ -1,5 +1,469 @@
 {
-  "version": 3,
+  "version": 4,
+  "snapshot": {
+    "provider": "azure",
+    "title": "Azure · Hub-and-spoke network",
+    "subtitle": "Hub VNet with VPN gateway, firewall and Bastion · peered spokes",
+    "width": 1192,
+    "height": 1458,
+    "containers": [
+      {
+        "x": 234.0,
+        "y": 90,
+        "w": 204,
+        "h": 204,
+        "id": "dc",
+        "kind": "cloud",
+        "label": "On-premises"
+      },
+      {
+        "x": 30.0,
+        "y": 354.25,
+        "w": 1132.0,
+        "h": 993.25,
+        "id": "sub",
+        "kind": "account",
+        "label": "Azure subscription"
+      },
+      {
+        "x": 210.0,
+        "y": 410.25,
+        "w": 772,
+        "h": 284.0,
+        "id": "hub",
+        "kind": "vnet",
+        "label": "Hub VNet · 10.0.0.0/16",
+        "parent": "sub"
+      },
+      {
+        "x": 234.0,
+        "y": 466.25,
+        "w": 204,
+        "h": 204.0,
+        "id": "gw-sn",
+        "kind": "subnet",
+        "label": "GatewaySubnet",
+        "parent": "hub"
+      },
+      {
+        "x": 494.0,
+        "y": 466.25,
+        "w": 204,
+        "h": 204.0,
+        "id": "fw-sn",
+        "kind": "subnet",
+        "label": "AzureFirewallSubnet",
+        "parent": "hub"
+      },
+      {
+        "x": 754.0,
+        "y": 466.25,
+        "w": 204,
+        "h": 204.0,
+        "id": "bas-sn",
+        "kind": "subnet",
+        "label": "AzureBastionSubnet",
+        "parent": "hub"
+      },
+      {
+        "x": 54.0,
+        "y": 808.0,
+        "w": 252.0,
+        "h": 284.0,
+        "id": "spoke-a",
+        "kind": "vnet",
+        "label": "Spoke VNet · apps",
+        "parent": "sub"
+      },
+      {
+        "x": 78.0,
+        "y": 864.0,
+        "w": 204.0,
+        "h": 204.0,
+        "id": "aks-sn",
+        "kind": "subnet",
+        "label": "AKS subnet",
+        "parent": "spoke-a"
+      },
+      {
+        "x": 886.0,
+        "y": 808.0,
+        "w": 252.0,
+        "h": 284.0,
+        "id": "spoke-b",
+        "kind": "vnet",
+        "label": "Spoke VNet · data",
+        "parent": "sub"
+      },
+      {
+        "x": 910.0,
+        "y": 864.0,
+        "w": 204.0,
+        "h": 204.0,
+        "id": "pe-sn",
+        "kind": "subnet",
+        "label": "Endpoint subnet",
+        "parent": "spoke-b"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "router",
+        "icon": "generic.router",
+        "label": "Edge router",
+        "parent": "dc",
+        "detail": "VPN device",
+        "w": 156,
+        "h": 124,
+        "x": 258.0,
+        "y": 146
+      },
+      {
+        "id": "vpngw",
+        "icon": "azure.vpn-gateway",
+        "label": "VPN Gateway",
+        "parent": "gw-sn",
+        "detail": "Route-based",
+        "w": 156,
+        "h": 124,
+        "x": 258.0,
+        "y": 522.25
+      },
+      {
+        "id": "fw",
+        "icon": "azure.firewall",
+        "label": "Azure Firewall",
+        "parent": "fw-sn",
+        "detail": "Central inspection",
+        "w": 156,
+        "h": 124,
+        "x": 518.0,
+        "y": 522.25
+      },
+      {
+        "id": "bastion",
+        "icon": "azure.bastion",
+        "label": "Azure Bastion",
+        "parent": "bas-sn",
+        "detail": "Admin access",
+        "w": 156,
+        "h": 124,
+        "x": 778.0,
+        "y": 522.25
+      },
+      {
+        "id": "aks",
+        "icon": "azure.aks",
+        "label": "AKS",
+        "parent": "aks-sn",
+        "detail": "Workloads",
+        "w": 156,
+        "h": 124,
+        "x": 102.0,
+        "y": 920.0
+      },
+      {
+        "id": "pe",
+        "icon": "azure.privateendpoint",
+        "label": "Private Endpoint",
+        "parent": "pe-sn",
+        "detail": "Azure SQL",
+        "w": 156,
+        "h": 124,
+        "x": 934.0,
+        "y": 920.0
+      },
+      {
+        "id": "sql",
+        "icon": "azure.sql",
+        "label": "Azure SQL Database",
+        "parent": "sub",
+        "detail": "Managed service",
+        "w": 156,
+        "h": 124,
+        "x": 934.0,
+        "y": 1199.5
+      },
+      {
+        "id": "logs",
+        "icon": "azure.log-analytics",
+        "label": "Log Analytics",
+        "parent": "sub",
+        "detail": "AKS and firewall logs",
+        "w": 156,
+        "h": 124,
+        "x": 102.0,
+        "y": 1199.5
+      }
+    ],
+    "edges": [
+      {
+        "id": "s2s",
+        "source": "router",
+        "target": "vpngw",
+        "label": "Site-to-site VPN",
+        "kind": "connectivity"
+      },
+      {
+        "id": "peer-a",
+        "source": "hub",
+        "target": "spoke-a",
+        "label": "Peering",
+        "kind": "connectivity"
+      },
+      {
+        "id": "peer-b",
+        "source": "hub",
+        "target": "spoke-b",
+        "label": "Peering",
+        "kind": "connectivity"
+      },
+      {
+        "id": "egress",
+        "source": "aks",
+        "target": "fw",
+        "label": "UDR 0.0.0.0/0"
+      },
+      {
+        "id": "data",
+        "source": "fw",
+        "target": "pe",
+        "label": "TCP 1433"
+      },
+      {
+        "id": "link",
+        "source": "pe",
+        "target": "sql",
+        "label": "Private Link"
+      },
+      {
+        "id": "diag",
+        "source": "aks",
+        "target": "logs",
+        "label": "Diagnostics",
+        "kind": "management"
+      }
+    ],
+    "notes": [
+      "Spoke traffic, including SQL through the Private Endpoint, is routed to the firewall by UDR; DNS zones for Private Link are not drawn."
+    ]
+  },
+  "provenance": {
+    "items": [
+      {
+        "id": "$model",
+        "category": "model",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "dc",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "sub",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "hub",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "gw-sn",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "fw-sn",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "bas-sn",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "spoke-a",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "aks-sn",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "spoke-b",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "pe-sn",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "router",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "vpngw",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "fw",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "bastion",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "aks",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "pe",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "sql",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "logs",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "s2s",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "peer-a",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "peer-b",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "egress",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "data",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "link",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "diag",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      }
+    ],
+    "errors": [],
+    "unconfirmed": [
+      "$model",
+      "dc",
+      "sub",
+      "hub",
+      "gw-sn",
+      "fw-sn",
+      "bas-sn",
+      "spoke-a",
+      "aks-sn",
+      "spoke-b",
+      "pe-sn",
+      "router",
+      "vpngw",
+      "fw",
+      "bastion",
+      "aks",
+      "pe",
+      "sql",
+      "logs",
+      "s2s",
+      "peer-a",
+      "peer-b",
+      "egress",
+      "data",
+      "link",
+      "diag"
+    ],
+    "note": "Provenance is supplied by the author; this report does not verify deployment or runtime traffic."
+  },
   "errors": [],
   "warnings": [],
   "routing": {

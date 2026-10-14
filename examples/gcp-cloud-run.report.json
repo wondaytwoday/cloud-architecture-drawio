@@ -1,5 +1,395 @@
 {
-  "version": 3,
+  "version": 4,
+  "snapshot": {
+    "provider": "gcp",
+    "title": "Google Cloud · Cloud Run service with private data",
+    "subtitle": "Global external ALB · Cloud Armor · Direct VPC egress · Pub/Sub events",
+    "width": 1312,
+    "height": 1524,
+    "containers": [
+      {
+        "x": 30,
+        "y": 275.5,
+        "w": 1252.0,
+        "h": 1138.5,
+        "id": "project",
+        "kind": "project",
+        "label": "Google Cloud project"
+      },
+      {
+        "x": 532.0,
+        "y": 734.0,
+        "w": 726.0,
+        "h": 392.0,
+        "id": "vpc",
+        "kind": "vpc",
+        "label": "VPC · global",
+        "parent": "project"
+      },
+      {
+        "x": 556.0,
+        "y": 790.0,
+        "w": 678.0,
+        "h": 312.0,
+        "id": "region",
+        "kind": "region",
+        "label": "Region · asia-northeast3",
+        "parent": "vpc"
+      },
+      {
+        "x": 580.0,
+        "y": 874.0,
+        "w": 204.0,
+        "h": 204.0,
+        "id": "subnet",
+        "kind": "subnet",
+        "label": "Egress subnet",
+        "parent": "region"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "users",
+        "icon": "generic.user",
+        "label": "Clients",
+        "w": 156,
+        "h": 124,
+        "x": 554,
+        "y": 90
+      },
+      {
+        "id": "lb",
+        "icon": "gcp.lb",
+        "label": "Cloud Load Balancing",
+        "parent": "project",
+        "detail": "Global external ALB",
+        "w": 156,
+        "h": 124,
+        "x": 554,
+        "y": 331.5
+      },
+      {
+        "id": "armor",
+        "icon": "gcp.armor",
+        "label": "Cloud Armor",
+        "parent": "project",
+        "detail": "Security policy",
+        "w": 156,
+        "h": 124,
+        "x": 1054,
+        "y": 331.5
+      },
+      {
+        "id": "run",
+        "icon": "gcp.run",
+        "label": "Cloud Run",
+        "parent": "project",
+        "detail": "Service · serverless NEG",
+        "w": 156,
+        "h": 124,
+        "x": 554,
+        "y": 573.0
+      },
+      {
+        "id": "topic",
+        "icon": "gcp.pubsub",
+        "label": "Pub/Sub",
+        "parent": "project",
+        "detail": "orders topic",
+        "w": 156,
+        "h": 124,
+        "x": 54,
+        "y": 573.0
+      },
+      {
+        "id": "fn",
+        "icon": "gcp.functions",
+        "label": "Cloud Functions",
+        "parent": "project",
+        "detail": "Subscriber",
+        "w": 156,
+        "h": 124,
+        "x": 54,
+        "y": 846.0
+      },
+      {
+        "id": "psc",
+        "icon": "generic",
+        "label": "PSC endpoint",
+        "parent": "subnet",
+        "detail": "Private IP · Cloud SQL",
+        "w": 156,
+        "h": 124,
+        "x": 604.0,
+        "y": 930.0
+      },
+      {
+        "id": "nat",
+        "icon": "gcp.nat",
+        "label": "Cloud NAT",
+        "parent": "region",
+        "detail": "Regional egress",
+        "w": 156,
+        "h": 124,
+        "x": 1054,
+        "y": 846.0
+      },
+      {
+        "id": "sql",
+        "icon": "gcp.sql",
+        "label": "Cloud SQL",
+        "parent": "project",
+        "detail": "PostgreSQL · PSC",
+        "w": 156,
+        "h": 124,
+        "x": 604.0,
+        "y": 1266.0
+      }
+    ],
+    "edges": [
+      {
+        "id": "https",
+        "source": "users",
+        "target": "lb",
+        "label": "HTTPS"
+      },
+      {
+        "id": "policy",
+        "source": "lb",
+        "target": "armor",
+        "label": "Backend policy",
+        "kind": "association"
+      },
+      {
+        "id": "serve",
+        "source": "lb",
+        "target": "run",
+        "label": "Serverless NEG"
+      },
+      {
+        "id": "publish",
+        "source": "run",
+        "target": "topic",
+        "label": "Publish",
+        "kind": "event"
+      },
+      {
+        "id": "push",
+        "source": "topic",
+        "target": "fn",
+        "label": "Push",
+        "kind": "event"
+      },
+      {
+        "id": "egress-sql",
+        "source": "run",
+        "target": "psc",
+        "label": "Direct VPC egress",
+        "sourcePort": "left",
+        "targetPort": "left"
+      },
+      {
+        "id": "psc-sql",
+        "source": "psc",
+        "target": "sql",
+        "label": "PSC"
+      },
+      {
+        "id": "egress-net",
+        "source": "run",
+        "target": "nat",
+        "label": "Internet egress",
+        "kind": "egress"
+      }
+    ],
+    "notes": [
+      "PSC endpoint has no product icon in the gcp2 set and is drawn as a labelled box."
+    ]
+  },
+  "provenance": {
+    "items": [
+      {
+        "id": "$model",
+        "category": "model",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "project",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "vpc",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "region",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "subnet",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "users",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "lb",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "armor",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "run",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "topic",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "fn",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "psc",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "nat",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "sql",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "https",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "policy",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "serve",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "publish",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "push",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "egress-sql",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "psc-sql",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "egress-net",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      }
+    ],
+    "errors": [],
+    "unconfirmed": [
+      "$model",
+      "project",
+      "vpc",
+      "region",
+      "subnet",
+      "users",
+      "lb",
+      "armor",
+      "run",
+      "topic",
+      "fn",
+      "psc",
+      "nat",
+      "sql",
+      "https",
+      "policy",
+      "serve",
+      "publish",
+      "push",
+      "egress-sql",
+      "psc-sql",
+      "egress-net"
+    ],
+    "note": "Provenance is supplied by the author; this report does not verify deployment or runtime traffic."
+  },
   "errors": [],
   "warnings": [],
   "routing": {

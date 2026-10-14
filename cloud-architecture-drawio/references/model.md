@@ -1,4 +1,4 @@
-# Model format, v3
+# Model format, v4
 
 The compiler accepts UTF-8 JSON, with or without a byte order mark, on any system locale. Coordinates are absolute canvas coordinates; output coordinates become relative to their actual draw.io parents. IDs are stable unique nonempty strings across containers, nodes, and edges; `0`, `1`, and the `__` prefix are reserved. Dimensions must be positive finite numbers. Every container and node must stay inside x 10..width-10 and y 80..height-90: the top 80 px hold the title and the bottom 90 px the legend and notes, and the validator rejects shapes that enter those bands. Fields the compiler writes (title, subtitle, notes, legend, and container, node and edge fields) must not contain control characters that XML cannot store; use `\n` for a line break. Metadata is not checked.
 
@@ -86,7 +86,7 @@ Ports accept `top`, `bottom`, `left`, `right`, or `auto` (the default). Offsets 
 
 Automatic allocation separates incoming and outgoing connections on each card side and respects explicit offsets. Explicit offsets on one side must be at least the automatic spacing apart (10 px on a standard card); offsets that coincide or nearly coincide, or an overcrowded side, fail with a remedy. Connections attach to the entire resource card. `priority` is a finite number; smaller values route earlier. Default categories are traffic 0, egress 1, replication 2, DNS 3, association 4, management 5, event 6, connectivity 7, followed by endpoint distance and stable edge ID. Changing the order of the edge array does not change routes. See [routing](routing.md) for algorithm limits and editing guidance.
 
-The current compiler handles edges between nodes and network boundaries, not self-loops, edge-to-edge junctions, shared buses, or user-specified waypoint arrays. Preserve those relationships with native XML when necessary; do not approximate them by overlapping unrelated lines.
+The compiler handles nodes, network boundaries and explicit `generic.junction` dots. Shared buses use one trunk edge and separate branches. Self-loops and direct edge-to-edge terminals still require native XML. See [editing](editing.md) for `presentation` and `lockedRoutes`, and [workflows](workflows.md) for junctions, views, diffs and structured evidence.
 
 ## Validation and output
 
@@ -100,4 +100,4 @@ Layout is template-driven; resources are not automatically rearranged. Add an AZ
 
 `build PATH` writes `PATH` and `PATH` with a `.report.json` suffix, each atomically. If `PATH` exists and its hash differs from `drawio_sha256` in that report (a manual draw.io edit), or the report is missing, `build` stops instead of discarding the edits; `--force` overwrites deliberately. Reports from version 2 carry no hash and do not block a rebuild.
 
-`.report.json` version 3 includes `model_sha256`, `drawio_sha256`, `routing` (the routing mode that succeeded), `routes`, `labels`, `quality`, `warnings`, and `errors`. Label data records its rectangle, relative position, and offset. Quality records `crossingCount`, `overlapLength`, `bendCount`, `totalLength`, plus individual crossing/overlap locations. A route that would meet itself, or a connector whose port lies on another connector, is a build error instead of a metric. Crossings produce warnings for visual review. These metrics do not measure cloud correctness or guarantee the clearest possible layout.
+`.report.json` version 4 adds a normalized `snapshot` and author-supplied `provenance` inventory; incremental builds include `incremental` results. It also includes `model_sha256`, `drawio_sha256`, `routing` (the routing mode that succeeded), `routes`, `labels`, `quality`, `warnings`, and `errors`. Label data records its rectangle, relative position, and offset. Quality records `crossingCount`, `overlapLength`, `bendCount`, `totalLength`, plus individual crossing/overlap locations. A route that would meet itself, or a connector whose port lies on another connector, is a build error instead of a metric. Crossings produce warnings for visual review. These metrics do not measure cloud correctness or guarantee the clearest possible layout.

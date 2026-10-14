@@ -1,5 +1,570 @@
 {
-  "version": 3,
+  "version": 4,
+  "snapshot": {
+    "provider": "aws",
+    "title": "AWS · Multi-Region disaster recovery",
+    "subtitle": "Active-passive · Route 53 failover · Aurora global database · S3 replication",
+    "width": 1692,
+    "height": 1532,
+    "containers": [
+      {
+        "x": 30,
+        "y": 254.0,
+        "w": 1632,
+        "h": 1168.0,
+        "id": "cloud",
+        "kind": "cloud",
+        "label": "AWS Cloud"
+      },
+      {
+        "x": 54,
+        "y": 438.0,
+        "w": 506,
+        "h": 960.0,
+        "id": "region-a",
+        "kind": "region",
+        "label": "Primary · ap-northeast-2",
+        "parent": "cloud"
+      },
+      {
+        "x": 236,
+        "y": 494.0,
+        "w": 300,
+        "h": 752.0,
+        "id": "vpc-a",
+        "kind": "vpc",
+        "label": "VPC",
+        "parent": "region-a"
+      },
+      {
+        "x": 260,
+        "y": 678.0,
+        "w": 252,
+        "h": 544.0,
+        "id": "az-a",
+        "kind": "az",
+        "label": "AZ A",
+        "parent": "vpc-a"
+      },
+      {
+        "x": 284,
+        "y": 734.0,
+        "w": 204,
+        "h": 204.0,
+        "id": "app-a-sn",
+        "kind": "subnet",
+        "label": "App subnet",
+        "parent": "az-a"
+      },
+      {
+        "x": 284,
+        "y": 994.0,
+        "w": 204,
+        "h": 204.0,
+        "id": "db-a-sn",
+        "kind": "subnet",
+        "label": "Data subnet",
+        "parent": "az-a"
+      },
+      {
+        "x": 1132,
+        "y": 438.0,
+        "w": 506,
+        "h": 960.0,
+        "id": "region-b",
+        "kind": "region",
+        "label": "Standby · ap-northeast-1",
+        "parent": "cloud"
+      },
+      {
+        "x": 1156,
+        "y": 494.0,
+        "w": 300,
+        "h": 752.0,
+        "id": "vpc-b",
+        "kind": "vpc",
+        "label": "VPC",
+        "parent": "region-b"
+      },
+      {
+        "x": 1180,
+        "y": 678.0,
+        "w": 252,
+        "h": 544.0,
+        "id": "az-b",
+        "kind": "az",
+        "label": "AZ A",
+        "parent": "vpc-b"
+      },
+      {
+        "x": 1204,
+        "y": 734.0,
+        "w": 204,
+        "h": 204.0,
+        "id": "app-b-sn",
+        "kind": "subnet",
+        "label": "App subnet",
+        "parent": "az-b"
+      },
+      {
+        "x": 1204,
+        "y": 994.0,
+        "w": 204,
+        "h": 204.0,
+        "id": "db-b-sn",
+        "kind": "subnet",
+        "label": "Data subnet",
+        "parent": "az-b"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "users",
+        "icon": "generic.user",
+        "label": "Clients",
+        "w": 156,
+        "h": 124,
+        "x": 768,
+        "y": 90
+      },
+      {
+        "id": "dns",
+        "icon": "aws.route53",
+        "label": "Amazon Route 53",
+        "parent": "cloud",
+        "detail": "Failover routing",
+        "w": 156,
+        "h": 124,
+        "x": 768,
+        "y": 310.0
+      },
+      {
+        "id": "alb-a",
+        "icon": "aws.alb",
+        "label": "Application LB",
+        "parent": "vpc-a",
+        "detail": "Active",
+        "w": 156,
+        "h": 124,
+        "x": 308,
+        "y": 550.0
+      },
+      {
+        "id": "app-a",
+        "icon": "aws.ec2",
+        "label": "Application",
+        "parent": "app-a-sn",
+        "detail": "Auto Scaling",
+        "w": 156,
+        "h": 124,
+        "x": 308,
+        "y": 790.0
+      },
+      {
+        "id": "db-a",
+        "icon": "aws.aurora",
+        "label": "Aurora",
+        "parent": "db-a-sn",
+        "detail": "Writer · primary",
+        "w": 156,
+        "h": 124,
+        "x": 308,
+        "y": 1050.0
+      },
+      {
+        "id": "s3-a",
+        "icon": "aws.s3",
+        "label": "Amazon S3",
+        "parent": "region-a",
+        "detail": "Documents",
+        "w": 156,
+        "h": 124,
+        "x": 78,
+        "y": 1250.0
+      },
+      {
+        "id": "alb-b",
+        "icon": "aws.alb",
+        "label": "Application LB",
+        "parent": "vpc-b",
+        "detail": "Standby",
+        "w": 156,
+        "h": 124,
+        "x": 1228,
+        "y": 550.0
+      },
+      {
+        "id": "app-b",
+        "icon": "aws.ec2",
+        "label": "Application",
+        "parent": "app-b-sn",
+        "detail": "Scaled down",
+        "w": 156,
+        "h": 124,
+        "x": 1228,
+        "y": 790.0
+      },
+      {
+        "id": "db-b",
+        "icon": "aws.aurora",
+        "label": "Aurora",
+        "parent": "db-b-sn",
+        "detail": "Secondary · read-only",
+        "w": 156,
+        "h": 124,
+        "x": 1228,
+        "y": 1050.0
+      },
+      {
+        "id": "s3-b",
+        "icon": "aws.s3",
+        "label": "Amazon S3",
+        "parent": "region-b",
+        "detail": "Replica",
+        "w": 156,
+        "h": 124,
+        "x": 1458,
+        "y": 1250.0
+      }
+    ],
+    "edges": [
+      {
+        "id": "resolve",
+        "source": "users",
+        "target": "dns",
+        "label": "DNS",
+        "kind": "dns"
+      },
+      {
+        "id": "https",
+        "source": "users",
+        "target": "alb-a",
+        "label": "HTTPS",
+        "sourcePort": "bottom"
+      },
+      {
+        "id": "primary",
+        "source": "dns",
+        "target": "alb-a",
+        "label": "Primary record",
+        "kind": "association"
+      },
+      {
+        "id": "failover",
+        "source": "dns",
+        "target": "alb-b",
+        "label": "Failover record",
+        "kind": "association"
+      },
+      {
+        "id": "web-a",
+        "source": "alb-a",
+        "target": "app-a",
+        "label": "HTTPS"
+      },
+      {
+        "id": "web-b",
+        "source": "alb-b",
+        "target": "app-b",
+        "label": "HTTPS"
+      },
+      {
+        "id": "sql-a",
+        "source": "app-a",
+        "target": "db-a",
+        "label": "SQL"
+      },
+      {
+        "id": "sql-b",
+        "source": "app-b",
+        "target": "db-b",
+        "label": "SQL"
+      },
+      {
+        "id": "global-db",
+        "source": "db-a",
+        "target": "db-b",
+        "label": "Storage-level replication",
+        "kind": "replication"
+      },
+      {
+        "id": "crr",
+        "source": "s3-a",
+        "target": "s3-b",
+        "label": "Cross-Region replication",
+        "kind": "replication",
+        "sourcePort": "right",
+        "targetPort": "left"
+      }
+    ],
+    "notes": [
+      "Standby capacity and RTO/RPO targets are illustrative; one AZ per Region shown for clarity."
+    ]
+  },
+  "provenance": {
+    "items": [
+      {
+        "id": "$model",
+        "category": "model",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "cloud",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "region-a",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "vpc-a",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "az-a",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "app-a-sn",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "db-a-sn",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "region-b",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "vpc-b",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "az-b",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "app-b-sn",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "db-b-sn",
+        "category": "containers",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "users",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "dns",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "alb-a",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "app-a",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "db-a",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "s3-a",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "alb-b",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "app-b",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "db-b",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "s3-b",
+        "category": "nodes",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "resolve",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "https",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "primary",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "failover",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "web-a",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "web-b",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "sql-a",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "sql-b",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "global-db",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      },
+      {
+        "id": "crr",
+        "category": "edges",
+        "evidence": [],
+        "assumptions": [],
+        "unconfirmed": true
+      }
+    ],
+    "errors": [],
+    "unconfirmed": [
+      "$model",
+      "cloud",
+      "region-a",
+      "vpc-a",
+      "az-a",
+      "app-a-sn",
+      "db-a-sn",
+      "region-b",
+      "vpc-b",
+      "az-b",
+      "app-b-sn",
+      "db-b-sn",
+      "users",
+      "dns",
+      "alb-a",
+      "app-a",
+      "db-a",
+      "s3-a",
+      "alb-b",
+      "app-b",
+      "db-b",
+      "s3-b",
+      "resolve",
+      "https",
+      "primary",
+      "failover",
+      "web-a",
+      "web-b",
+      "sql-a",
+      "sql-b",
+      "global-db",
+      "crr"
+    ],
+    "note": "Provenance is supplied by the author; this report does not verify deployment or runtime traffic."
+  },
   "errors": [],
   "warnings": [],
   "routing": {

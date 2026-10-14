@@ -78,11 +78,16 @@ def line_hits(a, b, r):
 wrapped=model_layout.wrapped
 
 
+import model_edit
+
+
 def validate(m):
     """Check the model after resolving layout shorthands such as 'fit' and grid cells."""
     try: m=model_layout.normalize(m)
     except (ValueError,TypeError,KeyError,OverflowError) as e: return [f'layout: {e}'],[]
-    return validate_structure(m, CAT, wrapped, header_rect)
+    errors,warnings=validate_structure(m, CAT, wrapped, header_rect)
+    if not errors: errors += model_edit.validate(m)
+    return errors,warnings
 
 
 def compress(s):
@@ -157,12 +162,23 @@ def write_outputs(files):
             if tmp: tmp.unlink(missing_ok=True)
 
 
-def build(m, target, force=False):
+def build(m, target, force=False, previous=None):
     errors,_=validate(m)
     if errors: raise ValueError('\n'.join(errors))
     if not force: check_overwrite(target)
+    reuse_summary=None
+    if previous is not None: m,reuse_summary=model_edit.reuse(m,previous,header_rect)
     rootfile=ET.Element('mxfile',host='cloud-architecture-drawio',version='1.0')
-    report=compile_page(m,rootfile,'architecture')
+    try:report=compile_page(m,rootfile,'architecture')
+    except ValueError as exc:
+        if reuse_summary is None or not reuse_summary['retained']:raise
+        retained=reuse_summary['retained']
+        m['lockedRoutes']={eid:lock for eid,lock in m.get('lockedRoutes',{}).items() if eid not in retained}
+        reuse_summary['fallbackReason']=str(exc)
+        reuse_summary['rerouted']=sorted(set(reuse_summary['rerouted']+retained));reuse_summary['retained']=[]
+        rootfile=ET.Element('mxfile',host='cloud-architecture-drawio',version='1.0')
+        report=compile_page(m,rootfile,'architecture')
+    if reuse_summary is not None: report['incremental']=reuse_summary
     write_diagram(rootfile,target,report)
     return report
 
@@ -174,7 +190,7 @@ def bundle(models, target, force=False):
     if not force: check_overwrite(target)
     rootfile=ET.Element('mxfile',host='cloud-architecture-drawio',version='1.0')
     pages=[compile_page(m,rootfile,f'page-{i}') for i,m in enumerate(models,1)]
-    report={'version':3,'pages':pages,'warnings':[f'page {i}: {w}' for i,page in enumerate(pages,1) for w in page['warnings']]}
+    report={'version':4,'pages':pages,'warnings':[f'page {i}: {w}' for i,page in enumerate(pages,1) for w in page['warnings']]}
     write_diagram(rootfile,target,report)
     return report
 
@@ -191,6 +207,8 @@ def compile_page(m, rootfile, page_id):
     """Append one diagram page for a valid model to rootfile; return its report."""
     _,warnings=validate(m)
     source,m=m,model_layout.normalize(m)
+    snapshot=__import__('copy').deepcopy(m)
+    m=model_edit.route_model(m)
     width,height=m['width'],m['height']; by={i['id']:i for i in m['containers']+m['nodes']}
     dia=ET.SubElement(rootfile,'diagram',id=page_id,name=m.get('title','Architecture'))
     model=ET.SubElement(dia,'mxGraphModel',grid='1',gridSize='10',page='1',pageScale='1',pageWidth=str(width),pageHeight=str(height),background='#FFFFFF',connect='1',arrows='1')
@@ -218,15 +236,20 @@ def compile_page(m, rootfile, page_id):
         cell(b['id'],b['label'],style,b['x']-p['x'],b['y']-p['y'],b['w'],b['h'],parent)
         remaining.remove(b); emitted.add(b['id'])
     routes,ports,labels,mode=cloud_routes.route_and_label(m,header_rect)
-    quality=cloud_routes.metrics(routes)
+    quality=cloud_routes.metrics(routes,m)
+    import model_workflows
+    provenance=model_workflows.evidence(source)
     # Plain boxes stand in for products without a catalog icon; disclose them.
     fallbacks=[n['id'] for n in m['nodes'] if n.get('icon','generic')=='generic']
-    report={'version':3,'errors':[], 'warnings':warnings,'routing':mode,'fallbackIcons':fallbacks,'routes':routes,'labels':labels,'quality':quality,'model_sha256':sha256(json.dumps(source,sort_keys=True).encode())}
+    report={'version':4,'snapshot':snapshot,'provenance':provenance,'errors':[], 'warnings':warnings,'routing':mode,'fallbackIcons':fallbacks,'routes':routes,'labels':labels,'quality':quality,'model_sha256':sha256(json.dumps(source,sort_keys=True).encode())}
     if quality['crossingCount']:
         report['warnings'].append(f"{quality['crossingCount']} connector crossings: inspect jump markers or revise ports/lanes")
     for join in quality['continuations']:
         report['warnings'].append(f"connectors {join['edges'][0]} and {join['edges'][1]} meet end to end on one line with a {join['gap']:g}px gap and may read as one; change a port or offset")
     for e in m['edges']:
+        custom=m.get('presentation',{}).get(e['id'],{}).get('strokeColor')
+        if custom and custom!=EDGE[e.get('kind','traffic')][0]:
+            report['warnings'].append(f"{e['id']}: custom connector color differs from the kind legend; review legend or add a caption")
         pts=routes[e['id']]
         color,dashes=EDGE[e.get('kind','traffic')]
         sa,fa=ports[(e['id'],'source')];sb,fb=ports[(e['id'],'target')]
@@ -247,6 +270,9 @@ def compile_page(m, rootfile, page_id):
             ET.SubElement(geom,'mxPoint',x=str(label['offset'][0]),y=str(label['offset'][1]),attrib={'as':'offset'})
     for n in m['nodes']:
         parent=n.get('parent','1'); p=by.get(parent,{'x':0,'y':0})
+        if n.get('icon')=='generic.junction':
+            cell(n['id'],'','ellipse;fillColor=#20354A;strokeColor=#20354A;',n['x']-p['x'],n['y']-p['y'],n['w'],n['h'],parent)
+            continue
         cell(n['id'],'','group;fillColor=none;strokeColor=none;container=1;collapsible=0;',n['x']-p['x'],n['y']-p['y'],n['w'],n['h'],parent)
         cell('__icon_'+n['id'],'',icon_style(n.get('icon','generic')),(n['w']-48)/2,6,48,48,n['id'])
         text('__name_'+n['id'],'\n'.join(wrapped(n.get('label',''),n['w']-8,13)),4,59,n['w']-8,34,13,parent=n['id'],bold=True)
@@ -262,6 +288,7 @@ def compile_page(m, rootfile, page_id):
         cell('__legend_line_'+k,'',f'shape=line;strokeColor={color};strokeWidth={stroke};{dash}',lx,y+12,30,1)
         cell('__legend_text_'+k,captions[k],f'text;html=0;whiteSpace=wrap;overflow=hidden;spacing=0;fontSize=11;align=left;verticalAlign=middle;fontColor={color};',lx+40,y,160,24)
     text('__notes',' · '.join(m.get('notes',[])),30,y+25,width-60,36,11,'left')
+    model_edit.apply(root,m)
     return report
 
 
@@ -290,17 +317,19 @@ def find_renderer(viewer=None):
     if not Path(viewer).is_file(): return None,f'draw.io viewer bundle not found at {viewer}'
     env=dict(os.environ)
     env['NODE_PATH']=os.pathsep.join(p for p in (env.get('NODE_PATH'),str(CACHE/'node_modules')) if p)
-    probe=subprocess.run([node,'-e',RENDERER_PROBE],cwd=ROOT/'scripts',env=env,capture_output=True,text=True)
+    probe=subprocess.run([node,'-e',RENDERER_PROBE],cwd=ROOT/'scripts',env=env,capture_output=True,text=True,timeout=15)
     if probe.returncode: return None,(probe.stderr.strip().splitlines() or ['the renderer could not start'])[0]
     return (node,viewer,env),None
 
 
-def check(m, output, force=False, viewer=None):
+def check(m, output, force=False, viewer=None, timeout=120):
     """Validate, build and render-verify in one step. Returns (verdict, exit code).
 
     Exit 0 means every automated check passed (visual review still applies), 1 a
     failure, 2 a successful build that could not be render-verified here.
     """
+    import math
+    if not math.isfinite(timeout) or timeout<=0: return {'ok':False,'stage':'input','errors':['timeout must be positive and finite']},1
     if Path(output).suffix.lower() in ('.png','.svg','.json'):
         return {'ok':False,'stage':'build','errors':[f'{output}: name the .drawio source here; the PNG, SVG and reports are written beside it']},1
     errors,warnings=validate(m)
@@ -314,7 +343,10 @@ def check(m, output, force=False, viewer=None):
     found,reason=find_renderer(viewer)
     if not found: return unavailable(reason)
     node,viewer,env=found;png=Path(output).with_suffix('.png')
-    done=subprocess.run([node,str(ROOT/'scripts/render.cjs'),str(output),str(png),viewer],env=env,capture_output=True,text=True)
+    try:
+        done=subprocess.run([node,str(ROOT/'scripts/render.cjs'),str(output),str(png),viewer,'--timeout',str(timeout)],env=env,capture_output=True,text=True,timeout=timeout)
+    except subprocess.TimeoutExpired:
+        return {**verdict,'ok':False,'stage':'render','rendered':False,'errors':[f'renderer timed out after {timeout} seconds']},1
     lines=[line for line in done.stderr.splitlines() if line.strip()]
     if done.returncode==3: return unavailable(lines[0] if lines else 'the browser could not be launched')
     try: rendered=json.loads(done.stdout)
@@ -337,7 +369,9 @@ def main():
         if command in ('build','check'):
             s.add_argument('output')
             s.add_argument('--force',action='store_true',help='replace an output that changed after it was built')
+        if command=='build': s.add_argument('--reuse',help='previous report JSON; preserve eligible connector routes')
         if command=='check':
+            s.add_argument('--timeout',type=float,default=120,help='maximum renderer seconds')
             s.add_argument('--viewer',help='draw.io viewer-static.min.js (default: $DRAWIO_VIEWER, then the cache)')
     s=sub.add_parser('bundle',help='compile several models as pages of one .drawio')
     s.add_argument('output'); s.add_argument('models',nargs='+')
@@ -347,8 +381,11 @@ def main():
     s.add_argument('--output',help='write the updated model here (default: print it)')
     s.add_argument('--page',type=int,default=1)
     sub.add_parser('icons')
+    import model_workflows
+    model_workflows.configure(sub)
     a=p.parse_args()
     try:
+        if model_workflows.dispatch(a):return
         if a.cmd=='icons': print('\n'.join(sorted(CAT))); return
         if a.cmd=='bundle':
             models=[json.loads(Path(f).read_text(encoding='utf-8-sig')) for f in a.models]
@@ -358,6 +395,7 @@ def main():
             updated,summary=model_pull.pull(source,a.drawio,a.page)
             errors,_=validate(updated)
             summary['errors']=errors
+            summary['safeToRebuild']=not any(summary[k] for k in ('errors','ignored','missing','unmodelled'))
             if a.output: write_outputs([(a.output,(json.dumps(updated,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))])
             else: emit(updated,indent=2)
             print(json.dumps(summary,ensure_ascii=True),file=sys.stderr); sys.exit(bool(errors))
@@ -367,12 +405,20 @@ def main():
         if a.cmd=='validate':
             errors,warnings=validate(m); emit({'errors':errors,'warnings':warnings},indent=2); sys.exit(bool(errors))
         if a.cmd=='check':
-            verdict,code=check(m,a.output,a.force,a.viewer); emit(verdict,indent=2); sys.exit(code)
-        report=build(m,a.output,a.force); emit({'output':a.output,'warnings':report['warnings']})
+            verdict,code=check(m,a.output,a.force,a.viewer,a.timeout); emit(verdict,indent=2); sys.exit(code)
+        previous=json.loads(Path(a.reuse).read_text(encoding='utf-8')) if a.reuse else None
+        report=build(m,a.output,a.force,previous); emit({'output':a.output,'warnings':report['warnings']})
+    except subprocess.TimeoutExpired as e:
+        emit({'ok':False,'stage':'render','errors':[f'renderer timed out after {e.timeout} seconds'],'hint':'reduce the view or increase --timeout'}); sys.exit(1)
     except OSError as e:
+        if a.cmd=='check':
+            emit({'ok':False,'stage':'io','errors':[str(e)]}); sys.exit(1)
         where=e.filename or (a.output if a.cmd in ('build','check') else getattr(a,'model',''))
         p.exit(1,f'{where}: {e.strerror or e}\n')
-    except (ValueError,KeyError,TypeError) as e: p.exit(1,str(e)+'\n')
+    except (ValueError,KeyError,TypeError) as e:
+        if a.cmd=='check':
+            emit({'ok':False,'stage':'input','errors':[str(e)]}); sys.exit(1)
+        p.exit(1,str(e)+'\n')
 
 
 if __name__=='__main__': main()

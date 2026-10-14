@@ -180,7 +180,7 @@ class PullTests(unittest.TestCase):
 
         pulled, summary = model_pull.pull(model, self.edit(model, wrap))
         self.assertEqual(pulled, model)
-        self.assertEqual(self.changes(summary), {})
+        self.assertTrue(any('wrapper property link' in x for x in summary['ignored']))
 
     def test_a_fitted_box_that_loses_its_only_card_keeps_its_drawn_size(self):
         model = template('aws-egress')
