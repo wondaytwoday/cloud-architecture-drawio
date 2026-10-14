@@ -29,9 +29,9 @@
   "pageErrors": [],
   "warnings": [],
   "provenance": {
-    "input_sha256": "9c8debcf753dc7cafaf0cb3ca913ff1ef3572fda19c7fe8aab43f33b0fc706fc",
+    "input_sha256": "de61ee3719af8a9c58cd1c31b7244dfed574ea146bf97ec8d7bf39c021ca7236",
     "report": "examples/aws-serverless.report.json",
     "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
-    "playwright": "1.61.1"
+    "playwright": "1.62.1"
   }
 }

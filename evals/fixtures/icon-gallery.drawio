@@ -54,7 +54,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_kind-egress" value="egress" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="kind-egress" connectable="0">
-          <mxGeometry as="geometry" x="0.0" y="0" width="54.279999999999994" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.0" y="0" width="54.28" height="22" relative="1">
             <mxPoint as="offset" x="-27.139999999999986" y="-27.0" />
           </mxGeometry>
         </mxCell>
@@ -64,7 +64,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_kind-replication" value="replication" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="kind-replication" connectable="0">
-          <mxGeometry as="geometry" x="0.0" y="0" width="86.17999999999999" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.0" y="0" width="86.18" height="22" relative="1">
             <mxPoint as="offset" x="-43.08999999999992" y="-27.0" />
           </mxGeometry>
         </mxCell>
@@ -84,7 +84,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_kind-association" value="association" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="kind-association" connectable="0">
-          <mxGeometry as="geometry" x="0.0" y="0" width="86.17999999999999" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.0" y="0" width="86.18" height="22" relative="1">
             <mxPoint as="offset" x="-43.09000000000003" y="-27.0" />
           </mxGeometry>
         </mxCell>
@@ -114,7 +114,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_kind-connectivity" value="connectivity" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="kind-connectivity" connectable="0">
-          <mxGeometry as="geometry" x="0.0" y="0" width="92.55999999999999" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.0" y="0" width="92.56" height="22" relative="1">
             <mxPoint as="offset" x="-46.27999999999997" y="-27.0" />
           </mxGeometry>
         </mxCell>

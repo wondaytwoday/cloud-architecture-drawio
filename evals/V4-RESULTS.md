@@ -6,8 +6,8 @@ All twelve requested improvements are implemented: unsupported edit reporting, r
 
 ## Verification
 
-- 158 regression tests passed with no skips on Python 3.14.6, including 14 v4 behavioral tests and actual draw.io rendering (21.968 seconds). A further download-integrity regression brings the final suite to 159 tests.
-- Existing AWS, Azure and GCP examples rebuild without diagram XML changes. Reports advance to v4 with normalized snapshots and evidence inventories.
+- 159 regression tests passed with no skips on Python 3.14.6, including 15 v4 behavioral tests and actual draw.io rendering (21.886 seconds).
+- Existing AWS, Azure and GCP examples and the icon gallery were rebuilt and rendered. Text widths now use integer hundredths to eliminate Python-version-dependent floating-point summation; reports advance to v4 with normalized snapshots and evidence inventories.
 - Manual bend/color import → build → pull preserves supported values. Invalid locked routes fail instead of being silently rerouted.
 - A one-step routing budget stops inside the first search. Renderer timeout returns a structured failure. Malformed JSON produces a structured `check` failure.
 - Incremental tests cover unchanged routes, moved endpoints and newly introduced obstacles.
@@ -43,3 +43,5 @@ A separate agent used the skill instructions with a synthetic Azure model. It im
 ## Fresh CI environment
 
 The first GitHub run exposed HTTP 403 from the hosted viewer CDN. Setup now downloads the identical viewer bytes from the official repository at a fixed commit and checks the digest. A regression verifies that a wrong digest cannot replace a working cached viewer.
+
+Linux/Python 3.11 CI also exposed float-summation differences in label widths versus Python 3.14. Width estimates now sum integer hundredths; all fixtures and previews were regenerated. The non-Unicode stdout test now forces ASCII output directly, retaining the OS filename encoding rather than selecting a locale unavailable on the runner. Ubuntu 24.04 is pinned for the CI matrix.

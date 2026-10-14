@@ -35,7 +35,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_ingress" value="HTTPS 443" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="ingress" connectable="0">
-          <mxGeometry as="geometry" x="0.0021660649819494893" y="0" width="73.41999999999999" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.0021660649819494893" y="0" width="73.42" height="22" relative="1">
             <mxPoint as="offset" x="-36.710000000000036" y="-27.0" />
           </mxGeometry>
         </mxCell>

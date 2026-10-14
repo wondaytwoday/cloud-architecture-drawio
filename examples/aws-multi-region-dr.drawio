@@ -92,7 +92,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_failover" value="Failover record" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="failover" connectable="0">
-          <mxGeometry as="geometry" x="0.0" y="0" width="111.69999999999999" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.0" y="0" width="111.7" height="22" relative="1">
             <mxPoint as="offset" x="-117.70000000000005" y="-11.0" />
           </mxGeometry>
         </mxCell>
@@ -162,7 +162,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_global-db" value="Storage-level replication" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="global-db" connectable="0">
-          <mxGeometry as="geometry" x="0.0" y="0" width="175.49999999999997" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.0" y="0" width="175.5" height="22" relative="1">
             <mxPoint as="offset" x="-87.75" y="-27.0" />
           </mxGeometry>
         </mxCell>
@@ -172,7 +172,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_crr" value="Cross-Region replication" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="crr" connectable="0">
-          <mxGeometry as="geometry" x="0.0" y="0" width="169.11999999999998" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.0" y="0" width="169.12" height="22" relative="1">
             <mxPoint as="offset" x="-84.55999999999995" y="-27.0" />
           </mxGeometry>
         </mxCell>

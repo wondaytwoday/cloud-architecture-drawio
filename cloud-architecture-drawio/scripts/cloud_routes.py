@@ -474,8 +474,8 @@ def place_labels(m,routes,header_rect):
     for eid in sorted(routes,key=lambda k:(-len(by[k].get('label','')),k)):
         e=by[eid];label=e.get('label')
         if not label:continue
-        units=sum(1 if unicodedata.east_asian_width(c) in 'WF' else .58 for c in label)
-        lw=max(44,units*11+16);lh=22;pts=routes[eid];total=sum(length(a,b) for a,b in zip(pts,pts[1:]));before=0;candidates=[]
+        units=sum(100 if unicodedata.east_asian_width(c) in 'WF' else 58 for c in label)
+        lw=max(44,units*11/100+16);lh=22;pts=routes[eid];total=sum(length(a,b) for a,b in zip(pts,pts[1:]));before=0;candidates=[]
         for a,b in zip(pts,pts[1:]):
             seglen=length(a,b)
             if seglen<24:before+=seglen;continue

@@ -29,9 +29,9 @@
   "pageErrors": [],
   "warnings": [],
   "provenance": {
-    "input_sha256": "f19ef4e45575cda76fe5abfc28690b1d5b11f35102acc2cd588b9242d0b80ae8",
+    "input_sha256": "1fd280e579d951c8f2bccd41740e8fc1c3e22b610ff1c837c0b85a347234ea23",
     "report": "examples/gcp-cloud-run.report.json",
     "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
-    "playwright": "1.61.1"
+    "playwright": "1.62.1"
   }
 }

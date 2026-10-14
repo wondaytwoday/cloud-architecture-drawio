@@ -93,10 +93,12 @@ class CliTests(unittest.TestCase):
             self.assertEqual(sorted(p.name for p in Path(d).rglob('*.tmp')), [])
 
     def test_output_survives_a_locale_that_cannot_encode_it(self):
-        env = dict(os.environ, PYTHONUTF8='0', LC_ALL='en_US.ISO8859-1', LANG='en_US.ISO8859-1')
+        # Force an ASCII output stream without changing OS filename decoding.
+        # An unavailable Latin-1 locale becomes ASCII on Linux and mangles argv.
+        env = dict(os.environ, PYTHONIOENCODING='ascii')
         probe = subprocess.run([sys.executable, '-c', 'import sys;print(sys.stdout.encoding)'], capture_output=True, text=True, env=env)
         if probe.returncode or 'utf' in probe.stdout.lower():
-            self.skipTest('no Latin-1 locale on this system')
+            self.skipTest('cannot force a non-Unicode output encoding')
         with tempfile.TemporaryDirectory() as d:
             out = Path(d)/'구성도.drawio'
             result = subprocess.run(CLI+['build', str(SKILL/'assets/templates/gcp-regional.json'), str(out)], capture_output=True, env=env)

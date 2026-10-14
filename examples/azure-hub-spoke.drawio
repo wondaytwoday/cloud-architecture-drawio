@@ -118,7 +118,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_link" value="Private Link" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="link" connectable="0">
-          <mxGeometry as="geometry" x="0.0" y="0" width="92.55999999999999" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.0" y="0" width="92.56" height="22" relative="1">
             <mxPoint as="offset" x="-98.55999999999995" y="-11.0" />
           </mxGeometry>
         </mxCell>
@@ -128,8 +128,8 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_diag" value="Diagnostics" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="diag" connectable="0">
-          <mxGeometry as="geometry" x="0.0" y="0" width="86.17999999999999" height="22" relative="1">
-            <mxPoint as="offset" x="-92.17999999999999" y="-11.0" />
+          <mxGeometry as="geometry" x="0.0" y="0" width="86.18" height="22" relative="1">
+            <mxPoint as="offset" x="-92.18" y="-11.0" />
           </mxGeometry>
         </mxCell>
         <mxCell id="router" value="" style="group;fillColor=none;strokeColor=none;container=1;collapsible=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="dc">

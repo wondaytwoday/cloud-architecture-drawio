@@ -46,7 +46,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_api-origin" value="/api/*" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="api-origin" connectable="0">
-          <mxGeometry as="geometry" x="-0.19999999999999996" y="0" width="54.279999999999994" height="22" relative="1">
+          <mxGeometry as="geometry" x="-0.19999999999999996" y="0" width="54.28" height="22" relative="1">
             <mxPoint as="offset" x="-60.27999999999997" y="-11.0" />
           </mxGeometry>
         </mxCell>
@@ -79,7 +79,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_invoke" value="Invoke" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="invoke" connectable="0">
-          <mxGeometry as="geometry" x="0.0" y="0" width="54.279999999999994" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.0" y="0" width="54.28" height="22" relative="1">
             <mxPoint as="offset" x="-60.27999999999997" y="-11.0" />
           </mxGeometry>
         </mxCell>
@@ -92,7 +92,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_orders" value="Read / write" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="orders" connectable="0">
-          <mxGeometry as="geometry" x="0.004745762711864332" y="0" width="92.55999999999999" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.004745762711864332" y="0" width="92.56" height="22" relative="1">
             <mxPoint as="offset" x="-46.27999999999997" y="-27.0" />
           </mxGeometry>
         </mxCell>
@@ -102,7 +102,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_enqueue" value="Order placed" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="enqueue" connectable="0">
-          <mxGeometry as="geometry" x="0.0" y="0" width="92.55999999999999" height="22" relative="1">
+          <mxGeometry as="geometry" x="0.0" y="0" width="92.56" height="22" relative="1">
             <mxPoint as="offset" x="-46.27999999999997" y="-27.0" />
           </mxGeometry>
         </mxCell>

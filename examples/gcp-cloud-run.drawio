@@ -108,8 +108,8 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_egress-net" value="Internet egress" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="egress-net" connectable="0">
-          <mxGeometry as="geometry" x="0.009533146222872269" y="0" width="111.69999999999999" height="22" relative="1">
-            <mxPoint as="offset" x="-117.69999999999993" y="-11.0" />
+          <mxGeometry as="geometry" x="0.009533146222872269" y="0" width="111.7" height="22" relative="1">
+            <mxPoint as="offset" x="-117.70000000000005" y="-11.0" />
           </mxGeometry>
         </mxCell>
         <mxCell id="users" value="" style="group;fillColor=none;strokeColor=none;container=1;collapsible=0;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="1">

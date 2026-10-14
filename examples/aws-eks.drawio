@@ -106,7 +106,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_reads" value="SQL reads" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="reads" connectable="0">
-          <mxGeometry as="geometry" x="-0.05812006696962457" y="0" width="73.41999999999999" height="22" relative="1">
+          <mxGeometry as="geometry" x="-0.05812006696962457" y="0" width="73.42" height="22" relative="1">
             <mxPoint as="offset" x="-79.42000000000007" y="-11.0" />
           </mxGeometry>
         </mxCell>
@@ -119,7 +119,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="__label_aurora-repl" value="Cluster storage" style="text;html=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=11;fillColor=#FFFFFF;strokeColor=none;fontFamily=Arial;fontColor=#20354A;" vertex="1" parent="aurora-repl" connectable="0">
-          <mxGeometry as="geometry" x="-0.007133232939684486" y="0" width="111.69999999999999" height="22" relative="1">
+          <mxGeometry as="geometry" x="-0.007133232939684486" y="0" width="111.7" height="22" relative="1">
             <mxPoint as="offset" x="-55.85000000000002" y="-27.0" />
           </mxGeometry>
         </mxCell>

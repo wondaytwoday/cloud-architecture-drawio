@@ -26,7 +26,8 @@ MARGIN_SIDE, MARGIN_TOP, STUB = 10, 80, 16
 
 
 def measure(text, font):
-    return sum(font*(1 if unicodedata.east_asian_width(c) in 'WF' else .58) for c in text)
+    # Integer hundredths avoid Python-version-dependent floating-point summation.
+    return font*sum(100 if unicodedata.east_asian_width(c) in 'WF' else 58 for c in text)/100
 
 
 def wrapped(text, width, font):

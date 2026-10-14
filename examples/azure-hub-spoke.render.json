@@ -29,9 +29,9 @@
   "pageErrors": [],
   "warnings": [],
   "provenance": {
-    "input_sha256": "bd4ed6496c241e4f9c53a1d31dacd34865981badaec0c399247442f1fcf8fef4",
+    "input_sha256": "b5e12a4688401db6fc258d40b3839b06fac4d9f8bfa6b608de0403e284bece30",
     "report": "examples/azure-hub-spoke.report.json",
     "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
-    "playwright": "1.61.1"
+    "playwright": "1.62.1"
   }
 }

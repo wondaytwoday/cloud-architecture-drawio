@@ -29,9 +29,9 @@
   "pageErrors": [],
   "warnings": [],
   "provenance": {
-    "input_sha256": "f3153e5546174aa7495c83c7bec820fa9c1583836ae0e2c1d81dbb11dbc0bd14",
+    "input_sha256": "7e7850b3ffcce3ed0be7f69dcb6ed62fb087515962492a54e3d2b2c70b7a67ce",
     "report": "examples/aws-multi-region-dr.report.json",
     "viewer_sha256": "ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1",
-    "playwright": "1.61.1"
+    "playwright": "1.62.1"
   }
 }
