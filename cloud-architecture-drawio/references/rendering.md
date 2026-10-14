@@ -15,7 +15,7 @@ Requires Node.js, Playwright, an installed compatible Chromium, and a locally do
 ```sh
 npm install --prefix /tmp/cloud-diagram-runtime playwright
 /tmp/cloud-diagram-runtime/node_modules/.bin/playwright install chromium
-curl -L --fail https://viewer.diagrams.net/js/viewer-static.min.js -o /tmp/viewer-static.min.js
+curl -L --fail https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/js/viewer-static.min.js -o /tmp/viewer-static.min.js
 NODE_PATH=/tmp/cloud-diagram-runtime/node_modules node scripts/render.cjs architecture.drawio architecture.png /tmp/viewer-static.min.js
 ```
 
@@ -24,10 +24,10 @@ For repeated use, install once into the cache that `cloud_drawio.py check` searc
 ```sh
 npm install --prefix ~/.cache/cloud-architecture-drawio playwright@1.61.1
 ~/.cache/cloud-architecture-drawio/node_modules/.bin/playwright install chromium
-curl -L --fail https://viewer.diagrams.net/js/viewer-static.min.js -o ~/.cache/cloud-architecture-drawio/viewer-static.min.js
+curl -L --fail https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/js/viewer-static.min.js -o ~/.cache/cloud-architecture-drawio/viewer-static.min.js
 ```
 
-`check` also honours `NODE_PATH` and `$DRAWIO_VIEWER`, and writes the PNG next to the `.drawio`. Use an existing available Playwright installation instead of installing again. The viewer path may also come from `$DRAWIO_VIEWER`, and `CHROME_PATH` can specify an existing browser executable. Follow host permission rules for installation/download. The renderer blocks all browser network requests after loading the local bundle; diagram content and embedded icons stay local. The viewer URL is mutable: `.render.json` records the viewer's SHA-256, the Playwright version, and the input's SHA-256 for reproducibility.
+`check` also honours `NODE_PATH` and `$DRAWIO_VIEWER`, and writes the PNG next to the `.drawio`. Use an existing available Playwright installation instead of installing again. The viewer path may also come from `$DRAWIO_VIEWER`, and `CHROME_PATH` can specify an existing browser executable. Follow host permission rules for installation/download. The renderer blocks all browser network requests after loading the local bundle; diagram content and embedded icons stay local. The setup helper pins the official viewer commit and verifies its SHA-256. `.render.json` records the viewer's SHA-256, the Playwright version, and the input's SHA-256 for reproducibility.
 
 ```
 node scripts/render.cjs INPUT.drawio OUTPUT.png [VIEWER.js] [--report REPORT.json | --no-report] [--page N] [--embed]
@@ -60,6 +60,6 @@ Visual judgment is still required even when the render report is clean. Inspect 
 
 ## Environment diagnosis and bounded rendering
 
-`python3 scripts/doctor.py` prints JSON for Python, Node, Playwright/browser availability and the viewer hash. `--smoke` renders the Azure template in a temporary directory. `--setup` downloads Playwright 1.61.1, Chromium and the draw.io viewer to the user cache (no repository icon bundle expansion); Node/npm must already exist. Linux may need `playwright install-deps chromium` through the system package manager. Windows users can use WSL or the manual setup above. The viewer URL is mutable, so `renderer-provenance.json` records the downloaded SHA-256 for reproducibility investigations; it is not an upstream integrity signature.
+`python3 scripts/doctor.py` prints JSON for Python, Node, Playwright/browser availability and the viewer hash. `--smoke` renders the Azure template in a temporary directory. `--setup` downloads Playwright 1.61.1, Chromium and the draw.io viewer to the user cache (no repository icon bundle expansion); Node/npm must already exist. Linux may need `playwright install-deps chromium` through the system package manager. Windows users can use WSL or the manual setup above. The setup helper pins official draw.io commit `82af434539c3449d99275b91a91b6b99998a7d58` and verifies SHA-256 `ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1` before writing the cache. `renderer-provenance.json` records the source and digest. This avoids a 403 response observed from the hosted viewer CDN in GitHub CI. The [official self-hosted viewer guide](https://www.drawio.com/docs/integrations/atlassian/confluence/customise/configure-javascript-viewer-drawio-confluence-server/) documents using the repository bundle.
 
 `check --timeout 120` limits the renderer subprocess. Standalone `render.cjs --timeout 120` also has a watchdog. `check` failures, including malformed model JSON, I/O failures and timeouts, produce a JSON verdict. A completed build with unavailable rendering remains exit 2 and is not visual approval.

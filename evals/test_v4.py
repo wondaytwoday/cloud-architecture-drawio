@@ -144,4 +144,16 @@ class V4(unittest.TestCase):
             done=subprocess.run(command,capture_output=True,text=True)
             self.assertEqual(done.returncode,1);self.assertEqual(before,(p/'views/views.drawio').read_bytes())
 
+    def test_viewer_download_rejects_wrong_digest_without_replacing_cache(self):
+        import doctor,io,hashlib
+        with tempfile.TemporaryDirectory() as tmp:
+            cache=Path(tmp);target=cache/'viewer-static.min.js';target.write_bytes(b'working viewer')
+            with patch.object(doctor.urllib.request,'urlopen',return_value=io.BytesIO(b'error page')):
+                with self.assertRaisesRegex(ValueError,'SHA-256 mismatch'):doctor.download_viewer(cache)
+            self.assertEqual(target.read_bytes(),b'working viewer')
+            data=b'valid pinned viewer'
+            with patch.object(doctor.urllib.request,'urlopen',return_value=io.BytesIO(data)),patch.object(doctor,'VIEWER_SHA256',hashlib.sha256(data).hexdigest()):doctor.download_viewer(cache)
+            self.assertEqual(target.read_bytes(),data)
+            self.assertEqual(w.read(cache/'renderer-provenance.json')['sha256'],hashlib.sha256(data).hexdigest())
+
 if __name__=='__main__':unittest.main()

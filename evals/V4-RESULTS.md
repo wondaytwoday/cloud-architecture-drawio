@@ -6,7 +6,7 @@ All twelve requested improvements are implemented: unsupported edit reporting, r
 
 ## Verification
 
-- 158 regression tests passed with no skips on Python 3.14.6, including 14 v4 behavioral tests and actual draw.io rendering (21.968 seconds).
+- 158 regression tests passed with no skips on Python 3.14.6, including 14 v4 behavioral tests and actual draw.io rendering (21.968 seconds). A further download-integrity regression brings the final suite to 159 tests.
 - Existing AWS, Azure and GCP examples rebuild without diagram XML changes. Reports advance to v4 with normalized snapshots and evidence inventories.
 - Manual bend/color import → build → pull preserves supported values. Invalid locked routes fail instead of being silently rerouted.
 - A one-step routing budget stops inside the first search. Renderer timeout returns a structured failure. Malformed JSON produces a structured `check` failure.
@@ -17,7 +17,7 @@ All twelve requested improvements are implemented: unsupported edit reporting, r
 - Diff/evidence tests verify real changes, highlights, missing sources, unconfirmed inference and schema failures.
 
 - `doctor.py --smoke` passed using the existing renderer. Viewer SHA-256: `ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1`.
-- Official skill validation passed. Release ZIP matches tracked skill files; extracted ZIP independently passed icon listing, Azure build and GCP page generation. Archive: 242,741 bytes (about 237 KiB).
+- Official skill validation passed. Release ZIP matches tracked skill files; extracted ZIP independently passed icon listing, Azure build and GCP page generation. Final archive remains about 238 KiB.
 
 ## Independent forward test
 
@@ -37,5 +37,9 @@ A separate agent used the skill instructions with a synthetic Azure model. It im
 - Repair tries six spacing expansions, not a global layout solver. Locked paths require a deliberate unlock before repair.
 - Detail views retain original coordinates; they are not compacted automatically.
 - Evidence is author-provided, not verified cloud inventory. No runtime reachability claims follow from the diagram.
-- Setup downloads external renderer dependencies only on `--setup`; the viewer's mutable source and SHA-256 are recorded. No full CSP icon library is added to the release.
+- Setup downloads external renderer dependencies only on `--setup`; the official repository viewer is pinned by commit and checked against its SHA-256 before cache replacement. No full CSP icon library is added to the release.
 - GitHub workflow execution and an actual tagged release are separate from local verification; no release tag is created by this change.
+
+## Fresh CI environment
+
+The first GitHub run exposed HTTP 403 from the hosted viewer CDN. Setup now downloads the identical viewer bytes from the official repository at a fixed commit and checks the digest. A regression verifies that a wrong digest cannot replace a working cached viewer.

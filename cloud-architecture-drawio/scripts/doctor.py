@@ -14,7 +14,8 @@ import urllib.request
 import cloud_drawio as c
 
 PLAYWRIGHT='1.61.1'
-VIEWER_URL='https://viewer.diagrams.net/js/viewer-static.min.js'
+VIEWER_URL='https://raw.githubusercontent.com/jgraph/drawio/82af434539c3449d99275b91a91b6b99998a7d58/src/main/webapp/js/viewer-static.min.js'
+VIEWER_SHA256='ee0c444be46c95dc1842999f133c92598fe43e7cdf279f7095d0f057c48771b1'
 
 
 def cache_path():
@@ -27,9 +28,13 @@ def setup(cache):
     cache.mkdir(parents=True,exist_ok=True)
     subprocess.run([npm,'install','--prefix',str(cache),'--no-audit','--no-fund','--ignore-scripts',f'playwright@{PLAYWRIGHT}'],check=True,capture_output=True,text=True,timeout=180)
     subprocess.run([shutil.which('node'),str(cache/'node_modules/playwright/cli.js'),'install','chromium'],check=True,capture_output=True,text=True,timeout=300)
-    # The upstream viewer URL is mutable; retain its fetched hash and source.
+    download_viewer(cache)
+
+
+def download_viewer(cache):
+    # Pin official source and digest; never replace a working cache with an error page.
     with urllib.request.urlopen(VIEWER_URL,timeout=30) as response:data=response.read()
-    if len(data)<1000:raise ValueError('viewer download was unexpectedly small')
+    if hashlib.sha256(data).hexdigest()!=VIEWER_SHA256:raise ValueError('viewer SHA-256 mismatch; existing cached viewer was not replaced')
     c.write_outputs([(cache/'viewer-static.min.js',data)])
     provenance={'url':VIEWER_URL,'sha256':hashlib.sha256(data).hexdigest(),'playwright':PLAYWRIGHT}
     c.write_outputs([(cache/'renderer-provenance.json',(json.dumps(provenance,indent=2)+'\n').encode())])
